@@ -1,0 +1,50 @@
+<admintpl file="header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:U('site/index')}">{:L('ADMIN_SITE_INDEX')}</a></li>
+			<li class="active"><a href="{:U('site/add')}">{:L('ADMIN_SITE_ADD')}</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form" action="{:U('site/add_post')}">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label">{:L('NAME')}</label>
+					<div class="controls">
+						<input type="text" name="li_name">
+						<span class="form-required">*</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('SITE')}</label>
+					<div class="controls">
+						<input type="text" name="li_site">
+						<span class="form-required">*</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('LICENSE')}</label>
+					<div class="controls">
+						<input type="text" name="li_license">
+						<span class="form-required">*</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('STATUS')}</label>
+					<div class="controls">
+						<select name="status">
+							<option value="1">{:L('DISPLAY')}</option>
+							<option value="0">{:L('HIDDEN')}</option>
+						</select>
+					</div>
+				</div>
+			</fieldset>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary js-ajax-submit">{:L('ADD')}</button>
+				<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+			</div>
+		</form>
+	</div>
+	<script src="__PUBLIC__/js/common.js"></script>
+</body>
+</html>

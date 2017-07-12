@@ -1,0 +1,78 @@
+<admintpl file="header" />
+</head>
+<body>
+<div class="wrap">
+	<ul class="nav nav-tabs">
+		<li><a href="{:U('Admin/Contract/index')}">合同管理</a></li>
+		<li class="active"><a href="{:U('Admin/Contract/add')}">创建合同</a></li>
+	</ul>
+	<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/add_post')}">
+		<fieldset>
+			<h4 class="lighter">
+				<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+				<a href="#" data-toggle="modal" class="pink">合同信息</a>
+			</h4>
+			<div class="row-fluid">
+				<div class="span6">
+					<table class="table table-bordered">
+						<tr>
+							<th width="80">学员</th>
+							<td>
+								<select name="stu_id">
+									<option value="0">请选择</option>
+									<foreach name="studentList" item="vo">
+										<option value="{$vo.id}">{$vo.name}</option>
+									</foreach>
+								</select>
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">合同名称</th>
+							<td>
+								<input type="text" name="name" placeholder="请输入合同名称">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">合同金额</th>
+							<td>
+								<input type="text" name="total_price" placeholder="请输入合同金额">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">课时数</th>
+							<td>
+								<input type="text" name="class_number" placeholder="请输入课时数">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">开始时间</th>
+							<td>
+								<input class="js-date" type="text" id="input-start-time" placeholder="请输入开始时间" name="start_time">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">结束时间</th>
+							<td>
+								<input class="js-date" type="text" id="input-end-time" placeholder="请输入结束时间" name="end_time">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="hr hr-18 hr-double dotted"></div>
+		</fieldset>
+		<div class="form-actions">
+			<button type="submit" class="btn btn-primary js-ajax-submit">{:L('ADD')}</button>
+			<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+		</div>
+	</form>
+</div>
+<script src="__PUBLIC__/js/common.js"></script>
+</body>
+</html>

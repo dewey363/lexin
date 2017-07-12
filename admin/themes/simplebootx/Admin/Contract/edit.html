@@ -1,0 +1,150 @@
+<admintpl file="header" />
+</head>
+<body>
+<div class="wrap">
+	<ul class="nav nav-tabs">
+		<li><a href="{:U('Admin/Contract/index')}">合同管理</a></li>
+		<li><a href="{:U('Admin/Contract/add')}">创建合同</a></li>
+		<li class="active"><a href="{:U('Admin/Contract/edit',array('id'=>$id))}">编辑合同</a></li>
+	</ul>
+	<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/edit_post')}">
+		<fieldset>
+			<div class="row-fluid">
+				<div class="span6">
+					<h4 class="lighter">
+						<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+						<a href="#" data-toggle="modal" class="pink">合同信息</a>
+					</h4>
+					<table class="table table-bordered">
+						<tr>
+							<th width="100">合同名称</th>
+							<td>
+								<input type="text" name="name" value="{$info.name}" placeholder="请输入合同名称">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="100">合同金额</th>
+							<td>
+								<input type="text" name="total_price" disabled="disabled" value="{$info.total_price}" placeholder="请输入合同金额">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="100">课时数</th>
+							<td>
+								<input type="text" name="class_number" disabled="disabled" value="{$info.class_number}" placeholder="请输入课时数">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="100">开始时间</th>
+							<td>
+								<input class="js-date" type="text" id="input-start-time" value="{$info.start_time}" placeholder="请输入开始时间" name="start_time">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="100">结束时间</th>
+							<td>
+								<input class="js-date" type="text" id="input-end-time" value="{$info.end_time}" placeholder="请输入结束时间" name="end_time">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="100">续费金额</th>
+							<td>
+								<input type="text" name="renewal" value="" placeholder="请输入续费金额">
+							</td>
+						</tr>
+						<tr>
+							<th width="100">续费课时</th>
+							<td>
+								<input type="text" name="continue_class" value="" placeholder="请输入续费课时">
+							</td>
+						</tr>
+					</table>
+					<div class="hr hr-18 hr-double dotted"></div>
+					<div class="form-actions">
+						<input type="hidden" name="id" value="{$id}" />
+						<button type="submit" class="btn btn-primary js-ajax-submit">{:L('SAVE')}</button>
+						<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+					</div>
+				</div>
+				<div class="span6">
+					<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/edit_post')}">
+						<fieldset>
+							<div class="row-fluid">
+								<div class="span12">
+									<h4 class="lighter">
+										<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+										<a href="#" data-toggle="modal" class="pink">退费</a>
+									</h4>
+									<div class="row-fluid">
+										<div class="span12">
+											<a href="#" rel="external nofollow" rel="external nofollow" rel="external nofollow" id="AddMoreFileBox" class="btn btn-info">添加</a><br/><br/>
+											<div id="InputsWrapper">
+												<div>
+													<input type="text" name="refundTitle[]" id="refundTitle_1" placeholder="退费项目"/>
+													<input type="text" name="refundPrice[]" id="refundPrice_1" placeholder="退费金额"/>
+													<a href="#" rel="external nofollow" rel="external nofollow" rel="external nofollow" class="removeclass">
+														<input type='button' value='删除'>
+													</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="hr hr-18 hr-double dotted"></div>
+						</fieldset>
+						<div class="form-actions">
+							<input type="hidden" name="id" value="{$id}" />
+							<button type="submit" class="btn btn-primary js-ajax-submit">{:L('SAVE')}</button>
+							<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+
+</div>
+<script src="__PUBLIC__/js/common.js"></script>
+<script>
+    $(document).ready(function() {
+        var MaxInputs    = 11; //maximum input boxes allowed
+        var InputsWrapper  = $("#InputsWrapper"); //Input boxes wrapper ID
+        var AddButton    = $("#AddMoreFileBox"); //Add button ID
+        var x = InputsWrapper.length; //initlal text box count
+        var FieldCount=1; //to keep track of text box added
+        $(AddButton).click(function (e) //on add input button click
+        {
+            if(x <= MaxInputs) //max input box allowed
+            {
+                FieldCount++; //text box added increment
+                //add input box
+                $(InputsWrapper).append(
+                    '<br/><div>' +
+                    '<input type="text" name="refundTitle[]" id="refundTitle_'+ FieldCount +'" placeholder="退费项目"/> ' +
+                    '<input type="text" name="refundPrice[]" id="refundPrice_'+ FieldCount +'" placeholder="退费金额"/> ' +
+                    '<a href="#" rel="external nofollow" rel="external nofollow" rel="external nofollow" class="removeclass">' +
+                    '<input type="button" value="删除">' +
+                    '</a>' +
+                    '</div>'
+                );
+                x++; //text box increment
+            }
+            return false;
+        });
+        $("body").on("click",".removeclass", function(e){ //user click on remove text
+            if( x > 1 ) {
+                $(this).parent('div').remove(); //remove text box
+                x--; //decrement textbox
+            }
+            return false;
+        })
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<admintpl file="header"/>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:U('AdminPage/index')}">{:L('PORTAL_ADMINPAGE_INDEX')}</a></li>
+			<li><a href="{:U('AdminPage/add')}">{:L('PORTAL_ADMINPAGE_ADD')}</a></li>
+			<li><a href="#">{:L('PORTAL_ADMINPAGE_EDIT')}</a></li>
+			<li class="active"><a href="#">公告详情</a></li>
+		</ul>
+			<div class="row-fluid">
+				<div class="span9">
+					<table class="table table-bordered">
+						<tr>
+							<th width="80">标题</th>
+							<td>
+								{$post.post_title}
+							</td>
+						</tr>
+						<tr>
+							<th>摘要</th>
+							<td>
+								{$post.post_excerpt}
+							</td>
+						</tr>
+						<tr>
+							<th>内容</th>
+							<td>
+								{$post.post_content}
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="span3">
+					<table class="table table-bordered">
+						<tr>
+							<th>发布时间</th>
+							<td>
+								{$post.post_modified}
+							</td>
+						</tr>
+						<tr>
+							<th>状态</th>
+							<td>
+								<if condition="$vo.post_status eq 1">
+									审核通过
+									<else />
+									待审核
+								</if>
+							</td>
+						</tr>
+						<tr>
+							<th>所属学校</th>
+							<td>
+								{$post.schoolName}
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="form-actions">
+				<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+			</div>
+	</div>
+</body>
+</html>

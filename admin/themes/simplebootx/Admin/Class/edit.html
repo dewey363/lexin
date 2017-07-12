@@ -1,0 +1,154 @@
+<admintpl file="header" />
+<link rel="stylesheet" href="__PUBLIC__/css/list-style.css">
+</head>
+<body>
+<div class="wrap">
+	<ul class="nav nav-tabs">
+		<li><a href="{:U('Admin/Class/index')}">班级列表</a></li>
+		<li><a href="{:U('Admin/Class/add')}">新增班级</a></li>
+		<li class="active"><a href="{:U('Admin/Class/edit',array('id'=>$id))}">编辑班级</a></li>
+	</ul>
+	<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Class/edit_post')}">
+		<fieldset>
+			<h4 class="lighter">
+				<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+				<a href="#" data-toggle="modal" class="pink">班级信息</a>
+			</h4>
+			<div class="row-fluid">
+				<div class="span6">
+					<div class="control-group">
+						<label class="control-label">班级名称</label>
+						<div class="controls">
+							<input type="text" name="name" value="{$info.name}" placeholder="请输入班级名称">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">任课老师</label>
+						<div class="controls">
+							<select name="teacher">
+								<option value="0">请选择</option>
+								<foreach name="teacherList" item="vo">
+									<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
+								</foreach>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">开班日期</label>
+						<div class="controls">
+							<input class="js-date" type="text" value="{$info.open_date}" id="input-open-date" placeholder="请选择开班日期" name="open_date">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">人数</label>
+						<div class="controls">
+							<input type="text" name="student_population" value="{$info.student_population}" placeholder="请输入班级人数">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">所在学校</label>
+						<div class="controls">
+							<select name="school">
+								<option value="0">请选择</option>
+								<foreach name="schoolList" item="vo">
+									<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
+								</foreach>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="span6">
+					<div class="control-group">
+						<label class="control-label">课程</label>
+						<div class="controls">
+							<input type="text" name="course" value="{$info.course}" placeholder="请输入课程">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">教室编号</label>
+						<div class="controls">
+							<input type="text" name="number" value="{$info.number}" placeholder="请输入教室编号">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">上课时间</label>
+						<div class="controls">
+							<input class="js-date" type="text" value="{$info.class_time}" id="input-class-time" placeholder="请选择上课时间" name="class_time">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">周几</label>
+						<div class="controls">
+							<input type="text" name="week_day" value="{$info.week_day}" placeholder="请输入周几">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">每次刷卡消耗课时</label>
+						<div class="controls">
+							<select name="school_id">
+									<option value="2">1课时</option>
+									<option value="1">0.5课时</option>
+									<option value="3">1.5课时</option>
+									<option value="4">2课时</option>
+									<option value="5">2.5课时</option>
+									<option value="6">3课时</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="hr hr-18 hr-double dotted"></div>
+			<h4 class="lighter">
+				<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+				<a href="#" data-toggle="modal" class="pink">选择学员</a>
+			</h4>
+
+			<div class="row-fluid">
+				<div class="span8">
+					<div id="selectTitle" class="list-select">
+						<div class="list-body">
+							<div class="item-box left-box">
+								<!-- 左边框初始化待选项 -->
+								<foreach name="studentList" item="vo">
+									<span class="item" data-id="{$vo.id}">{$vo.name}</span>
+								</foreach>
+							</div>
+							<div class="center-box">
+								<button type="button" class="add-one" title="添加选中项">></button>
+								<button type="button" class="add-all" title="添加全部">>></button>
+								<button type="button" class="remove-one" title="移除选中项"><</button>
+								<button type="button" class="remove-all" title="移除全部"><<</button>
+							</div>
+							<div class="item-box right-box">
+								<!-- 右边框存放已选项 -->
+								<foreach name="stuIds" item="v">
+									<span class="item" data-id="{$v.id}">{$v.name}</span>
+								</foreach>
+							</div>
+						</div>
+						<input type="hidden" name="studentIds" id="studentIds">
+						<!--<div class="list-footer">-->
+						<!--<button type="button" class="selected-val" title="获取选择值，输出到控制台">GET</button>-->
+						<!--</div>-->
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<div class="form-actions">
+			<input type="hidden" name="id" value="{$id}" />
+			<button type="submit" class="btn btn-primary js-ajax-submit selected-val">{:L('SAVE')}</button>
+			<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+		</div>
+	</form>
+	<script src="__PUBLIC__/js/list/jquery.min.js"></script>
+	<script src="__PUBLIC__/js/list/jquery-ui.min.js"></script>
+	<script src="__PUBLIC__/js/list/list-script.js"></script>
+	<script>
+        $(function(){
+            $('#selectTitle').initList();
+        })
+	</script>
+</div>
+<script src="__PUBLIC__/js/common.js"></script>
+</body>
+</html>

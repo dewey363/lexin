@@ -1,0 +1,69 @@
+<admintpl file="header" />
+<style>
+.home_info li em {
+	float: left;
+	width: 120px;
+	font-style: normal;
+}
+li {
+	list-style: none;
+}
+	/*公告*/
+	.notice{width:600px;margin:5px auto;height:26px;overflow:hidden;}
+	.noticTipTxt{color:#ff7300;height:22px;line-height:22px;overflow:hidden;margin:0 0 0 40px;}
+	.noticTipTxt li{height:22px;line-height:22px;}
+	.noticTipTxt a{color:#317eac;font-size:20px;text-decoration:none;}
+	.noticTipTxt a:hover{color:#0075E8;text-decoration:underline;}
+</style>
+</head>
+<body>
+	<div class="wrap">
+		<div class="alert" style="height:25px;background-color: #e3e3e3">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<div class="notice">
+				<ul id="notice" class="noticTipTxt">
+					<foreach name="notice" item="vo">
+					<li>
+						<a href="{:U('Portal/AdminPage/view',array('id'=>$vo['id']))}">
+							{$vo.post_title}
+						</a>
+					</li>
+					</foreach>
+
+				</ul>
+			</div>
+		</div>
+		<div id="home_toptip"></div>
+		<h4 class="well">{:L('SYSTEM_INFORMATIONS')}</h4>
+		<div class="home_info">
+			<ul>
+				<volist name="server_info" id="vo">
+					<li><em>{$key}</em> <span>{$vo}</span></li>
+				</volist>
+			</ul>
+		</div>
+		<h4 class="well">{:L('INITIATE_TEAM')}</h4>
+		<div class="home_info" id="home_devteam">
+			<ul>
+				<li><em>LeXinCrm</em> <a href="http://www.winlang.com" target="_blank">www.winlang.com</a></li>
+				<li><em>核心开发者</em> <span>空灵</span></li>
+				<li><em>{:L('TEAM_MEMBERS')}</em> <span>空灵</span></li>
+				<li><em>{:L('CONTACT_EMAIL')}</em> <span>63928427@qq.com</span></li>
+			</ul>
+		</div>
+	</div>
+	<script src="__PUBLIC__/js/common.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/js/scrolltext.js"></script>
+	<script type="text/javascript">
+        // 演示一
+        if (document.getElementById("notice")) {
+            var scrollup = new ScrollText("notice");
+            scrollup.LineHeight = 22;        //单排文字滚动的高度
+            scrollup.Amount = 1;            //注意:子模块(LineHeight)一定要能整除Amount.
+            scrollup.Delay = 20;           //延时
+            scrollup.Start();             //文字自动滚动
+            scrollup.Direction = "down"; //文字向下滚动
+        }
+	</script>
+</body>
+</html>

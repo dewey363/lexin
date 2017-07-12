@@ -1,0 +1,68 @@
+<admintpl file="header" />
+</head>
+<body>
+<div class="wrap">
+	<ul class="nav nav-tabs">
+		<li><a href="{:U('Admin/Finance/index')}">费用管理</a></li>
+		<li class="active"><a href="{:U('Admin/Finance/add')}">添加费用</a></li>
+	</ul>
+	<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Finance/add_post')}">
+		<fieldset>
+			<h4 class="lighter">
+				<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+				<a href="#" data-toggle="modal" class="pink">费用收支</a>
+			</h4>
+			<div class="row-fluid">
+				<div class="span6">
+					<table class="table table-bordered">
+						<tr>
+							<th width="80">业务类型</th>
+							<td>
+								<select name="type">
+									<option value="0">其他</option>
+									<!--<option value="1">学员收费</option>-->
+									<!--<option value="2">学员退费</option>-->
+									<option value="3">市场支出</option>
+									<option value="4">人力支出</option>
+
+								</select>
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">来源</th>
+							<td>
+								<select name="source">
+									<option value="2">支出</option>
+									<option value="1">收入</option>
+								</select>
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">金额</th>
+							<td>
+								<input type="text" name="price" placeholder="请输入金额">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th>备注</th>
+							<td>
+								<textarea name="project" id="project" style='width: 98%; height: 200px;'></textarea>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="hr hr-18 hr-double dotted"></div>
+		</fieldset>
+		<div class="form-actions">
+			<button type="submit" class="btn btn-primary js-ajax-submit">{:L('ADD')}</button>
+			<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+		</div>
+	</form>
+</div>
+<script src="__PUBLIC__/js/common.js"></script>
+</body>
+</html>

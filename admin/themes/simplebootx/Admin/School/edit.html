@@ -1,0 +1,56 @@
+<admintpl file="header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:U('School/index')}">{:L('SCHOOL_INDEX')}</a></li>
+			<li><a href="{:U('School/add')}">{:L('ADD_SCHOOL')}</a></li>
+			<li class="active"><a href="{:U('Admin/School/edit',array('id'=>$id))}">{:L('EDIT_SCHOOL')}</a></li>
+		</ul>
+		<form class="form-horizontal js-ajax-form" action="{:U('School/edit_post')}" method="post">
+			<input type="hidden" name="id" value="{$info.id}" />
+			<div class="tabbable">
+				<div class="tab-content">
+					<div class="tab-pane active">
+						<fieldset>
+							<div class="control-group">
+								<label class="control-label">{:L('NAME')}</label>
+								<div class="controls">
+									<input type="text" name="name" value="{$info.name}"><span class="form-required">*</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">学校拥有者</label>
+								<div class="controls">
+									<select name="manage">
+										<option value="0">{:L('ROOT')}</option>
+									</select>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">学校管理员</label>
+								<div class="controls">
+									<select name="auth_user">
+										<option value="0">{:L('ROOT')}</option>
+									</select>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">排序</label>
+								<div class="controls">
+									<input type="text" name="listorder" value="{$info.listorder}">
+								</div>
+							</div>
+
+						</fieldset>
+					</div>
+				</div>
+			</div>
+			<div class="form-actions">
+				<button class="btn btn-primary js-ajax-submit" type="submit">{:L('SAVE')}</button>
+				<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

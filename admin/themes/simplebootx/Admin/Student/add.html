@@ -1,0 +1,239 @@
+<admintpl file="header" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.4.css">
+</head>
+<body>
+<div class="wrap">
+	<ul class="nav nav-tabs">
+		<li><a href="{:U('Admin/Student/index')}">{:L('STUDENT_USER_INDEX')}</a></li>
+		<li class="active"><a href="{:U('Admin/Student/add')}">{:L('STUDENT_USER_ADD')}</a></li>
+	</ul>
+	<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Student/add_post')}">
+		<fieldset>
+			<h4 class="lighter">
+				<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+				<a href="#" data-toggle="modal" class="pink">学生信息</a>
+			</h4>
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label">{:L('STUDENT_NAME')}</label>
+					<div class="controls">
+						<input type="text" name="name" placeholder="请输入{:L('STUDENT_NAME')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('STUDENT_SEX')}:</label>
+					<div class="controls">
+						<label class="radio"><input type="radio" name="sex" value="1" checked>男</label>
+						<label class="radio"><input type="radio" name="sex" value="2">女</label>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('STUDENT_AGE')}:</label>
+					<div class="controls">
+						<input type="text" name="age" placeholder="请输入{:L('STUDENT_AGE')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('STUDENT_MOBILE')}:</label>
+					<div class="controls">
+						<input type="text" name="mobile" placeholder="请输入{:L('STUDENT_MOBILE')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('BIRTHDAY')}:</label>
+					<div class="controls">
+						<input class="js-date" type="text" id="input-birthday" placeholder="请输入{:L('BIRTHDAY')}" name="birthday">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('ADDRESS')}:</label>
+					<div class="controls">
+						<input type="text" name="address" placeholder="请输入{:L('ADDRESS')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('APPLY_DATE')}:</label>
+					<div class="controls">
+						<input class="js-date" type="text" id="input-apply-date" placeholder="请输入{:L('BIRTHDAY')}" name="apply_date">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('LECTURE_SETTING')}:</label>
+					<div class="controls">
+						<input type="text" name="lecture_setting" placeholder="请输入{:L('LECTURE_SETTING')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('TIME_CONSUMING_REMINDER')}:</label>
+					<div class="controls">
+						<input type="text" name="time_consuming_reminder" placeholder="请输入{:L('TIME_CONSUMING_REMINDER')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('CARD_INFO')}:</label>
+					<div class="controls">
+						<input type="text" name="card_info" placeholder="请输入{:L('CARD_INFO')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('CLASS_NAME')}:</label>
+					<div class="controls">
+						<select name="class">
+							<option value="0">请选择</option>
+							<foreach name="classList" item="vo">
+								<option value="{$vo.id}">{$vo.name}</option>
+							</foreach>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label">{:L('STUDENT_NUMBER')}:</label>
+					<div class="controls">
+						<input type="text" name="number" placeholder="请输入{:L('STUDENT_NUMBER')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('COURSE')}</label>
+					<div class="controls">
+						<input type="text" name="course" placeholder="请输入{:L('COURSE')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('TUITION')}:</label>
+					<div class="controls">
+						<input type="text" name="tuition" placeholder="请输入{:L('TUITION')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('BUY_CLASS_HOUR')}:</label>
+					<div class="controls">
+						<input type="text" name="class_hour" placeholder="请输入{:L('BUY_CLASS_HOUR')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('UNIT_PRICE')}:</label>
+					<div class="controls">
+						<input type="text" name="unit_price" placeholder="请输入{:L('UNIT_PRICE')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('CONSUME_HOUR')}:</label>
+					<div class="controls">
+						<input type="text" name="consume_hour" placeholder="请输入{:L('CONSUME_HOUR')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('SURPLUS_HOUR')}:</label>
+					<div class="controls">
+						<input type="text" name="surplus_hour" placeholder="请输入{:L('SURPLUS_HOUR')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('COURSE_CONSULTANT')}:</label>
+					<div class="controls">
+						<select name="course_consultant">
+							<option value="0">请选择</option>
+							<foreach name="staffList" item="vo">
+								<option value="{$vo.id}">{$vo.name}</option>
+							</foreach>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('KINDERGARTEN')}:</label>
+					<div class="controls">
+						<input type="text" name="kindergarten" placeholder="请输入{:L('KINDERGARTEN')}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('HIRE_PURCHASE')}:</label>
+					<div class="controls">
+						<label class="radio"><input type="radio" name="hire_purchase" value="1" checked>是</label>
+						<label class="radio"><input type="radio" name="hire_purchase" value="0">否</label>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">{:L('IN_SCHOOL')}:</label>
+					<div class="controls">
+						<select name="school">
+							<option value="0">请选择</option>
+							<foreach name="schoolList" item="vo">
+								<option value="{$vo.id}">{$vo.name}</option>
+							</foreach>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+			<div class="hr hr-18 hr-double dotted"></div>
+			<h4 class="lighter">
+				<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+				<a href="#" data-toggle="modal" class="pink">家长信息</a>
+			</h4>
+			<div class="row-fluid">
+				<div class="span12">
+					<a href="#" rel="external nofollow" rel="external nofollow" rel="external nofollow" id="AddMoreFileBox" class="btn btn-info">添加更多</a>
+					<div id="InputsWrapper">
+						<div>
+							<input type="text" name="parentName[]" id="parentName_1" placeholder="家长姓名"/>
+							<input type="text" name="relationship[]" id="relationship_1" placeholder="关系"/>
+							<input type="text" name="phone[]" id="phone_1" placeholder="手机"/>
+							<input type="text" name="guardian[]" id="guardian_1" placeholder="监护人"/>
+							<a href="#" rel="external nofollow" rel="external nofollow" rel="external nofollow" class="removeclass">
+								<input type='button' value='删除'>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="hr hr-18 hr-double dotted"></div>
+		</fieldset>
+		<div class="form-actions">
+			<button type="submit" class="btn btn-primary js-ajax-submit">{:L('ADD')}</button>
+			<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+		</div>
+	</form>
+</div>
+<script src="__PUBLIC__/js/common.js"></script>
+<script>
+    $(document).ready(function() {
+        var MaxInputs    = 11; //maximum input boxes allowed
+        var InputsWrapper  = $("#InputsWrapper"); //Input boxes wrapper ID
+        var AddButton    = $("#AddMoreFileBox"); //Add button ID
+        var x = InputsWrapper.length; //initlal text box count
+        var FieldCount=1; //to keep track of text box added
+        $(AddButton).click(function (e) //on add input button click
+        {
+            if(x <= MaxInputs) //max input box allowed
+            {
+                FieldCount++; //text box added increment
+                //add input box
+                $(InputsWrapper).append(
+                    '<br/><div>' +
+					'<input type="text" name="parentName[]" id="parentName_'+ FieldCount +'" placeholder="家长姓名"/>' +
+					'<input type="text" name="relationship[]" id="relationship_'+ FieldCount +'" placeholder="关系"/>' +
+					'<input type="text" name="phone[]" id="phone_'+ FieldCount +'" placeholder="手机"/>' +
+					'<input type="text" name="guardian[]" id="guardian_'+ FieldCount +'" placeholder="监护人"/>' +
+                    '<a href="#" rel="external nofollow" rel="external nofollow" rel="external nofollow" class="removeclass">' +
+                    '<input type="button" value="删除">' +
+                    '</a>' +
+                    '</div>'
+                );
+                x++; //text box increment
+            }
+            return false;
+        });
+        $("body").on("click",".removeclass", function(e){ //user click on remove text
+            if( x > 1 ) {
+                $(this).parent('div').remove(); //remove text box
+                x--; //decrement textbox
+            }
+            return false;
+        })
+    });
+</script>
+</body>
+</html>
