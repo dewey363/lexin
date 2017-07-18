@@ -13,161 +13,83 @@
 				<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
 				<a href="#" data-toggle="modal" class="pink">学生信息</a>
 			</h4>
-		<div class="row-fluid">
-			<div class="span6">
-				<div class="control-group">
-					<label class="control-label">{:L('STUDENT_NAME')}</label>
-					<div class="controls">
-						<input type="text" name="name" placeholder="请输入{:L('STUDENT_NAME')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('STUDENT_SEX')}:</label>
-					<div class="controls">
-						<label class="radio"><input type="radio" name="sex" value="1" checked>男</label>
-						<label class="radio"><input type="radio" name="sex" value="2">女</label>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('STUDENT_AGE')}:</label>
-					<div class="controls">
-						<input type="text" name="age" placeholder="请输入{:L('STUDENT_AGE')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('STUDENT_MOBILE')}:</label>
-					<div class="controls">
-						<input type="text" name="mobile" placeholder="请输入{:L('STUDENT_MOBILE')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('BIRTHDAY')}:</label>
-					<div class="controls">
-						<input class="js-date" type="text" id="input-birthday" placeholder="请输入{:L('BIRTHDAY')}" name="birthday">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('ADDRESS')}:</label>
-					<div class="controls">
-						<input type="text" name="address" placeholder="请输入{:L('ADDRESS')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('APPLY_DATE')}:</label>
-					<div class="controls">
-						<input class="js-date" type="text" id="input-apply-date" placeholder="请输入{:L('BIRTHDAY')}" name="apply_date">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('LECTURE_SETTING')}:</label>
-					<div class="controls">
-						<input type="text" name="lecture_setting" placeholder="请输入{:L('LECTURE_SETTING')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('TIME_CONSUMING_REMINDER')}:</label>
-					<div class="controls">
-						<input type="text" name="time_consuming_reminder" placeholder="请输入{:L('TIME_CONSUMING_REMINDER')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('CARD_INFO')}:</label>
-					<div class="controls">
-						<input type="text" name="card_info" placeholder="请输入{:L('CARD_INFO')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('CLASS_NAME')}:</label>
-					<div class="controls">
-						<select name="class">
-							<option value="0">请选择</option>
-							<foreach name="classList" item="vo">
-								<option value="{$vo.id}">{$vo.name}</option>
-							</foreach>
-						</select>
-					</div>
-				</div>
-			</div>
-			<div class="span6">
-				<div class="control-group">
-					<label class="control-label">{:L('STUDENT_NUMBER')}:</label>
-					<div class="controls">
-						<input type="text" name="number" placeholder="请输入{:L('STUDENT_NUMBER')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('COURSE')}</label>
-					<div class="controls">
-						<input type="text" name="course" placeholder="请输入{:L('COURSE')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('TUITION')}:</label>
-					<div class="controls">
-						<input type="text" name="tuition" placeholder="请输入{:L('TUITION')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('BUY_CLASS_HOUR')}:</label>
-					<div class="controls">
-						<input type="text" name="class_hour" placeholder="请输入{:L('BUY_CLASS_HOUR')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('UNIT_PRICE')}:</label>
-					<div class="controls">
-						<input type="text" name="unit_price" placeholder="请输入{:L('UNIT_PRICE')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('CONSUME_HOUR')}:</label>
-					<div class="controls">
-						<input type="text" name="consume_hour" placeholder="请输入{:L('CONSUME_HOUR')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('SURPLUS_HOUR')}:</label>
-					<div class="controls">
-						<input type="text" name="surplus_hour" placeholder="请输入{:L('SURPLUS_HOUR')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('COURSE_CONSULTANT')}:</label>
-					<div class="controls">
-						<select name="course_consultant">
-							<option value="0">请选择</option>
-							<foreach name="staffList" item="vo">
-								<option value="{$vo.id}">{$vo.name}</option>
-							</foreach>
-						</select>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('KINDERGARTEN')}:</label>
-					<div class="controls">
-						<input type="text" name="kindergarten" placeholder="请输入{:L('KINDERGARTEN')}">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('HIRE_PURCHASE')}:</label>
-					<div class="controls">
-						<label class="radio"><input type="radio" name="hire_purchase" value="1" checked>是</label>
-						<label class="radio"><input type="radio" name="hire_purchase" value="0">否</label>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">{:L('IN_SCHOOL')}:</label>
-					<div class="controls">
-						<select name="school">
-							<option value="0">请选择</option>
-							<foreach name="schoolList" item="vo">
-								<option value="{$vo.id}">{$vo.name}</option>
-							</foreach>
-						</select>
-					</div>
+			<div class="row-fluid">
+				<div class="span10">
+					<table class="table table-bordered">
+						<tr>
+							<th width="80">{:L('STUDENT_NAME')}</th>
+							<td>
+								<input type="text" name="name" placeholder="请输入{:L('STUDENT_NAME')}">
+							</td>
+							<th width="80">{:L('STUDENT_SEX')}</th>
+							<td>
+								<label class="radio"><input type="radio" name="sex" value="1" checked>男</label>
+								<label class="radio"><input type="radio" name="sex" value="2">女</label>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">{:L('STUDENT_AGE')}</th>
+							<td>
+								<input type="text" name="age" placeholder="请输入{:L('STUDENT_AGE')}">
+							</td>
+							<th width="80">{:L('STUDENT_MOBILE')}</th>
+							<td>
+								<input type="text" name="mobile" placeholder="请输入{:L('STUDENT_MOBILE')}">
+							</td>
+						</tr>
+						<tr>
+							<th width="80">{:L('BIRTHDAY')}</th>
+							<td>
+								<input class="js-date" type="text" id="input-birthday" placeholder="请输入{:L('BIRTHDAY')}" name="birthday">
+							</td>
+							<th width="80">{:L('ADDRESS')}</th>
+							<td>
+								<input type="text" name="address" placeholder="请输入{:L('ADDRESS')}">
+							</td>
+						</tr>
+						<tr>
+							<th width="80">{:L('APPLY_DATE')}</th>
+							<td>
+								<input class="js-date" type="text" id="input-apply-date" placeholder="请输入{:L('BIRTHDAY')}" name="apply_date">
+							</td>
+							<th width="80">{:L('STUDENT_NUMBER')}</th>
+							<td>
+								<input type="text" name="number" placeholder="请输入{:L('STUDENT_NUMBER')}">
+							</td>
+						</tr>
+						<tr>
+							<th width="80">{:L('COURSE_CONSULTANT')}</th>
+							<td>
+								<select name="course_consultant">
+									<option value="0">请选择</option>
+									<foreach name="staffList" item="vo">
+										<option value="{$vo.id}">{$vo.name}</option>
+									</foreach>
+								</select>
+							</td>
+							<th width="80">{:L('KINDERGARTEN')}</th>
+							<td>
+								<input type="text" name="kindergarten" placeholder="请输入{:L('KINDERGARTEN')}">
+							</td>
+						</tr>
+						<tr>
+							<th width="80">{:L('IN_SCHOOL')}</th>
+							<td>
+								<select name="school">
+									<option value="0">请选择</option>
+									<foreach name="schoolList" item="vo">
+										<option value="{$vo.id}">{$vo.name}</option>
+									</foreach>
+								</select>
+							</td>
+							<th width="80"></th>
+							<td>
+							</td>
+						</tr>
+					</table>
+
 				</div>
 			</div>
-		</div>
 			<div class="hr hr-18 hr-double dotted"></div>
 			<h4 class="lighter">
 				<i class="icon-hand-right icon-animated-hand-pointer blue"></i>

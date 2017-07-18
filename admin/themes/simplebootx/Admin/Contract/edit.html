@@ -6,10 +6,11 @@
 		<li><a href="{:U('Admin/Contract/index')}">合同管理</a></li>
 		<li><a href="{:U('Admin/Contract/add')}">创建合同</a></li>
 		<li class="active"><a href="{:U('Admin/Contract/edit',array('id'=>$id))}">编辑合同</a></li>
+		<li><a href="{:U('Admin/Contract/view',array('id'=>$id))}">查看合同</a></li>
 	</ul>
-	<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/edit_post')}">
 		<fieldset>
 			<div class="row-fluid">
+				<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/edit_post')}">
 				<div class="span6">
 					<h4 class="lighter">
 						<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
@@ -17,38 +18,102 @@
 					</h4>
 					<table class="table table-bordered">
 						<tr>
-							<th width="100">合同名称</th>
+							<th width="80">学员</th>
+							<td>
+								<select name="stu_id">
+									<option value="0">请选择</option>
+									<foreach name="studentList" item="vo">
+										<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
+									</foreach>
+								</select>
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">合同名称</th>
 							<td>
 								<input type="text" name="name" value="{$info.name}" placeholder="请输入合同名称">
 								<i class="fa fa-asterisk"></i>
 							</td>
 						</tr>
 						<tr>
-							<th width="100">合同金额</th>
+							<th width="80">合同金额</th>
 							<td>
-								<input type="text" name="total_price" disabled="disabled" value="{$info.total_price}" placeholder="请输入合同金额">
-								<i class="fa fa-asterisk"></i>
+								{$info.total_price}元
 							</td>
 						</tr>
 						<tr>
-							<th width="100">课时数</th>
+							<th width="80">课时数</th>
 							<td>
-								<input type="text" name="class_number" disabled="disabled" value="{$info.class_number}" placeholder="请输入课时数">
-								<i class="fa fa-asterisk"></i>
+								{$info.class_number}课时
 							</td>
 						</tr>
 						<tr>
-							<th width="100">开始时间</th>
+							<th width="80">开始时间</th>
 							<td>
 								<input class="js-date" type="text" id="input-start-time" value="{$info.start_time}" placeholder="请输入开始时间" name="start_time">
 								<i class="fa fa-asterisk"></i>
 							</td>
 						</tr>
 						<tr>
-							<th width="100">结束时间</th>
+							<th width="80">结束时间</th>
 							<td>
 								<input class="js-date" type="text" id="input-end-time" value="{$info.end_time}" placeholder="请输入结束时间" name="end_time">
 								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">班级</th>
+							<td>
+								<select name="class">
+									<option value="0">请选择</option>
+									<foreach name="classList" item="vo">
+										<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
+									</foreach>
+								</select>
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">课程名称</th>
+							<td>
+								<input type="text" name="course" value="{$info.course}" placeholder="请输入课程名称">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="130">自定义消耗课时提醒</th>
+							<td>
+								<input type="text" name="time_consuming_reminder" value="{$info.time_consuming_reminder}" placeholder="请输入自定义消耗课时提醒">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">课时卡号</th>
+							<td>
+								<input type="text" name="card_info" value="{$info.card_info}" placeholder="请输入课时卡号">
+							</td>
+						</tr>
+						<tr>
+							<th width="80">是否分期</th>
+							<td>
+								<php>
+									$hirePurchase1=$info['hire_purchase']==1?"checked":"";
+									$hirePurchase2=$info['hire_purchase']==0?"checked":"";
+								</php>
+								<label class="radio"><input type="radio" name="hire_purchase" value="0" {$hirePurchase2}>否</label>
+								<label class="radio"><input type="radio" name="hire_purchase" value="1" {$hirePurchase1}>是</label>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">停课</th>
+							<td>
+								<php>
+									$class_end1=$info['class_end']==1?"checked":"";
+									$class_end2=$info['class_end']==0?"checked":"";
+								</php>
+								<label class="radio"><input type="radio" name="class_end" value="0" {$class_end2}>否</label>
+								<label class="radio"><input type="radio" name="class_end" value="1" {$class_end1}>是</label>
 							</td>
 						</tr>
 						<tr>
@@ -67,18 +132,23 @@
 					<div class="hr hr-18 hr-double dotted"></div>
 					<div class="form-actions">
 						<input type="hidden" name="id" value="{$id}" />
+						<if condition="$info.status eq 0">
 						<button type="submit" class="btn btn-primary js-ajax-submit">{:L('SAVE')}</button>
+						</if>
 						<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
 					</div>
 				</div>
+			</form>
 				<div class="span6">
-					<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/edit_post')}">
+					<if condition="$info.status eq 0">
+					<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/refund')}">
 						<fieldset>
 							<div class="row-fluid">
 								<div class="span12">
 									<h4 class="lighter">
 										<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
 										<a href="#" data-toggle="modal" class="pink">退费</a>
+										已消耗课时:{$info.consume_hour}课时;剩余课时:{$info.surplus_hour}课时;可退金额：{$info.refundPrice}元
 									</h4>
 									<div class="row-fluid">
 										<div class="span12">
@@ -100,14 +170,14 @@
 						</fieldset>
 						<div class="form-actions">
 							<input type="hidden" name="id" value="{$id}" />
-							<button type="submit" class="btn btn-primary js-ajax-submit">{:L('SAVE')}</button>
+							<button type="submit" class="btn btn-primary js-ajax-submit">退费</button>
 							<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
 						</div>
 					</form>
+					</if>
 				</div>
 			</div>
 		</fieldset>
-	</form>
 
 </div>
 <script src="__PUBLIC__/js/common.js"></script>

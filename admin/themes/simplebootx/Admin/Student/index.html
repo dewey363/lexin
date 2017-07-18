@@ -25,11 +25,6 @@
 			<a id="modal-studentExport" href="#studentExport" role="button" class="btn" data-toggle="modal">批量导出</a>
 			<a id="modal-studentImport" href="#studentImport" role="button" class="btn" data-toggle="modal">批量导入</a>
 		</form>
-		<form class="js-ajax-form" action="" method="post">
-		<div class="table-actions">
-			<button class="btn btn-primary btn-small js-ajax-submit" type="submit" data-action="{:U('Admin/Student/suspend',array('suspend'=>1))}" data-subcheck="true">停课</button>
-			<button class="btn btn-primary btn-small js-ajax-submit" type="submit" data-action="{:U('Admin/Student/suspend',array('unsuspend'=>1))}" data-subcheck="true">取消停课</button>
-		</div>
 		<table class="table table-hover table-bordered">
 			<thead>
 				<tr>
@@ -42,14 +37,9 @@
 					<th>{:L('STUDENT_AGE')}</th>
 					<th>{:L('STUDENT_NUMBER')}</th>
 					<th>{:L('STUDENT_MOBILE')}</th>
-					<th>{:L('TUITION')}</th>
-					<th>{:L('BUY_CLASS_HOUR')}</th>
-					<th>{:L('UNIT_PRICE')}</th>
-					<th>{:L('CONSUME_HOUR')}</th>
-					<th>{:L('DIVIDE_CLASS')}</th>
 					<th>{:L('APPLY_DATE')}</th>
 					<th>{:L('COURSE_CONSULTANT')}</th>
-					<th width="120">{:L('ACTIONS')}</th>
+					<th>{:L('ACTIONS')}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -66,24 +56,20 @@
 					<td>{$vo.age}</td>
 					<td>{$vo.number}</td>
 					<td>{$vo.mobile}</td>
-					<td>{$vo.tuition}</td>
-					<td>{$vo.class_hour}</td>
-					<td>{$vo.unit_price}</td>
-					<td>{$vo.consume_hour}</td>
-					<td>{$vo.class_name}</td>
 					<td>{$vo.apply_date}</td>
 					<td>{$vo.course_consultant}</td>
 					<td>
-						<a href='{:U("Admin/Student/classConsume",array("stuId"=>$vo["id"]))}'>课时消耗</a> |
-						<a href='{:U("Admin/Student/edit",array("id"=>$vo["id"]))}'>{:L('EDIT')}</a> |
-						<a class="js-ajax-delete" href="{:U('Admin/Student/delete',array('id'=>$vo['id']))}">{:L('DELETE')}</a>
+						<a href='{:U("Admin/Contract/add",array("stuId"=>$vo["id"]))}' class="btn btn-mini btn-primary">创建合同</a> |
+						<a href='{:U("Admin/Contract/index",array("stuId"=>$vo["id"]))}' class="btn btn-mini btn-primary">查看合同</a> |
+						<a href='{:U("Admin/Student/classConsume",array("stuId"=>$vo["id"]))}' class="btn btn-mini btn-primary">课时消耗</a> |
+						<a href='{:U("Admin/Student/edit",array("id"=>$vo["id"]))}' class="btn btn-mini btn-primary">{:L('EDIT')}</a> |
+						<a class="js-ajax-delete btn btn-mini btn-danger" href="{:U('Admin/Student/delete',array('id'=>$vo['id']))}">{:L('DELETE')}</a>
 					</td>
 				</tr>
 				</foreach>
 			</tbody>
 		</table>
 		<div class="pagination">{$page}</div>
-		</form>
 
 	</div>
 	<!--批量导出-->

@@ -1,5 +1,6 @@
 <?php
 return array(
+    "IN_SCHOOL" => '所属学校',
 		"NICENAME" => '昵称',
 		'GENDER' => '性别',
 		"BIRTHDAY" => '生日',

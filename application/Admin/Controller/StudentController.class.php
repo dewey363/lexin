@@ -101,23 +101,23 @@ class StudentController extends AdminbaseController{
             $student['name']=I('name',"");
             $student['sex']=I('sex',1);
             $student['age']=I('age',0);
-            $student['class']=I('class',0);
+//            $student['class']=I('class',0);
             $student['number']=I('number',"");
             $student['mobile']=I('mobile',"");
-            $student['tuition']=I('tuition',"0.00");
-            $student['class_hour']=I('class_hour');
-            $student['unit_price']=I('unit_price');
+//            $student['tuition']=I('tuition',"0.00");
+//            $student['class_hour']=I('class_hour');
+//            $student['unit_price']=I('unit_price');
             $student['apply_date']=strtotime(I('apply_date'));
             $student['course_consultant']=I('course_consultant');
             $student['fingerprint']=I('fingerprint');
             $student['kindergarten']=I('kindergarten');
-            $student['hire_purchase']=I('hire_purchase');
-            $student['time_consuming_reminder']=I('time_consuming_reminder');
-            $student['lecture_setting']=I('lecture_setting');
+//            $student['hire_purchase']=I('hire_purchase');
+//            $student['time_consuming_reminder']=I('time_consuming_reminder');
+//            $student['lecture_setting']=I('lecture_setting');
             $student['birthday']=strtotime(I('birthday'));
             $student['address']=I('address');
-            $student['card_info']=I('card_info');
-            $student['course']=I('course');
+//            $student['card_info']=I('card_info');
+//            $student['course']=I('course');
             $student['school']=I('school');
             //获取家长信息
             $parentName=I('parentName');
@@ -130,42 +130,37 @@ class StudentController extends AdminbaseController{
             if ($result) {
                 if(!empty($parentName)){
                     $dataList=[];
-                    foreach ($parentName as $k=>$v){
-                        $dataList[] = array(
-                            'name'=>$v,
-                            'phone'=>$phone[$k],
-                            'relationship'=>$relationship[$k],
-                            'guardian'=>$guardian[$k],
-                            'stu_id'=>$result
-                        );
-                    }
-                    if(!empty($dataList)){
-                        D('Parents')->addAll($dataList);
-                    }
-
-                }
-
-                if(!empty($phone)){
                     $appUser_model=M("app_user");
-                    foreach ($phone as $v){
-                        $appUserInfo=$appUser_model->where(array("phone"=>$v))->find();
+                    foreach ($parentName as $k=>$v){
+                        $appUserInfo=$appUser_model->where(array("phone"=>$phone[$k]))->find();
                         if(empty($appUserInfo)){
-                            $user['phone']=$v;
-                            $user['user_status']=2;
-                            $user['user_status']=2;
+                            $dataList[] = array(
+                                'name'=>$v,
+                                'phone'=>$phone[$k],
+                                'relationship'=>$relationship[$k],
+                                'guardian'=>$guardian[$k],
+                                'stu_id'=>$result,
+                                'user_status'=>2,
+                                'password'=>sha1("111111"),
+                                'create_time'=>time()
+                            );
+                            $user['phone']=$phone[$k];
                             $user['password']=sha1("111111");
-                            $user['create_time']=time();
-                            $appUser_model->add($user);
                             $this->regEasemob($user['phone'],$user['password']);
+                        }else{
+                            $saveData= array(
+                                'name'=>$v,
+                                'relationship'=>$relationship[$k],
+                                'guardian'=>$guardian[$k],
+                                'stu_id'=>$result,
+                            );
+                            $appUser_model->where(array('phone'=>$phone[$k]))->save($saveData);
                         }
                     }
+                    if(!empty($dataList)){
+                        $appUser_model->addAll($dataList);
+                    }
 
-                }
-
-                if($student['class']>0){
-                    $data['stu_id']=$result;
-                    $data['class_id']=$student['class'];
-                    D('class_student')->add($data);
                 }
 
                 $this->success("添加成功！",U("student/index"));
@@ -181,7 +176,7 @@ class StudentController extends AdminbaseController{
         $id=  I("get.id",0,'intval');
         $student_model=M("Students");
         $info=$student_model->where("id=$id")->find();
-        $parentList=D('Parents')->where(array("stu_id"=>$info['id']))->select();
+        $parentList=D('AppUser')->where(array("stu_id"=>$info['id']))->select();
 
         $info['apply_date']=date("Y-m-d",$info['apply_date']);
         $info['birthday']=date("Y-m-d",$info['birthday']);
@@ -228,25 +223,25 @@ class StudentController extends AdminbaseController{
                 $student['name']=I('name',$info['name']);
                 $student['sex']=I('sex',$info['sex']);
                 $student['age']=I('age',$info['age']);
-                $student['class']=I('class');
+//                $student['class']=I('class');
                 $student['number']=I('number',$info['number']);
                 $student['mobile']=I('mobile',$info['mobile']);
-                $student['tuition']=I('tuition',$info['tuition']);
-                $student['class_hour']=I('class_hour',$info['class_hour']);
-                $student['unit_price']=I('unit_price',$info['unit_price']);
-                $student['class_end']=I('class_end',$info['class_end']);
+//                $student['tuition']=I('tuition',$info['tuition']);
+//                $student['class_hour']=I('class_hour',$info['class_hour']);
+//                $student['unit_price']=I('unit_price',$info['unit_price']);
+//                $student['class_end']=I('class_end',$info['class_end']);
                 $student['apply_date']=strtotime(I('apply_date'));
                 $student['course_consultant']=I('course_consultant');
                 $student['fingerprint']=I('fingerprint');
                 $student['kindergarten']=I('kindergarten');
-                $student['hire_purchase']=I('hire_purchase');
-                $student['time_consuming_reminder']=I('time_consuming_reminder');
-                $student['lecture_setting']=I('lecture_setting');
+//                $student['hire_purchase']=I('hire_purchase');
+//                $student['time_consuming_reminder']=I('time_consuming_reminder');
+//                $student['lecture_setting']=I('lecture_setting');
                 $student['birthday']=strtotime(I('birthday'));
                 $student['address']=I('address');
-                $student['card_info']=I('card_info');
+//                $student['card_info']=I('card_info');
                 $student['school']=I('school');
-                $student['course']=I('course');
+//                $student['course']=I('course');
                 //获取家长信息
                 $parentName=I('parentName');
                 $phone=I('phone');
@@ -256,67 +251,66 @@ class StudentController extends AdminbaseController{
                 if ($result!==false) {
                     //添加／编辑家长信息
                     if(!empty($parentName)){
-                        $parentModel=D('Parents');
-                        foreach ($parentName as $k=>$v){
-                            $parentInfo=$parentModel->where(array("phone"=>$phone[$k]))->find();
-                            $dataList = array(
-                                'name'=>$v,
-                                'phone'=>$phone[$k],
-                                'relationship'=>$relationship[$k],
-                                'guardian'=>$guardian[$k],
-                                'stu_id'=>$student['id']
-                            );
-                            if(empty($parentInfo)){
-                                $parentModel->add($dataList);
-                            }else{
-                                $parentModel->where(array("phone"=>$phone[$k]))->save($dataList);
-                            }
-                        }
-
-                    }
-                    //创建app用户账号
-                    if(!empty($phone)){
+                        $dataList=[];
                         $appUser_model=M("app_user");
-                        foreach ($phone as $v){
-                            $appUserInfo=$appUser_model->where(array("phone"=>$v))->find();
+                        foreach ($parentName as $k=>$v){
+                            $appUserInfo=$appUser_model->where(array("phone"=>$phone[$k]))->find();
                             if(empty($appUserInfo)){
-                                $user['phone']=$v;
-                                $user['user_status']=2;
-                                $user['user_status']=2;
+                                $dataList[] = array(
+                                    'name'=>$v,
+                                    'phone'=>$phone[$k],
+                                    'relationship'=>$relationship[$k],
+                                    'guardian'=>$guardian[$k],
+                                    'stu_id'=>$student['id'],
+                                    'user_status'=>2,
+                                    'password'=>sha1("111111"),
+                                    'create_time'=>time()
+                                );
+                                $user['phone']=$phone[$k];
                                 $user['password']=sha1("111111");
-                                $user['create_time']=time();
-                                $appUser_model->add($user);
                                 $this->regEasemob($user['phone'],$user['password']);
+                            }else{
+                                $saveData= array(
+                                    'name'=>$v,
+                                    'relationship'=>$relationship[$k],
+                                    'guardian'=>$guardian[$k],
+                                    'stu_id'=>$student['id'],
+                                );
+                                $appUser_model->where(array('phone'=>$phone[$k]))->save($saveData);
                             }
+
+                        }
+                        if(!empty($dataList)){
+                            $appUser_model->addAll($dataList);
                         }
 
                     }
 
-                    if($student['class']>0){
-                        $data['stu_id']=$student['id'];
-                        $data['class_id']=$student['class'];
-                        $classStu=D('class_student')->where($data)->find();
-                        if(empty($classStu)){
-                            D('class_student')->add($data);
-                        }else{
-                            if($classStu['status']==2){
-                                D('class_student')->where($data)->save(array("status"=>1));
-                            }
-                        }
+//                    if($student['class']>0){
+//                        $data['stu_id']=$student['id'];
+//                        $data['class_id']=$student['class'];
+//                        $classStu=D('class_student')->where($data)->find();
+//                        if(empty($classStu)){
+//                            D('class_student')->add($data);
+//                        }else{
+//                            if($classStu['status']==2){
+//                                D('class_student')->where($data)->save(array("status"=>1));
+//                            }
+//                        }
+//
+//                        if($info['class']>0 && $student['class'] !=$info['class']){
+//                            $where['stu_id']=$student['id'];
+//                            $where['class_id']=$info['class'];
+//                            D('class_student')->where($where)->save(array("status"=>2));
+//                        }
+//
+//                    }
 
-                        if($info['class']>0 && $student['class'] !=$info['class']){
-                            $where['stu_id']=$student['id'];
-                            $where['class_id']=$info['class'];
-                            D('class_student')->where($where)->save(array("status"=>2));
-                        }
-
-                    }
-
-                    if($student['class']==0){
-                        $where['stu_id']=$student['id'];
-                        $where['class_id']=$info['class'];
-                        D('class_student')->where($where)->save(array("status"=>2));
-                    }
+//                    if($student['class']==0){
+//                        $where['stu_id']=$student['id'];
+//                        $where['class_id']=$info['class'];
+//                        D('class_student')->where($where)->save(array("status"=>2));
+//                    }
 
                     $this->success("保存成功！");
                 } else {
@@ -328,37 +322,18 @@ class StudentController extends AdminbaseController{
 
         }
     }
+
     // 授权删除
     public function delete(){
         $id = I("get.id",0,"intval");
-        $student_model=M("Students");
-        if ($student_model->delete($id)!==false) {
+        $contracts['id']=$id;
+        $contracts['is_del']=1;
+        $contract_model=M("Students");
+        $result=$contract_model->save($contracts);
+        if ($result) {
             $this->success("删除成功！");
         } else {
             $this->error("删除失败！");
-        }
-    }
-
-    // 停课／开课
-    public function suspend(){
-        $student_model=M("Students");
-        if(isset($_POST['ids']) && $_GET["suspend"]){
-            $ids = I('post.ids/a');
-
-            if ( $student_model->where(array('id'=>array('in',$ids)))->save(array('class_end'=>1)) !== false ) {
-                $this->success("停课成功！");
-            } else {
-                $this->error("停课失败！");
-            }
-        }
-        if(isset($_POST['ids']) && $_GET["unsuspend"]){
-            $ids = I('post.ids/a');
-
-            if ( $student_model->where(array('id'=>array('in',$ids)))->save(array('class_end'=>0)) !== false) {
-                $this->success("取消停课成功！");
-            } else {
-                $this->error("取消停课失败！");
-            }
         }
     }
 
@@ -479,7 +454,7 @@ class StudentController extends AdminbaseController{
                 $list[$k]['sex']="女";
             }
 
-            $parentInfo=D('Parents')
+            $parentInfo=D('app_user')
                 ->where(array(
                     "stu_id"=>$v['id'],
                     "guardian"=>1
@@ -763,7 +738,7 @@ class StudentController extends AdminbaseController{
                 $list[$k]['sex']="女";
             }
 
-            $parentInfo=D('Parents')
+            $parentInfo=D('app_user')
                 ->where(array(
                     "stu_id"=>$v['id'],
                     "guardian"=>1

@@ -5,12 +5,13 @@ use Common\Controller\AdminbaseController;
 
 class UserController extends AdminbaseController{
 
-	protected $users_model,$role_model;
+	protected $users_model,$role_model,$school_model;
 
 	public function _initialize() {
 		parent::_initialize();
 		$this->users_model = D("Common/Users");
 		$this->role_model = D("Common/Role");
+		$this->school_model = D("Admin/School");
 	}
 
 	// 管理员列表
@@ -49,7 +50,9 @@ class UserController extends AdminbaseController{
 	// 管理员添加
 	public function add(){
 		$roles=$this->role_model->where(array('status' => 1))->order("id DESC")->select();
+        $schoolList=$this->school_model->select();
 		$this->assign("roles",$roles);
+		$this->assign("schoolList",$schoolList);
 		$this->display();
 	}
 
@@ -58,7 +61,9 @@ class UserController extends AdminbaseController{
 		if(IS_POST){
 			if(!empty($_POST['role_id']) && is_array($_POST['role_id'])){
 				$role_ids=$_POST['role_id'];
+				$school_ids=$_POST['school_id'];
 				unset($_POST['role_id']);
+				unset($_POST['school_id']);
 				if ($this->users_model->create()!==false) {
 					$result=$this->users_model->add();
 					if ($result!==false) {
@@ -69,6 +74,11 @@ class UserController extends AdminbaseController{
 							}
 							$role_user_model->add(array("role_id"=>$role_id,"user_id"=>$result));
 						}
+
+						$role_user_school_model=M("RoleUserSchool");
+                        foreach ($school_ids as $school_id){
+                            $role_user_school_model->add(array("school_id"=>$school_id,"user_id"=>$result));
+                        }
 						$this->success("添加成功！", U("user/index"));
 					} else {
 						$this->error("添加失败！");
@@ -91,8 +101,20 @@ class UserController extends AdminbaseController{
 		$role_user_model=M("RoleUser");
 		$role_ids=$role_user_model->where(array("user_id"=>$id))->getField("role_id",true);
 		$this->assign("role_ids",$role_ids);
-
+        $role_user_school_model=M("RoleUserSchool");
+        $school_ids=$role_user_school_model->where(array("user_id"=>$id))->getField("school_id",true);
+        $this->assign("school_ids",$school_ids);
 		$user=$this->users_model->where(array("id"=>$id))->find();
+
+        $schoolList=$this->school_model->select();
+        foreach ($schoolList as $k=>$v){
+            if($v['id']==$user['school']){
+                $schoolList[$k]['selected']="selected";
+            }else{
+                $schoolList[$k]['selected']="";
+            }
+        }
+        $this->assign("schoolList",$schoolList);
 		$this->assign($user);
 		$this->display();
 	}
@@ -105,7 +127,9 @@ class UserController extends AdminbaseController{
 					unset($_POST['user_pass']);
 				}
 				$role_ids = I('post.role_id/a');
+				$school_ids = I('post.school_id/a');
 				unset($_POST['role_id']);
+				unset($_POST['school_id']);
 				if ($this->users_model->create()!==false) {
 					$result=$this->users_model->save();
 					if ($result!==false) {
@@ -118,6 +142,13 @@ class UserController extends AdminbaseController{
 							}
 							$role_user_model->add(array("role_id"=>$role_id,"user_id"=>$uid));
 						}
+
+                        $role_user_school_model=M("RoleUserSchool");
+                        $role_user_school_model->where(array("user_id"=>$uid))->delete();
+                        foreach ($school_ids as $school_id){
+                            $role_user_school_model->add(array("school_id"=>$school_id,"user_id"=>$uid));
+                        }
+
 						$this->success("保存成功！");
 					} else {
 						$this->error("保存失败！");

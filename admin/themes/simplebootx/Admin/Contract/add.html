@@ -4,7 +4,12 @@
 <div class="wrap">
 	<ul class="nav nav-tabs">
 		<li><a href="{:U('Admin/Contract/index')}">合同管理</a></li>
-		<li class="active"><a href="{:U('Admin/Contract/add')}">创建合同</a></li>
+		<li class="active"><a href="{:U('Admin/Contract/add',array('stuId'=>$stuId))}">创建合同</a></li>
+		<if condition="$stuId gt 0">
+			<li><a href="{:U('Admin/Student/index')}">{:L('STUDENT_USER_INDEX')}</a></li>
+			<li><a href="{:U('Admin/Student/add')}">{:L('STUDENT_USER_ADD')}</a></li>
+			<li><a href="{:U('Admin/Student/edit',array('id'=>$stuId))}">编辑学员</a></li>
+		</if>
 	</ul>
 	<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/add_post')}">
 		<fieldset>
@@ -21,7 +26,7 @@
 								<select name="stu_id">
 									<option value="0">请选择</option>
 									<foreach name="studentList" item="vo">
-										<option value="{$vo.id}">{$vo.name}</option>
+										<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
 									</foreach>
 								</select>
 								<i class="fa fa-asterisk"></i>
@@ -62,15 +67,61 @@
 								<i class="fa fa-asterisk"></i>
 							</td>
 						</tr>
+						<tr>
+							<th width="80">班级</th>
+							<td>
+								<select name="class">
+									<option value="0">请选择</option>
+									<foreach name="classList" item="vo">
+										<option value="{$vo.id}">{$vo.name}</option>
+									</foreach>
+								</select>
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">课程名称</th>
+							<td>
+								<input type="text" name="course" placeholder="请输入课程名称">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="130">自定义消耗课时提醒</th>
+							<td>
+								<input type="text" name="time_consuming_reminder" placeholder="请输入自定义消耗课时提醒">
+								<i class="fa fa-asterisk"></i>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">课时卡号</th>
+							<td>
+								<input type="text" name="card_info" placeholder="请输入课时卡号">
+							</td>
+						</tr>
+						<tr>
+							<th width="80">是否分期</th>
+							<td>
+								<label class="radio"><input type="radio" name="hire_purchase" value="0" >否</label>
+								<label class="radio"><input type="radio" name="hire_purchase" value="1" >是</label>
+							</td>
+						</tr>
+						<tr>
+							<th width="80">停课</th>
+							<td>
+								<label class="radio"><input type="radio" name="class_end" value="0" >否</label>
+								<label class="radio"><input type="radio" name="class_end" value="1" >是</label>
+							</td>
+						</tr>
 					</table>
+					<div class="form-actions">
+						<button type="submit" class="btn btn-primary js-ajax-submit">{:L('ADD')}</button>
+						<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+					</div>
 				</div>
 			</div>
 			<div class="hr hr-18 hr-double dotted"></div>
 		</fieldset>
-		<div class="form-actions">
-			<button type="submit" class="btn btn-primary js-ajax-submit">{:L('ADD')}</button>
-			<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
-		</div>
 	</form>
 </div>
 <script src="__PUBLIC__/js/common.js"></script>

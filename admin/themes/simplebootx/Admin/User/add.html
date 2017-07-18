@@ -27,6 +27,16 @@
 					</div>
 				</div>
 				<div class="control-group">
+					<label class="control-label">{:L('IN_SCHOOL')}</label>
+					<div class="controls">
+						<foreach name="schoolList" item="vo">
+							<label class="checkbox inline">
+								<input value="{$vo.id}" type="checkbox" name="school_id[]">{$vo.name}
+							</label>
+						</foreach>
+					</div>
+				</div>
+				<div class="control-group">
 					<label class="control-label">{:L('ROLE')}</label>
 					<div class="controls">
 						<foreach name="roles" item="vo">

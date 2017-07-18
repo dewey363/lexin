@@ -3,9 +3,11 @@
 <body>
 <div class="wrap">
 	<ul class="nav nav-tabs">
-		<li><a href="{:U('Admin/Finance/index')}">费用管理</a></li>
-		<li><a href="{:U('Admin/Finance/add')}">添加费用</a></li>
-		<li class="active"><a href="{:U('Admin/Finance/edit',array('id'=>$id))}">编辑费用</a></li>
+		<li><a href="{:U('Admin/Contract/index')}">合同管理</a></li>
+		<li><a href="{:U('Admin/Contract/add')}">创建合同</a></li>
+		<li><a href="{:U('Admin/Contract/edit',array('id'=>$info['contract_id']))}">编辑合同</a></li>
+		<li><a href="{:U('Admin/Contract/view',array('id'=>$info['contract_id']))}">查看合同</a></li>
+		<li class="active"><a href="{:U('Admin/Finance/financeEdit',array('id'=>$id))}">编辑费用</a></li>
 	</ul>
 	<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Finance/edit_post')}">
 		<fieldset>
@@ -52,17 +54,6 @@
 							</td>
 						</tr>
 						<tr>
-							<th width="80">收款方式</th>
-							<td>
-								<select name="pay_type">
-									<foreach name="payType" item="vo">
-										<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
-									</foreach>
-								</select>
-								<i class="fa fa-asterisk"></i>
-							</td>
-						</tr>
-						<tr>
 							<th width="80">费用时间</th>
 							<td>
 								<input class="js-date" type="text" id="input-add-time" value="{$info.add_time}" placeholder="请选择费用时间" name="add_time">
@@ -78,9 +69,7 @@
 						<tr>
 							<th>审核</th>
 							<td>
-								<label class="radio"><input type="radio" name="status" value="0" <if condition="$info.status eq 0">checked</if>>待审核</label>
-								<label class="radio"><input type="radio" name="status" value="1" <if condition="$info.status eq 1">checked</if>>审核通过</label>
-								<label class="radio"><input type="radio" name="status" value="2" <if condition="$info.status eq 2">checked</if>>打回</label>
+								<label class="radio"><input type="radio" name="status" checked value="0">待审核</label>
 							</td>
 						</tr>
 					</table>

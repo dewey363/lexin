@@ -82,16 +82,17 @@
 							<input type="text" name="week_day" value="{$info.week_day}" placeholder="请输入周几">
 						</div>
 					</div>
+
 					<div class="control-group">
 						<label class="control-label">每次刷卡消耗课时</label>
 						<div class="controls">
-							<select name="school_id">
-									<option value="2">1课时</option>
-									<option value="1">0.5课时</option>
-									<option value="3">1.5课时</option>
-									<option value="4">2课时</option>
-									<option value="5">2.5课时</option>
-									<option value="6">3课时</option>
+							<select name="consume_times">
+									<option value="2" <if condition="$info.consume_times eq 2">selected</if>>1课时</option>
+									<option value="1" <if condition="$info.consume_times eq 1">selected</if>>0.5课时</option>
+									<option value="3" <if condition="$info.consume_times eq 3">selected</if>>1.5课时</option>
+									<option value="4" <if condition="$info.consume_times eq 4">selected</if>>2课时</option>
+									<option value="5" <if condition="$info.consume_times eq 5">selected</if>>2.5课时</option>
+									<option value="6" <if condition="$info.consume_times eq 6">selected</if>>3课时</option>
 							</select>
 						</div>
 					</div>
