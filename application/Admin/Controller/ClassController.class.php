@@ -11,11 +11,13 @@ class ClassController extends AdminbaseController{
     protected $school_model;
     protected $class_model;
     protected $staff_model;
+    protected $studentContract_model;
     public function _initialize() {
         parent::_initialize();
         $this->school_model = D("Admin/School");
         $this->staff_model = D("Admin/Staff");
         $this->class_model = D("Admin/Class");
+        $this->studentContract_model = D("Admin/StudentContract");
     }
     
     //班级管理列表
@@ -32,6 +34,9 @@ class ClassController extends AdminbaseController{
             $keyword_complex['_logic'] = 'or';
             $where['_complex'] = $keyword_complex;
         }
+        if($request['teacher'] >0){
+            $where['teacher']=$request['teacher'];
+        }
     	$count=$this->class_model->where($where)->count();
     	$page = $this->page($count, 20);
     	
@@ -43,10 +48,12 @@ class ClassController extends AdminbaseController{
     	foreach ($list as $k=>$v){
     	    $list[$k]['open_date']=date("Y-m-d",$v['open_date']);
     	    $list[$k]['class_time']=date("Y-m-d",$v['class_time']);
-            $course_consultant = D('staff')->where(array('id'=>$v['teacher'],'position'=>1))->find();
+            $course_consultant = $this->staff_model->where(array('id'=>$v['teacher'],'position'=>1))->find();
             $list[$k]['teacher']=$course_consultant['name'];
         }
+        $teacher= $this->staff_model->where(array('position'=>1,'status'=>0))->select();
     	$this->assign('list', $list);
+    	$this->assign('teacher', $teacher);
     	$this->assign("page", $page->show('Admin'));
     	$this->display();
     }
@@ -55,8 +62,29 @@ class ClassController extends AdminbaseController{
     public function add(){
         $schoolList=$this->school_model->select();
         $teacherList=$this->staff_model->where(array("position"=>1))->select();
-        $studentList=D("Students")->where(array("class"=>0))->select();
-        $this->assign("studentList",$studentList);
+
+        $where['is_del']=0;
+        $contractIds=D('ClassStudent')->where($where)->field('contract_id')->select();
+        $contractId=[];
+        if(!empty($contractIds)){
+            foreach ($contractIds as $v){
+                $contractId[]=$v['contract_id'];
+            }
+        }
+        if(!empty($contractId)){
+            $arr['id']=array(
+                array('not in',implode(',',$contractId))
+            );
+        }
+        $arr['status']=2;
+        $arr['is_del']=0;
+        $contractList=$this->studentContract_model->where($arr)->field('id,name,stu_id')->select();
+        foreach ($contractList as $k=>$v){
+            $studentInfo=D("Students")->where(array("id"=>$v['stu_id']))->field('id,name')->find();
+            $contractList[$k]['stu_name']=$v['name']."_".$studentInfo['name'];
+        }
+
+        $this->assign("contractList",$contractList);
         $this->assign("schoolList",$schoolList);
         $this->assign("teacherList",$teacherList);
         $this->display();
@@ -69,7 +97,7 @@ class ClassController extends AdminbaseController{
             $class['course']=I('course','');
             $class['teacher']=I('teacher',0);
             $class['open_date']=strtotime(I('open_date'));
-            $class['class_time']=strtotime(I('class_time'));
+            $class['class_time']=I('class_time');
             $class['week_day']=I('week_day',"");
             $class['student_population']=I('student_population',0);
             $class['status']=I('status',0);
@@ -77,23 +105,20 @@ class ClassController extends AdminbaseController{
             $class['times']=I('times',0);
             $class['number']=I('number',0);
             $class['school']=I('school',0);
+            $class['hour']=I('hour',0);
             $class['consume_times']=I('consume_times',1);
-            $class['stu_id']=I('studentIds',"");
+            $contractId=I('contractIds',"");
 
             $result=$this->class_model->add($class);
             if ($result) {
-                if(!empty($class['stu_id'])){
-                    $stuIds=explode(",",$class['stu_id']);
-                    $classStudent=M('class_student');
+                if(!empty($contractId)){
+                    $stuIds=explode(",",$contractId);
+                    $classStudent=M('ClassStudent');
                     foreach ($stuIds as $v){
-                        $data['stu_id']=$v;
+                        $data['contract_id']=$v;
                         $data['class_id']=$class['id'];
+                        $data['status']=1;
                         $classStudent->add($data);
-
-                        $stuArr['class']=$class['id'];
-                        $stuArr['id']=$v['id'];
-                        D('students')->save($stuArr);
-
                     }
                 }
                 $this->success("添加成功！",U("class/index"));
@@ -109,7 +134,6 @@ class ClassController extends AdminbaseController{
         $id=  I("get.id",0,'intval');
         $info=$this->class_model->where("id=$id")->find();
         $info['open_date']=date("Y-m-d",$info['open_date']);
-        $info['class_time']=date("Y-m-d",$info['class_time']);
         $schoolList=$this->school_model->select();
         foreach ($schoolList as $k=>$v){
             if($v['id']==$info['school']){
@@ -126,16 +150,49 @@ class ClassController extends AdminbaseController{
                 $teacherList[$k]['selected']="";
             }
         }
-        $stuIds=[];
-        $where['class']=0;
-        if(!empty($info['stu_id'])){
-            $where['id']=array('not in',$info['stu_id']);
-            $sql['id']=array('in',$info['stu_id']);
-            $stuIds=D("Students")->where($sql)->field("id,name")->select();
+
+        $where['is_del']=0;
+        $contractIds=D('ClassStudent')->where($where)->field('contract_id')->select();
+        $contractId=[];
+        if(!empty($contractIds)){
+            foreach ($contractIds as $v){
+                $contractId[]=$v['contract_id'];
+            }
         }
-        $studentList=D("Students")->where($where)->select();
-        $this->assign("stuIds",$stuIds);
-        $this->assign("studentList",$studentList);
+        if(!empty($contractId)){
+            $arr['id']=array(
+                array('not in',implode(',',$contractId))
+            );
+        }
+        $arr['status']=2;
+        $arr['is_del']=0;
+        $contractList=$this->studentContract_model->where($arr)->field('id,name,stu_id')->select();
+        foreach ($contractList as $k=>$v){
+            $studentInfo=D("Students")->where(array("id"=>$v['stu_id']))->field('id,name')->find();
+            $contractList[$k]['stu_name']=$v['name']."_".$studentInfo['name'];
+        }
+
+        $contractSaveIds=[];
+        $sql['is_del']=0;
+        $sql['class_id']=$id;
+        $csList=D('ClassStudent')->where($sql)->field('contract_id')->select();
+        $contractSaveId=[];
+        if(!empty($csList)){
+            foreach ($csList as $v){
+                $contractSaveId[]=$v['contract_id'];
+            }
+        }
+
+        if(!empty($contractSaveId)){
+            $sql['id']=array('in',implode(',',$contractSaveId));
+            $contractSaveIds=$this->studentContract_model->where($sql)->select();
+            foreach ($contractSaveIds as $k=>$v){
+                $studentInfo=D("Students")->where(array("id"=>$v['stu_id']))->field('id,name')->find();
+                $contractSaveIds[$k]['stu_name']=$v['name']."_".$studentInfo['name'];
+            }
+        }
+        $this->assign("contractList",$contractList);
+        $this->assign("contractIds",$contractSaveIds);
         $this->assign("schoolList",$schoolList);
         $this->assign("teacherList",$teacherList);
         $this->assign("info",$info);
@@ -153,7 +210,7 @@ class ClassController extends AdminbaseController{
                 $class['course']=I('course',$info['course']);
                 $class['teacher']=I('teacher',$info['course']);
                 $class['open_date']=strtotime(I('open_date'));
-                $class['class_time']=strtotime(I('class_time'));
+                $class['class_time']=I('class_time',$info['class_time']);
                 $class['week_day']=I('week_day',$info['week_day']);
                 $class['student_population']=I('student_population',$info['student_population']);
                 $class['status']=I('status',$info['status']);
@@ -161,28 +218,25 @@ class ClassController extends AdminbaseController{
                 $class['times']=I('times',$info['times']);
                 $class['number']=I('number',$info['number']);
                 $class['school']=I('school',$info['school']);
+                $class['hour']=I('hour',$info['hour']);
                 $class['consume_times']=I('consume_times',$info['consume_times']);
-                $class['stu_id']=I('studentIds',"");
+                $contractId=I('contractIds',"");
                 $classStudent=M('class_student');
-                if(!empty($info['stu_id'])){
+                if(!empty($info['contract_id'])){
                     $classStudent->where(array("class_id"=>$class['id']))->delete();
                 }
                 $result=$this->class_model->save($class);
                 if ($result!==false) {
-                    if(!empty($class['stu_id'])){
-                        $stuIds=explode(",",$class['stu_id']);
-                        foreach ($stuIds as $v){
-                            $data['stu_id']=$v;
+                    if(!empty($contractId)){
+                        $contractIds=explode(",",$contractId);
+                        foreach ($contractIds as $v){
+                            $data['contract_id']=$v;
                             $data['class_id']=$class['id'];
                             $classStudent->add($data);
-
-                            $stuArr['class']=$class['id'];
-                            $stuArr['id']=$v['id'];
-                            D('students')->save($stuArr);
                         }
                     }
                     $this->success("保存成功！");
-                } else {
+                }else{
                     $this->error("保存失败！");
                 }
             }else{
@@ -387,15 +441,32 @@ class ClassController extends AdminbaseController{
                 ->order("add_time DESC")
                 ->limit($page->firstRow . ',' . $page->listRows)
                 ->select();
+            $class=$this->class_model->where(array("id"=>$classIds))->field('name,course,teacher')->find();
             foreach ($list as $k=>$v){
-                $class=$this->class_model->where(array("id"=>$v['class_id']))->field('name,course')->find();
                 $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
                 $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
                 $list[$k]['student_name']=$student['name'];
                 $list[$k]['class_name']=$class['name'];
                 $list[$k]['course']=$class['course'];
+                $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+                $list[$k]['price']=$contract['price'];
+                $teacher= $this->staff_model->where(array('position'=>1,'status'=>0,'id'=>$class['teacher']))->find();
+                $list[$k]['teacher_name']=$teacher['name'];
+            }
+            $listInfo = $class_consum
+                ->where($where)
+                ->order("add_time DESC")
+                ->select();
+            $allHour=0;
+            $totalPrice=0;
+            foreach ($listInfo as $k=>$v){
+                $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+                $totalPrice=$totalPrice+$v['class_hour']*$contract['price'];
+                $allHour=$allHour+$v['class_hour'];
             }
             $this->assign('list', $list);
+            $this->assign('totalPrice', $totalPrice);
+            $this->assign('allHour', $allHour);
             $this->assign('classId', $classIds);
             $this->assign("page", $page->show('Admin'));
         }
@@ -410,6 +481,68 @@ class ClassController extends AdminbaseController{
             $this->success("删除成功！");
         } else {
             $this->error("删除失败！");
+        }
+    }
+
+    //批量导出
+    public function exportConsum(){
+        if (IS_POST) {
+            $classId=  I("get.classId",0,'intval');
+            $request=I('request.');
+            $classIds=0;
+            if($classId>0){
+                $classIds=$classId;
+            }elseif($request['classId']>0){
+                $classIds=$request['classId'];
+            }
+            if($classIds>0){
+                $where['class_id']=$classIds;
+                $start_time=strtotime($request['start_time']);
+                if(!empty($start_time)){
+                    $where['add_time']=array(
+                        array('EGT',$start_time)
+                    );
+                }
+
+                $end_time=strtotime($request['end_time']);
+                if(!empty($end_time)){
+                    if(empty($where['add_time'])){
+                        $where['add_time']=array();
+                    }
+                    array_push($where['add_time'], array('ELT',$end_time));
+                }
+
+                $class_consum=M("class_consum");
+
+                $count=$class_consum->where($where)->count();
+
+                $list = $class_consum
+                    ->where($where)
+                    ->order("add_time DESC")
+                    ->select();
+                $class=$this->class_model->where(array("id"=>$classIds))->field('name,course,teacher')->find();
+                foreach ($list as $k=>$v){
+                    $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
+                    $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
+                    $list[$k]['student_name']=$student['name'];
+                    $list[$k]['class_name']=$class['name'];
+                    $list[$k]['course']=$class['course'];
+                    $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+                    $list[$k]['price']=$contract['price'];
+                    $teacher = $this->staff_model->where(array('id'=>$class['teacher'],'status'=>1,'position'=>1))->find();
+                    $list[$k]['teacher']=$teacher['name'];
+                    if($v['type']==0){
+                        $list[$k]['type']="正常上课";
+                    }elseif($v['type']==1){
+                        $list[$k]['type']="补课";
+                    }elseif($v['type']==2){
+                        $list[$k]['type']="缺课";
+                    }
+
+                }
+                ClassModel::exportConsum($list,$count);
+                exit;
+            }
         }
     }
 }

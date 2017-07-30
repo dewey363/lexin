@@ -8,15 +8,8 @@
 		</ul>
         <form class="well form-search" method="post" action="{:U('Admin/Student/index')}">
             关键字:
-			<input type="text" name="keyword" style="width: 200px;" value="{:I('request.keyword')}"  placeholder="{:L('STUDENT_NAME')}/{:L('STUDENT_MOBILE')}/{:L('CLASS_NAME')}">
-           剩余课时:
-			<input type="text" name="surplus_hour" style="width: 100px;" value="{:I('request.surplus_hour')}" placeholder="请输入{:L('SURPLUS_HOUR')}"><br/><br/>
-			分班状态：
-			<select name="divide_class" style="width: 80px;">
-				<option value='0'>全部</option>
-				<option value='1'>已分班</option>
-				<option value='2'>未分班</option>
-			</select> &nbsp;&nbsp;
+			<input type="text" name="keyword" style="width: 120px;" value="{:I('request.keyword')}"  placeholder="{:L('STUDENT_NAME')}/{:L('STUDENT_MOBILE')}">
+          &nbsp;&nbsp;
 			入学日期：
 			<input type="text" name="start_time" class="js-datetime" value="{:I('request.start_time','')}" style="width: 120px;" autocomplete="off">-
 			<input type="text" class="js-datetime" name="end_time" value="{:I('request.end_time','')}" style="width: 120px;" autocomplete="off"> &nbsp; &nbsp;

@@ -17,6 +17,9 @@ class GuestbookadminController extends AdminbaseController{
 		$count=$this->guestbook_model->where(array("status"=>1))->count();
 		$page = $this->page($count, 20);
 		$guestmsgs=$this->guestbook_model->where(array("status"=>1))->order(array("createtime"=>"DESC"))->limit($page->firstRow . ',' . $page->listRows)->select();
+		foreach ($guestmsgs as $k=>$v){
+            $guestmsgs[$k]['createtime']=date('Y-m-d H:i:s',$v['createtime']);
+        }
 		$this->assign("page", $page->show('Admin'));
 		$this->assign("guestmsgs",$guestmsgs);
 		$this->display();

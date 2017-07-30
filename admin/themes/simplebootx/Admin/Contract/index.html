@@ -9,6 +9,14 @@
         <form class="well form-search" method="post" action="{:U('Admin/Contract/index')}">
             关键字:
 			<input type="text" name="keyword" style="width: 200px;" value="{:I('request.keyword')}"  placeholder="合同名称">
+			剩余课时:
+			<input type="text" name="surplus_hour" style="width: 100px;" value="{:I('request.surplus_hour')}" placeholder="请输入{:L('SURPLUS_HOUR')}"><br/><br/>
+			分班状态：
+			<select name="divide_class" style="width: 80px;">
+				<option value='0'>全部</option>
+				<option value='1'>已分班</option>
+				<option value='2'>未分班</option>
+			</select>
 			创建日期：
 			<input type="text" name="start_time" class="js-date" value="{:I('request.start_time','')}" style="width: 120px;" autocomplete="off">-
 			<input type="text" class="js-date" name="end_time" value="{:I('request.end_time','')}" style="width: 120px;" autocomplete="off"> &nbsp; &nbsp;
@@ -20,8 +28,12 @@
 			<div class="table-actions">
 				<button class="btn btn-primary btn-small js-ajax-submit" type="submit" data-action="{:U('Admin/Contract/suspend',array('suspend'=>1))}" data-subcheck="true">停课</button>
 				<button class="btn btn-primary btn-small js-ajax-submit" type="submit" data-action="{:U('Admin/Contract/suspend',array('unsuspend'=>1))}" data-subcheck="true">取消停课</button>
+				<button class="btn btn-primary btn-small" data-toggle="modal"  data-target="#return_class">
+					转班
+				</button>
+
 			</div>
-		<table class="table table-hover table-bordered">
+		<table class="table table-hover table-bordered" id="sample-table-2">
 			<thead>
 				<tr>
 					<th width="15"><label><input type="checkbox" class="js-check-all" data-direction="x" data-checklist="js-check-x"></label></th>
@@ -29,6 +41,7 @@
 						ID
 					</th>
 					<th>学生姓名</th>
+					<th>班级</th>
 					<th>合同名称</th>
 					<th>合同总金额</th>
 					<th>合同单价</th>
@@ -37,15 +50,16 @@
 					<th>结束时间</th>
 					<th>合同状态</th>
 					<th>操作者</th>
-					<th width="150">{:L('ACTIONS')}</th>
+					<th width="200">{:L('ACTIONS')}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<foreach name="list" item="vo">
 				<tr>
-					<td><input type="checkbox" class="js-check" data-yid="js-check-y" data-xid="js-check-x" name="ids[]" value="{$vo.id}" title="ID:{$vo.id}"></td>
+					<td><input type="checkbox" class="js-check" data-yid="js-check-y" data-name="check_id" data-xid="js-check-x" name="ids[]" value="{$vo.id}" title="ID:{$vo.id}"></td>
 					<td>{$vo.id}</td>
 					<td>{$vo.stu_name}</td>
+					<td>{$vo.class_name}</td>
 					<td>{$vo.name}</td>
 					<td>{$vo.total_price}</td>
 					<td>{$vo.price}</td>
@@ -102,6 +116,30 @@
 
 	</div>
 	<!--批量导出结束-->
+	<!--学员转班开始-->
+	<div id="return_class" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel">学员转班</h3>
+		</div>
+		<div class="modal-body">
+			<p>
+				<label class="col-sm-2 control-label no-padding-right" for="returnClassList">选择班级</label>
+				<select name="class_id" id="returnClassList">
+					<option value="0">请选择</option>
+					<foreach name="classList" item="vo">
+						<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
+					</foreach>
+				</select>
+			</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			<button class="btn btn-primary" id="returnClassBtn">保存</button>
+		</div>
+	</div>
+	<!-- 学员转班结束-->
 	<script src="__PUBLIC__/js/common.js"></script>
+	<script src="__PUBLIC__/js/contract/contract.js"></script>
 </body>
 </html>

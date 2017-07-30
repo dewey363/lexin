@@ -53,6 +53,7 @@ class StudentContractModel extends CommonModel {
             '课时',
             '开始时间',
             '结束时间',
+            '合同状态',
             '操作者'
         );
         $output = '<table border="1">';
@@ -72,6 +73,7 @@ class StudentContractModel extends CommonModel {
                 $output .= "<td>" . $v['class_number'] . "</td>";
                 $output .= "<td>" . $v['start_time'] . "</td>";
                 $output .= "<td>" . $v['end_time'] . "</td>";
+                $output .= "<td>" . $v['status'] . "</td>";
                 $output .= "<td>" . $v['admin_name'] . "</td>";
                 $output .= '</tr>';
             }

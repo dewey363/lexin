@@ -64,7 +64,7 @@
 			for(var i = 0; i < itemValues.length; i++){
 				console.log(itemValues[i]);
 			}
-            $("#studentIds").val(itemValues);
+            $("#contractIds").val(itemValues);
 			return itemValues;
 		}
 

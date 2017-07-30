@@ -4,6 +4,7 @@
 	<div class="wrap js-check-wrap">
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="{:U('Admin/Finance/index')}">费用管理</a></li>
+			<li><a href="{:U('Admin/Finance/total')}">费用统计</a></li>
 			<li><a href="{:U('Admin/Finance/add')}">添加费用</a></li>
 		</ul>
         <form class="well form-search" method="post" action="{:U('Admin/Finance/index')}">
@@ -17,7 +18,13 @@
 				<option value="3">市场支出</option>
 				<option value="4">人力支出</option>
 				<option value="5">其他</option>
-			</select> &nbsp;
+			</select><br/><br/>
+			收／支：
+			<select name="source" style="width: 60px;">
+				<option value="0">全部</option>
+				<option value="1">收入</option>
+				<option value="2">支出</option>
+			</select> &nbsp;&nbsp;
 			创建日期：
 			<input type="text" name="start_time" class="js-date" value="{:I('request.start_time','')}" style="width: 120px;" autocomplete="off">-
 			<input type="text" class="js-date" name="end_time" value="{:I('request.end_time','')}" style="width: 120px;" autocomplete="off"> &nbsp; &nbsp;

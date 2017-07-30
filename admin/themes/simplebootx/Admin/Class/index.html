@@ -4,12 +4,20 @@
 	<div class="wrap js-check-wrap">
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="{:U('Admin/Class/index')}">班级列表</a></li>
+			<li><a href="{:U('Admin/Consum/index')}">课时消耗</a></li>
 			<li><a href="{:U('Admin/Class/add')}">新增班级</a></li>
 		</ul>
         <form class="well form-search" method="post" action="{:U('Admin/Class/index')}">
             关键词:
 			<input type="text" name="keyword" style="width: 150px;" value="{:I('request.keyword')}"  placeholder="班级名/课程">
-          <input type="submit" class="btn btn-primary" value="搜索" />
+			老师：
+			<select name="teacher" style="width: 80px;">
+				<option value='0'>全部</option>
+				<foreach name="teacher" item="vo">
+				<option value='{$vo.id}'>{$vo.name}</option>
+				</foreach>
+			</select>
+			<input type="submit" class="btn btn-primary" value="搜索" />
             <a class="btn btn-danger" href="{:U('Admin/Class/index')}">清空</a>
 		</form>
 		<form class="js-ajax-form" action="{:U('Admin/Class/export')}" method="post">

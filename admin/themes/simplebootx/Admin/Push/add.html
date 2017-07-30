@@ -1,0 +1,98 @@
+<admintpl file="header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:U('Staff/index')}">{:L('STAFF_INDEX')}</a></li>
+	        <li class="active"><a href="{:U('Staff/add')}">{:L('ADD_STAFF')}</a></li>
+	    </ul>
+		<form class="form-horizontal js-ajax-form" action="{:U('Staff/add_post')}" method="post">
+			<div class="tabbable">
+		        <div class="tab-content">
+		          <div class="tab-pane active">
+					  	<fieldset>
+						  <div class="control-group">
+							  <label class="control-label">{:L('NAME')}</label>
+							  <div class="controls">
+								  <input type="text" name="name" value=""><span class="form-required">*</span>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">{:L('STAFF_SEX')}:</label>
+							  <div class="controls">
+								  <label class="radio"><input type="radio" name="sex" value="1">男</label>
+								  <label class="radio"><input type="radio" name="sex" value="2">女</label>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">职位</label>
+							  <div class="controls">
+								  <select name="position">
+									  <option value="0">请选择</option>
+									  <foreach name="position" item="vo">
+										  <option value="{$vo.id}">{$vo.name}</option>
+									  </foreach>
+								  </select>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">电话</label>
+							  <div class="controls">
+								  <input type="text" name="phone" value=""><span class="form-required">*</span>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">身份证号码</label>
+							  <div class="controls">
+								  <input type="text" name="identity_cards" value=""><span class="form-required">*</span>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">家庭住址</label>
+							  <div class="controls">
+								  <input type="text" name="address" value=""><span class="form-required">*</span>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">紧急联系人姓名</label>
+							  <div class="controls">
+								  <input type="text" name="emergency_contact" value=""><span class="form-required">*</span>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">紧急联系电话</label>
+							  <div class="controls">
+								  <input type="text" name="emergency_call" value=""><span class="form-required">*</span>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">编号</label>
+							  <div class="controls">
+								  <input type="text" name="number" value=""><span class="form-required">*</span>
+							  </div>
+						  </div>
+						  <div class="control-group">
+							  <label class="control-label">所在学校</label>
+							  <div class="controls">
+								  <select name="school_id">
+									  <option value="0">请选择</option>
+									  <foreach name="schoolList" item="vo">
+										  <option value="{$vo.id}">{$vo.name}</option>
+									  </foreach>
+								  </select>
+							  </div>
+						  </div>
+
+					  </fieldset>
+		          </div>
+		        </div>
+		    </div>
+		    <div class="form-actions">
+		     	<button class="btn btn-primary js-ajax-submit"type="submit">{:L('ADD')}</button>
+		      	<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
+		    </div>
+		</form>
+	</div>
+	<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+</body>
+</html>

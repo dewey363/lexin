@@ -7,5 +7,6 @@ return array(
     'STUDENT_USER_INDEX' => '学员列表',
     'STUDENT_USER_ADD' => '新增学员',
     'VIEW' => '查看',
+    'SURPLUS_HOUR' => '剩余课时',
 
 );

@@ -11,7 +11,7 @@
  Target Server Version : 50635
  File Encoding         : utf-8
 
- Date: 07/12/2017 23:10:01 PM
+ Date: 07/30/2017 20:55:01 PM
 */
 
 SET NAMES utf8mb4;
@@ -35,15 +35,20 @@ CREATE TABLE `yl_app_user` (
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '注册时间',
   `user_status` tinyint(1) NOT NULL DEFAULT '2' COMMENT '用户状态 0：禁用； 1：正常 ；2：未验证',
   `qrcode` varchar(255) DEFAULT NULL,
+  `type` tinyint(1) unsigned DEFAULT '0' COMMENT '1家长',
+  `name` varchar(100) DEFAULT NULL COMMENT '用户姓名',
+  `relationship` varchar(100) DEFAULT NULL COMMENT '与学员关系',
+  `guardian` tinyint(1) unsigned DEFAULT '0' COMMENT '1监护人',
+  `stu_id` int(11) unsigned DEFAULT '0' COMMENT '学生id',
   PRIMARY KEY (`id`),
   KEY `phone` (`phone`)
-) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COMMENT='app用户表';
+) ENGINE=MyISAM AUTO_INCREMENT=58 DEFAULT CHARSET=utf8 COMMENT='app用户表';
 
 -- ----------------------------
 --  Records of `yl_app_user`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_app_user` VALUES ('37', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', 'go_die', '17512536980', '/image/201707101747558443.jpg', '0', '0', '', '', '0', '1498205056', '1', '/qrcode/17512536980.png'), ('36', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602552458', '/image/201706231840046812.jpg', '0', '0', '', '', '0', '1498204337', '1', '/qrcode/18602552458.png'), ('6', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '测试的', '15617567297', '/image/201706281923077473.png', '0', '0', '', '', '0', '1497940517', '1', '/qrcode/15617567297.png'), ('27', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090909', null, '0', '0', null, null, '0', '1498128848', '2', null), ('28', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090901', null, '0', '0', null, null, '0', '1498128848', '2', null), ('29', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090911', null, '0', '0', null, null, '0', '1498128848', '2', null), ('30', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090912', null, '0', '0', null, null, '0', '1498128848', '2', null), ('31', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090913', null, '0', '0', null, null, '0', '1498129121', '2', null), ('39', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090944', null, '0', '0', null, null, '0', '1498206293', '2', null), ('40', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090955', null, '0', '0', null, null, '0', '1498206415', '2', null), ('41', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602542459', null, '0', '0', null, null, '0', '1498206481', '2', null), ('42', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602542460', null, '0', '0', null, null, '0', '1498206842', '2', null), ('43', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602542457', null, '0', '0', null, null, '0', '1498206875', '2', null), ('44', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602542557', null, '0', '0', null, null, '0', '1498206965', '2', null), ('45', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18612542557', null, '0', '0', null, null, '0', '1498207257', '2', null), ('46', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17509090909', null, '0', '0', null, null, '0', '1498207297', '2', null), ('47', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18612542579', null, '0', '0', null, null, '0', '1498207734', '2', null), ('48', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18612542599', null, '0', '0', null, null, '0', '1498207805', '2', null), ('49', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18994725813', '', '0', '0', '', '', '0', '1498534670', '1', '/qrcode/18994725813.png'), ('50', '', '', '', null, '0', '0', null, null, '0', '0', '2', null), ('51', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '13809093333', null, '0', '0', null, null, '0', '1499331509', '2', null), ('52', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '13809093334', null, '0', '0', null, null, '0', '1499331552', '2', null), ('54', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '18952025306', '', '0', '0', '', '', '0', '1499684513', '1', '/qrcode/18952025306.png'), ('55', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '32312312', null, '0', '0', null, null, '0', '1499849198', '2', null);
+INSERT INTO `yl_app_user` VALUES ('37', 'e10adc3949ba59abbe56e057f20f883e', 'go_die', '17512536980', '/image/201707101747558443.jpg', '0', '0', '', '', '0', '1498205056', '1', '/qrcode/17512536980.png', '1', null, null, '1', '0'), ('36', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '18602552458', '/image/201707191649351909.jpg', '0', '0', '', '', '0', '1498204337', '1', '/qrcode/18602552458.png', '0', '测试家长', '父亲', '1', '3'), ('6', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '测试的', '15617567297', '/image/201706281923077473.png', '0', '0', '', '', '0', '1497940517', '1', '/qrcode/15617567297.png', '0', null, null, '0', '0'), ('27', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090909', null, '0', '0', null, null, '0', '1498128848', '2', null, '0', null, null, '0', '0'), ('28', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090901', null, '0', '0', null, null, '0', '1498128848', '2', null, '0', null, null, '0', '0'), ('29', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090911', null, '0', '0', null, null, '0', '1498128848', '2', null, '0', null, null, '0', '0'), ('30', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090912', null, '0', '0', null, null, '0', '1498128848', '2', null, '0', null, null, '0', '0'), ('31', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090913', null, '0', '0', null, null, '0', '1498129121', '2', null, '0', null, null, '0', '0'), ('39', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090944', null, '0', '0', null, null, '0', '1498206293', '2', null, '0', null, null, '0', '0'), ('40', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17809090955', null, '0', '0', null, null, '0', '1498206415', '2', null, '0', null, null, '0', '0'), ('41', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602542459', null, '0', '0', null, null, '0', '1498206481', '2', null, '0', null, null, '0', '0'), ('42', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602542460', null, '0', '0', null, null, '0', '1498206842', '2', null, '0', null, null, '0', '0'), ('43', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602542457', null, '0', '0', null, null, '0', '1498206875', '2', null, '0', null, null, '0', '0'), ('44', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18602542557', null, '0', '0', null, null, '0', '1498206965', '2', null, '0', null, null, '0', '0'), ('45', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18612542557', null, '0', '0', null, null, '0', '1498207257', '2', null, '0', null, null, '0', '0'), ('46', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '17509090909', null, '0', '0', null, null, '0', '1498207297', '2', null, '0', null, null, '0', '0'), ('47', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18612542579', null, '0', '0', null, null, '0', '1498207734', '2', null, '0', null, null, '0', '0'), ('48', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18612542599', null, '0', '0', null, null, '0', '1498207805', '2', null, '0', null, null, '0', '0'), ('49', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18994725813', '', '0', '0', '', '', '0', '1498534670', '1', '/qrcode/18994725813.png', '0', null, null, '0', '0'), ('57', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '18952025303', null, '0', '0', null, null, '0', '1501055336', '2', null, '0', '测试家长', '父亲', '1', '3'), ('51', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '13809093333', null, '0', '0', null, null, '0', '1499331509', '2', null, '0', null, null, '0', '0'), ('52', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '13809093334', null, '0', '0', null, null, '0', '1499331552', '2', null, '0', null, null, '0', '0'), ('54', '7c4a8d09ca3762af61e59520943dc26494f8941b', '', '18952025306', '', '0', '0', '', '', '0', '1499684513', '1', '/qrcode/18952025306.png', '0', null, null, '0', '0'), ('55', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '32312312', null, '0', '0', null, null, '0', '1499849198', '2', null, '0', null, null, '0', '0'), ('56', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '', '13828282828', null, '0', '0', null, null, '0', '1500369354', '2', null, '1', '测试家长', '父亲', '1', '3');
 COMMIT;
 
 -- ----------------------------
@@ -96,7 +101,7 @@ CREATE TABLE `yl_auth_access` (
 --  Records of `yl_auth_access`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_auth_access` VALUES ('2', 'admin/student/index', 'admin_url'), ('2', 'admin/student/default', 'admin_url');
+INSERT INTO `yl_auth_access` VALUES ('2', 'admin/student/index', 'admin_url'), ('2', 'admin/student/default', 'admin_url'), ('4', 'admin/content/default', 'admin_url'), ('4', 'portal/adminpost/index', 'admin_url'), ('4', 'portal/adminpost/listorders', 'admin_url'), ('4', 'portal/adminpost/top', 'admin_url'), ('4', 'portal/adminpost/recommend', 'admin_url'), ('4', 'portal/adminpost/move', 'admin_url'), ('4', 'portal/adminpost/check', 'admin_url'), ('4', 'portal/adminpost/delete', 'admin_url'), ('4', 'portal/adminpost/copy', 'admin_url');
 COMMIT;
 
 -- ----------------------------
@@ -134,23 +139,25 @@ CREATE TABLE `yl_class` (
   `teacher` int(11) unsigned DEFAULT '0' COMMENT '老师',
   `open_date` int(11) unsigned DEFAULT '0' COMMENT '开班日期',
   `class_time` varchar(30) DEFAULT NULL COMMENT '上课时间',
-  `week_day` int(11) unsigned DEFAULT '0' COMMENT '周几1周一2周二3周三4周四5周五6周六7周日',
+  `week_day` varchar(100) DEFAULT NULL COMMENT '周几1周一2周二3周三4周四5周五6周六7周日',
   `student_population` int(11) unsigned DEFAULT '0' COMMENT '学生人数',
   `status` tinyint(1) DEFAULT '0' COMMENT '1停课',
   `holiday` tinyint(1) unsigned DEFAULT '0' COMMENT '1放假',
   `times` int(11) unsigned DEFAULT '0' COMMENT '每周几次课',
   `number` varchar(100) DEFAULT '0' COMMENT '教室编号',
   `school` int(11) unsigned DEFAULT '0' COMMENT '学校',
-  `stu_id` text COMMENT '学生id',
-  `consume_times` int(10) unsigned DEFAULT '0' COMMENT '每次刷卡消耗课时',
+  `contract_id` text COMMENT '学生合同id',
+  `consume_times` tinyint(1) unsigned DEFAULT '0' COMMENT '每次刷卡消耗课时',
+  `is_del` tinyint(1) unsigned DEFAULT '0' COMMENT '1删除',
+  `hour` int(11) unsigned DEFAULT '0' COMMENT '单课时时长',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='班级表';
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='班级表';
 
 -- ----------------------------
 --  Records of `yl_class`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_class` VALUES ('1', 'PA-001', '钢琴课', '2', '1498752000', '1498752000', '1', '10', '0', '0', '0', '001', '1', '3', '0'), ('6', ' 测试11', '乐器', '2', '1499184000', '1500480000', '2', '22', '2', '0', '0', '32231', '1', '2', '0'), ('7', '查尔达什', '水淀粉', '2', '1499011200', '1499097600', '3', '23', '2', '0', '0', '3234', '1', '2,3', '0');
+INSERT INTO `yl_class` VALUES ('1', 'PA-001', '钢琴课', '2', '1498752000', '09:00', 'Tuesday', '10', '2', '0', '0', '001', '1', '2,1', '2', '0', '40'), ('6', ' 测试11', '乐器', '2', '1499184000', '10:00', 'Monday', '22', '2', '0', '0', '32231', '1', '2,1', '2', '0', '45'), ('7', '查尔达什', '水淀粉', '2', '1499011200', '09:30', 'Friday', '23', '2', '0', '0', '3234', '1', '', '6', '0', '45');
 COMMIT;
 
 -- ----------------------------
@@ -162,19 +169,20 @@ CREATE TABLE `yl_class_consum` (
   `stu_id` int(11) DEFAULT '0' COMMENT '学生id',
   `parent_id` int(11) DEFAULT '0' COMMENT '家长id',
   `class_id` int(11) DEFAULT '0' COMMENT '班级id',
-  `class_hour` varchar(20) DEFAULT NULL COMMENT '消耗课时',
+  `class_hour` float(10,2) unsigned DEFAULT NULL COMMENT '消耗课时',
   `add_time` int(11) DEFAULT '0' COMMENT '消耗时间',
   `card_info` varchar(100) DEFAULT NULL COMMENT '卡号',
   `is_view` tinyint(1) DEFAULT '1' COMMENT '默认1未查看2已查看',
   `type` tinyint(3) unsigned DEFAULT '0' COMMENT '0正常消耗1补课2缺课',
+  `contract` int(11) unsigned DEFAULT '0' COMMENT '合同id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='课时消耗记录';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='课时消耗记录';
 
 -- ----------------------------
 --  Records of `yl_class_consum`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_class_consum` VALUES ('1', '2', '0', '1', '2.5', '1498752000', '34324', '1', '0');
+INSERT INTO `yl_class_consum` VALUES ('10', '3', '56', '1', '1.00', '1500876054', '23423423423', '0', '0', '2'), ('11', '3', '56', '1', '1.00', '1500876182', '23423423423', '0', '0', '2'), ('12', '3', '56', '1', '1.00', '1500876191', '23423423423', '0', '0', '2'), ('13', '3', '56', '1', '1.00', '1500876192', '23423423423', '0', '0', '2'), ('14', '3', '56', '1', '1.00', '1500876193', '23423423423', '0', '0', '2'), ('15', '3', '56', '1', '1.00', '1500876194', '23423423423', '0', '0', '2'), ('16', '3', '56', '1', '1.00', '1500876195', '23423423423', '0', '0', '2'), ('17', '3', '56', '1', '1.00', '1500876196', '23423423423', '0', '0', '2'), ('18', '3', '56', '1', '1.00', '1500876197', '23423423423', '0', '0', '2'), ('19', '3', '56', '1', '1.00', '1500876199', '23423423423', '0', '0', '2'), ('20', '3', '56', '1', '1.00', '1500888219', '23423423423', '0', '1', '2');
 COMMIT;
 
 -- ----------------------------
@@ -183,18 +191,18 @@ COMMIT;
 DROP TABLE IF EXISTS `yl_class_student`;
 CREATE TABLE `yl_class_student` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `stu_id` int(11) unsigned DEFAULT '0' COMMENT '学生id',
+  `contract_id` int(11) unsigned DEFAULT '0' COMMENT '合同id',
   `class_id` int(11) unsigned DEFAULT '0' COMMENT '班级id',
-  `status` tinyint(1) unsigned DEFAULT '1' COMMENT '1在班级2不在',
   `class_end` tinyint(1) unsigned DEFAULT '1' COMMENT '1上课2停课',
+  `is_del` tinyint(1) unsigned DEFAULT '0' COMMENT '1删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 --  Records of `yl_class_student`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_class_student` VALUES ('41', '3', '1', '1', '1'), ('42', '2', '6', '1', '1'), ('44', '3', '7', '1', '1'), ('47', '2', '7', '2', '1'), ('48', '4', '1', '1', '1');
+INSERT INTO `yl_class_student` VALUES ('87', '2', '7', '1', '1'), ('88', '1', '7', '1', '1'), ('90', '2', '1', '1', '0');
 COMMIT;
 
 -- ----------------------------
@@ -242,20 +250,6 @@ CREATE TABLE `yl_common_action_log` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='访问记录表';
 
 -- ----------------------------
---  Table structure for `yl_consume_hour`
--- ----------------------------
-DROP TABLE IF EXISTS `yl_consume_hour`;
-CREATE TABLE `yl_consume_hour` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `students_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '学生id',
-  `consume_hour` varchar(20) DEFAULT NULL COMMENT '消耗课时',
-  `type` tinyint(1) unsigned DEFAULT '0' COMMENT ' 0正常上课消耗1补课2缺课',
-  `add_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '消耗时间',
-  `status` tinyint(1) DEFAULT '0' COMMENT '0默认未消耗 1已消耗',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='学生消耗课时表';
-
--- ----------------------------
 --  Table structure for `yl_finance`
 -- ----------------------------
 DROP TABLE IF EXISTS `yl_finance`;
@@ -264,21 +258,28 @@ CREATE TABLE `yl_finance` (
   `type` tinyint(3) unsigned DEFAULT '0' COMMENT '1学员收费2:学员退费3:市场支出4:人力支出5:其他',
   `source` tinyint(1) unsigned DEFAULT '0' COMMENT '0未知1进2出',
   `price` decimal(10,5) unsigned DEFAULT NULL COMMENT '金额',
-  `project` text COMMENT '项目',
+  `project` varchar(255) DEFAULT NULL COMMENT '项目',
   `user_id` int(11) unsigned DEFAULT '0' COMMENT '用户id',
   `contract_id` int(11) unsigned DEFAULT '0' COMMENT '合同id',
   `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
   `is_del` tinyint(1) unsigned DEFAULT '0' COMMENT '1删除',
   `admin_id` int(11) unsigned DEFAULT '0' COMMENT '管理员',
+  `add_time` int(11) unsigned DEFAULT '0' COMMENT '发生时间',
+  `pay_type` tinyint(1) unsigned DEFAULT '0' COMMENT '0现金1支付宝2微信3刷卡4银行转账',
+  `status` tinyint(1) unsigned DEFAULT '0' COMMENT '0待审核1审核通过2打回',
+  `update_admin` int(11) unsigned DEFAULT '0' COMMENT '更新操作的人',
+  `card_info` varchar(255) DEFAULT NULL COMMENT '卡号信息',
+  `note` text COMMENT '备注',
+  `school` tinyint(11) unsigned DEFAULT '0' COMMENT '学校id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='财务表';
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='财务表';
 
 -- ----------------------------
 --  Records of `yl_finance`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_finance` VALUES ('1', '1', '1', '8000.00000', '古筝课', '3', '2', '0', '0', '0', '0'), ('2', '1', '1', '0.00000', '', '0', '3', '0', '0', '0', '0'), ('3', '1', '1', '0.00000', '', '0', '4', '0', '0', '0', '0'), ('4', '1', '1', '0.00000', '', '0', '5', '0', '0', '0', '0'), ('5', '1', '1', '0.00000', '', '0', '6', '0', '0', '0', '0'), ('6', '1', '1', '0.00000', '', '0', '7', '0', '0', '0', '0'), ('7', '1', '1', '0.00000', '', '0', '8', '0', '0', '0', '0');
+INSERT INTO `yl_finance` VALUES ('1', '1', '1', '8000.00000', '古筝课', '3', '2', '0', '1500964029', '0', '0', '1500912000', '3', '1', '1', null, '', '0'), ('2', '1', '1', '0.00000', '', '0', '3', '0', '0', '0', '0', '0', '0', '0', '0', null, null, '0'), ('3', '1', '1', '0.00000', '', '0', '4', '0', '0', '0', '0', '0', '0', '0', '0', null, null, '0'), ('4', '1', '1', '0.00000', '', '0', '5', '0', '0', '0', '0', '0', '0', '0', '0', null, null, '0'), ('5', '1', '1', '0.00000', '', '0', '6', '0', '0', '0', '0', '0', '0', '0', '0', null, null, '0'), ('6', '1', '1', '0.00000', '', '0', '7', '0', '0', '1', '0', '0', '0', '0', '0', null, null, '0'), ('7', '1', '1', '0.00000', '', '0', '8', '0', '0', '1', '0', '0', '0', '0', '0', null, null, '0'), ('8', '4', '2', '200.00000', '测死死的但是', '0', '0', '1499911994', '1499918871', '0', '1', '1499875200', '1', '2', '1', null, null, '0'), ('9', '1', '1', '222.00000', '合同', '2', '9', '1499934085', '1499942062', '0', '1', '1499875200', '0', '1', '1', null, null, '0'), ('10', '1', '1', '0.00000', '', '0', '10', '1499936798', '1499936798', '1', '1', '1499936798', '0', '0', '0', null, null, '0'), ('11', '1', '1', '2900.00000', '合同', '2', '1', '1499942089', '1499942089', '0', '1', '1499942089', '0', '0', '0', null, null, '0'), ('12', '2', '2', '50.00000', '衣服', '3', '2', '1499946135', '1499946135', '0', '1', '1499946135', '0', '0', '0', null, null, '0'), ('13', '2', '2', '70.00000', '衣服2', '3', '2', '1499946135', '1499946135', '0', '1', '1499946135', '0', '0', '0', null, null, '0'), ('14', '2', '2', '50.00000', '衣服', '2', '9', '1499946285', '1499946285', '0', '1', '1499946285', '0', '0', '0', null, null, '0'), ('15', '2', '2', '50.00000', '衣服2', '2', '9', '1499946285', '1499946285', '0', '1', '1499946285', '0', '0', '0', null, null, '0'), ('16', '2', '2', '50.00000', '衣服', '2', '9', '1499946345', '1500283640', '0', '1', '1499875200', '2', '0', '1', null, '测试的', '0'), ('17', '2', '2', '50.00000', '衣服2', '2', '9', '1499946345', '1500283060', '0', '1', '1499875200', '4', '0', '1', null, '', '0'), ('18', '1', '1', '8000.00000', '测试1', '3', '11', '1500278080', '1500963923', '0', '1', '1500220800', '2', '1', '1', null, '', '0'), ('19', '1', '1', '200.00000', '测试', '3', '1', '1500378223', '1500378223', '0', '1', '1500378223', '0', '0', '0', null, null, '0'), ('20', '2', '2', '50.00000', '测试', '3', '11', '1500378784', '1500948706', '0', '1', '1500307200', '3', '1', '1', null, '', '0'), ('21', '0', '1', '22.00000', '2', '0', '0', '1500445252', '1500445252', '0', '1', '1500393600', '1', '1', '0', null, '2', '0'), ('22', '2', '1', '11.00000', '速度', '3', '11', '1500452439', '1500452439', '0', '1', '1500452439', '0', '0', '0', null, null, '0'), ('23', '2', '1', '22.00000', '衣服', '3', '11', '1500452439', '1500948822', '0', '1', '1500393600', '5', '1', '1', null, '', '0'), ('24', '2', '1', '333.00000', '的', '3', '11', '1500452439', '1500452439', '0', '1', '1500452439', '0', '0', '0', null, null, '0'), ('25', '2', '2', '5734.00000', '退费', '3', '11', '1500452439', '1500452439', '0', '1', '1500452439', '0', '0', '0', null, null, '0');
 COMMIT;
 
 -- ----------------------------
@@ -565,13 +566,13 @@ CREATE TABLE `yl_role` (
   PRIMARY KEY (`id`),
   KEY `parentId` (`pid`),
   KEY `status` (`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='角色表';
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 -- ----------------------------
 --  Records of `yl_role`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_role` VALUES ('1', '超级管理员', '0', '1', '拥有网站最高管理员权限！', '1329633709', '1329633709', '0'), ('2', '学校管理员', null, '1', '学校管理员', '1496917626', '1498446340', '0'), ('3', '学校经营者', null, '1', '', '1498548409', '0', '0');
+INSERT INTO `yl_role` VALUES ('1', '超级管理员', '0', '1', '拥有网站最高管理员权限！', '1329633709', '1329633709', '0'), ('2', '学校管理员', null, '1', '学校管理员', '1496917626', '1498446340', '0'), ('3', '学校经营者', null, '1', '', '1498548409', '0', '0'), ('4', '财务', null, '1', '', '1499912409', '0', '0');
 COMMIT;
 
 -- ----------------------------
@@ -589,7 +590,25 @@ CREATE TABLE `yl_role_user` (
 --  Records of `yl_role_user`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_role_user` VALUES ('2', '2'), ('3', '3'), ('3', '4'), ('2', '5');
+INSERT INTO `yl_role_user` VALUES ('3', '3'), ('3', '4'), ('2', '5'), ('4', '2');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `yl_role_user_school`
+-- ----------------------------
+DROP TABLE IF EXISTS `yl_role_user_school`;
+CREATE TABLE `yl_role_user_school` (
+  `school_id` int(11) unsigned DEFAULT '0' COMMENT '角色 id',
+  `user_id` int(11) DEFAULT '0' COMMENT '用户id',
+  KEY `school_id` (`school_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='管理员学校对应表';
+
+-- ----------------------------
+--  Records of `yl_role_user_school`
+-- ----------------------------
+BEGIN;
+INSERT INTO `yl_role_user_school` VALUES ('1', '2'), ('2', '6');
 COMMIT;
 
 -- ----------------------------
@@ -626,7 +645,7 @@ CREATE TABLE `yl_school` (
 --  Records of `yl_school`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_school` VALUES ('1', '1498549349', '1498549349', '发送', '0', '1', '0'), ('2', '1498550596', '1498551583', '2222测试的', '0', '0', '0');
+INSERT INTO `yl_school` VALUES ('1', '1498549349', '1498549349', '发送', '0', '1', '0'), ('2', '1498550596', '1501052136', '万达学校', '0', '0', '0');
 COMMIT;
 
 -- ----------------------------
@@ -642,13 +661,13 @@ CREATE TABLE `yl_sms_code` (
   `success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未成功 1:已成功',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未使用 1:已使用',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='短信验证码';
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='短信验证码';
 
 -- ----------------------------
 --  Records of `yl_sms_code`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_sms_code` VALUES ('1', '4920', '18602552458', '0', '4', '1', '1'), ('7', '2569', '17512536980', '0', '4', '1', '1'), ('9', '4568', '18602552458', '0', '1', '1', '0'), ('4', '1774', '18952025303', '0', '4', '1', '0'), ('8', '6331', '18994725813', '0', '4', '1', '1'), ('6', '6379', '15617567297', '0', '4', '1', '1'), ('10', '5738', '18952025306', '0', '4', '1', '1'), ('11', '3730', '18952025306', '0', '4', '1', '1');
+INSERT INTO `yl_sms_code` VALUES ('1', '4920', '18602552458', '0', '4', '1', '1'), ('7', '2569', '17512536980', '0', '4', '1', '1'), ('9', '4568', '18602552458', '0', '1', '1', '0'), ('4', '1774', '18952025303', '0', '4', '1', '0'), ('8', '6331', '18994725813', '0', '4', '1', '1'), ('6', '6379', '15617567297', '0', '4', '1', '1'), ('10', '5738', '18952025306', '0', '4', '1', '1'), ('11', '3730', '18952025306', '0', '4', '1', '1'), ('12', '1697', '18994725813', '0', '1', '1', '1');
 COMMIT;
 
 -- ----------------------------
@@ -669,15 +688,16 @@ CREATE TABLE `yl_staff` (
   `emergency_call` varchar(50) DEFAULT NULL COMMENT '紧急联系电话',
   `school_id` int(11) NOT NULL DEFAULT '0' COMMENT '所在学校',
   `number` varchar(100) DEFAULT NULL COMMENT '编号',
+  `status` tinyint(1) unsigned DEFAULT '0' COMMENT '1注销',
   PRIMARY KEY (`id`),
   KEY `idx_sex` (`sex`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='各学校人事管理';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='各学校人事管理';
 
 -- ----------------------------
 --  Records of `yl_staff`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_staff` VALUES ('1', '1498553759', '1498633618', '水果222', '1', '3', '13909090909', '3209241990093420', '你就是的地方撒风', '测试', '13876767676', '1', '3212312'), ('2', '1498641547', '1498641547', '老师1', '1', '1', '13989898989', '32898989990000000', '测试的的', '测试地', '17509090909', '2', '232323');
+INSERT INTO `yl_staff` VALUES ('1', '1498553759', '1498633618', '水果222', '1', '3', '13909090909', '3209241990093420', '你就是的地方撒风', '测试', '13876767676', '1', '3212312', '0'), ('2', '1498641547', '1498641547', '老师1', '1', '1', '13989898989', '32898989990000000', '测试的的', '测试地', '17509090909', '2', '232323', '0'), ('3', '1500965112', '1500965124', '教师2', '1', '1', '15895985789', '320924198908134520', '测试的', '测试', '17502222222', '2', '2222', '0');
 COMMIT;
 
 -- ----------------------------
@@ -707,7 +727,7 @@ CREATE TABLE `yl_student_contract` (
   `price` decimal(10,5) DEFAULT NULL COMMENT '单价',
   `start_time` int(11) unsigned DEFAULT '0' COMMENT '合同开始时间',
   `end_time` int(11) unsigned DEFAULT '0' COMMENT '合同结束时间',
-  `class_number` varchar(100) DEFAULT NULL COMMENT '课时数',
+  `class_number` float(10,2) unsigned DEFAULT NULL COMMENT '课时数',
   `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
   `admin_id` int(11) unsigned DEFAULT '0' COMMENT '管理员id',
@@ -715,14 +735,23 @@ CREATE TABLE `yl_student_contract` (
   `name` varchar(100) DEFAULT NULL COMMENT '合同名称',
   `is_del` tinyint(1) unsigned DEFAULT '0' COMMENT '1删除',
   `update_admin` int(11) unsigned DEFAULT '0' COMMENT '做更新操作的管理员',
+  `consume_hour` float(10,2) unsigned DEFAULT NULL COMMENT '已消耗课时',
+  `status` tinyint(1) unsigned DEFAULT '0' COMMENT '0待审核1合同终止2生效',
+  `course` varchar(100) DEFAULT NULL COMMENT '课程名称',
+  `time_consuming_reminder` float(10,2) unsigned DEFAULT NULL COMMENT '自定义消耗课时提醒',
+  `card_info` varchar(200) DEFAULT NULL COMMENT '学员卡片信息',
+  `hire_purchase` tinyint(1) unsigned DEFAULT '0' COMMENT '1分期分款',
+  `class_end` tinyint(1) unsigned DEFAULT '0' COMMENT '1停课',
+  `surplus_hour` float(10,2) unsigned DEFAULT NULL COMMENT '剩余课时',
+  `school` tinyint(11) unsigned DEFAULT '0' COMMENT '11',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='学员缴费合同';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='学员缴费合同';
 
 -- ----------------------------
 --  Records of `yl_student_contract`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_student_contract` VALUES ('1', '4000.00000', '200.00000', '1499788800', '1501430400', '20', '1499842855', '1499848180', '1', '2', '钢琴课程2', '1', '1'), ('2', '8000.00000', null, '1499788800', '1499788800', '40', '1499847266', '1499851149', '1', '3', '古筝课', '0', '1'), ('3', '0.00000', null, '0', '0', '', '1499851755', '1499851755', '1', '0', '', '1', '0'), ('4', '0.00000', null, '0', '0', '', '1499851987', '1499851987', '1', '0', '', '1', '0'), ('5', '0.00000', null, '0', '0', '', '1499852260', '1499852260', '1', '0', '', '1', '0'), ('6', '0.00000', null, '0', '0', '', '1499852316', '1499852316', '1', '0', '', '1', '0'), ('7', '0.00000', null, '0', '0', '', '1499852609', '1499852609', '1', '0', '', '1', '0'), ('8', '0.00000', null, '0', '0', '', '1499852663', '1499852663', '1', '0', '', '1', '0');
+INSERT INTO `yl_student_contract` VALUES ('1', '4000.00000', '200.00000', '1499788800', '1501430400', '20.00', '1499842855', '1501209128', '1', '2', '钢琴课程2', '0', '1', null, '2', '', '0.00', '', '0', '0', null, '2'), ('2', '8000.00000', '200.00000', '1499788800', '1501430400', '40.00', '1499847266', '1501209134', '1', '3', '古筝课', '0', '1', '11.00', '2', '古筝课', '0.00', '23423423423', '0', '0', '29.00', '2');
 COMMIT;
 
 -- ----------------------------
@@ -760,14 +789,15 @@ CREATE TABLE `yl_students` (
   `course` varchar(50) DEFAULT NULL COMMENT '课程名称',
   `parent_id` varchar(255) DEFAULT '0' COMMENT '家长',
   `status` tinyint(1) unsigned DEFAULT '0' COMMENT '1注销',
+  `is_del` tinyint(1) unsigned DEFAULT '0' COMMENT '1删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='学生信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='学生信息表';
 
 -- ----------------------------
 --  Records of `yl_students`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_students` VALUES ('2', '王建', '1', '23', '234234234', '18989898989', '8000.00', '40', '200.00', '2', '38', '6', '1497974400', '1', '', '游府西街', '1', '18', '11', '1498060800', '测试的', '0', '0', '0', '12312312312', '2', '', '', '0', '0'), ('3', '测试', '2', '11', '123123123', '18990909090', '8000.00', '40', '200.00', '2', '38', '7', '1497974400', '1', '', '雨花幼儿园', '0', '11', '11', '1498060800', '测试地址', '0', '0', '0', '231212312', '0', '[{\"name\":\"\\u6d4b\\u8bd51\",\"phone\":\"17509090909\",\"relationship\":\"\\u5988\\u5988\",\"guardian\":1},{\"name\":\"\\u6d4b\\u8bd52\",\"phone\":\"17809090901\",\"relationship\":\"\\u7238\\u7238\",\"guardian\":0}]', '', '0', '0'), ('4', '策四', '1', '10', '34234', '18902552458', '8000.00', '10', '800.00', null, null, '1', '1501084800', '1', '', '测试等', '1', '8', '6', '1499270400', '测试地址看看', '0', '0', '0', '34234234', '2', null, '古筝', '0', '0');
+INSERT INTO `yl_students` VALUES ('2', '王建测试', '1', '12', '234234234', '18989898989', '8000.00', '40', '200.00', '2', '38', '6', '1497974400', '1', '', '游府西街', '1', '18', '11', '1498060800', '测试的', '0', '0', '0', '12312312312', '2', '', '', '0', '0', '0'), ('3', '测试', '2', '11', '123123123', '18990909090', '8000.00', '40', '200.00', '2', '38', '1', '1497974400', '1', '', '雨花幼儿园', '0', '11', '11', '1498060800', '测试地址', '0', '0', '0', '231212312', '2', '[{\"name\":\"\\u6d4b\\u8bd51\",\"phone\":\"17509090909\",\"relationship\":\"\\u5988\\u5988\",\"guardian\":1},{\"name\":\"\\u6d4b\\u8bd52\",\"phone\":\"17809090901\",\"relationship\":\"\\u7238\\u7238\",\"guardian\":0}]', '', '0', '0', '0');
 COMMIT;
 
 -- ----------------------------
@@ -844,9 +874,10 @@ CREATE TABLE `yl_user_video` (
   `add_time` int(11) DEFAULT NULL COMMENT '添加时间',
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   `is_del` tinyint(1) DEFAULT '0' COMMENT '1删除',
-  `cover_image` varchar(255) DEFAULT NULL COMMENT '视频封面',
+  `cover_image` text COMMENT '视频封面',
   `group_id` text,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_idx` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='用户上传视频表';
 
 -- ----------------------------
@@ -883,13 +914,13 @@ CREATE TABLE `yl_users` (
   PRIMARY KEY (`id`),
   KEY `user_login_key` (`user_login`),
   KEY `user_nicename` (`user_nicename`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- ----------------------------
 --  Records of `yl_users`
 -- ----------------------------
 BEGIN;
-INSERT INTO `yl_users` VALUES ('1', 'admin', '###b4e9dfe53b64bec91d9ec950e28afd1a', 'admin', 'admin@qq.com', 'www.winlang.com', null, '0', '1987-09-05', '', '0.0.0.0', '2017-07-12 10:24:30', '2017-05-05 02:27:48', '', '1', '0', '1', '0', ''), ('2', 'admin1', '###dbe1665ac012ca2348c0706936a25f89', '', 'sadda@qq.com', '', null, '0', '2000-01-01', null, '0.0.0.0', '2017-06-26 11:08:00', '2017-06-08 18:17:43', '', '1', '0', '1', '0', ''), ('3', 'admin2', '###dbe1665ac012ca2348c0706936a25f89', '', 'admin2@qq.com', '', null, '0', '2000-01-01', null, null, '2000-01-01 00:00:00', '2017-06-27 15:27:20', '', '1', '0', '1', '0', ''), ('4', 'admin3', '###dbe1665ac012ca2348c0706936a25f89', '', 'admin3@qq.com', '', null, '0', '2000-01-01', null, null, '2000-01-01 00:00:00', '2017-06-27 15:27:47', '', '1', '0', '1', '0', ''), ('5', 'admin4', '###dbe1665ac012ca2348c0706936a25f89', '', 'admin4@qq.com', '', null, '0', '2000-01-01', null, null, '2000-01-01 00:00:00', '2017-06-27 15:28:00', '', '1', '0', '1', '0', '');
+INSERT INTO `yl_users` VALUES ('1', 'admin', '###b4e9dfe53b64bec91d9ec950e28afd1a', 'admin', 'admin@qq.com', 'www.winlang.com', null, '0', '1987-09-05', '', '0.0.0.0', '2017-07-28 10:15:24', '2017-05-05 02:27:48', '', '1', '0', '1', '0', ''), ('2', 'admin1', '###dbe1665ac012ca2348c0706936a25f89', '', 'sadda@qq.com', '', null, '0', '2000-01-01', null, '0.0.0.0', '2017-07-19 15:26:26', '2017-06-08 18:17:43', '', '1', '0', '1', '0', ''), ('3', 'admin2', '###dbe1665ac012ca2348c0706936a25f89', '', 'admin2@qq.com', '', null, '0', '2000-01-01', null, null, '2000-01-01 00:00:00', '2017-06-27 15:27:20', '', '1', '0', '1', '0', ''), ('4', 'admin3', '###dbe1665ac012ca2348c0706936a25f89', '', 'admin3@qq.com', '', null, '0', '2000-01-01', null, null, '2000-01-01 00:00:00', '2017-06-27 15:27:47', '', '1', '0', '1', '0', ''), ('5', 'admin4', '###dbe1665ac012ca2348c0706936a25f89', '', 'admin4@qq.com', '', null, '0', '2000-01-01', null, null, '2000-01-01 00:00:00', '2017-06-27 15:28:00', '', '1', '0', '1', '0', '');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

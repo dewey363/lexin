@@ -10,32 +10,24 @@ class StudentController extends AdminbaseController{
     protected $school_model;
     protected $staff_model;
     protected $class_model;
+    protected $studentContract_model;
     public function _initialize() {
         parent::_initialize();
         $this->school_model = D("Admin/School");
         $this->staff_model = D("Admin/Staff");
         $this->class_model = D("Admin/Class");
+        $this->studentContract_model = D("Admin/StudentContract");
     }
     
     // 学生管理列表
     public function index(){
         $where=array();
         $request=I('request.');
-        if(!empty($request['surplus_hour'])){
-            $where['surplus_hour']=array('ELT',$request['surplus_hour']);
-        }
-        if(!empty($request['divide_class'])){
-            if($request['divide_class']==1){
-                $where['class']=array('exp','is not null');
-            }elseif($request['divide_class']==2){
-                $where['class']=array('exp','is null');
-            }
-        }
+
         if(!empty($request['keyword'])){
             $keyword=$request['keyword'];
             $keyword_complex=array();
             $keyword_complex['name']  = array('like', "%$keyword%");
-            $keyword_complex['class_name']  = array('like',"%$keyword%");
             $keyword_complex['mobile']  = array('like',"%$keyword%");
             $keyword_complex['_logic'] = 'or';
             $where['_complex'] = $keyword_complex;
@@ -88,8 +80,6 @@ class StudentController extends AdminbaseController{
     public function add(){
         $schoolList=$this->school_model->select();
         $staffList=$this->staff_model->where(array("position"=>3))->select();
-        $classList=$this->class_model->select();
-        $this->assign("classList",$classList);
         $this->assign("schoolList",$schoolList);
         $this->assign("staffList",$staffList);
         $this->display();
@@ -98,6 +88,11 @@ class StudentController extends AdminbaseController{
     //新增学员提交
     public function add_post(){
         if (IS_POST) {
+            $post=I('post.');
+            $validate=StudentModel::validate($post);
+            if(!empty($validate)){
+                $this->error($validate);
+            }
             $student['name']=I('name',"");
             $student['sex']=I('sex',1);
             $student['age']=I('age',0);
@@ -196,15 +191,6 @@ class StudentController extends AdminbaseController{
                 $staffList[$k]['selected']="";
             }
         }
-        $classList=$this->class_model->select();
-        foreach ($classList as $k=>$v){
-            if($v['id']==$info['class']){
-                $classList[$k]['selected']="selected";
-            }else{
-                $classList[$k]['selected']="";
-            }
-        }
-        $this->assign("classList",$classList);
         $this->assign("schoolList",$schoolList);
         $this->assign("staffList",$staffList);
         $this->assign("info",$info);
@@ -216,6 +202,11 @@ class StudentController extends AdminbaseController{
     //学员编辑提交
     public function edit_post(){
         if (IS_POST) {
+            $post=I('post.');
+            $validate=StudentModel::validate($post);
+            if(!empty($validate)){
+                $this->error($validate);
+            }
             $student_model=M("Students");
             $student['id']=intval($_POST['id']);
             $info=$student_model->where(array("id"=>$student['id']))->find();
@@ -286,32 +277,28 @@ class StudentController extends AdminbaseController{
 
                     }
 
-//                    if($student['class']>0){
-//                        $data['stu_id']=$student['id'];
-//                        $data['class_id']=$student['class'];
-//                        $classStu=D('class_student')->where($data)->find();
-//                        if(empty($classStu)){
-//                            D('class_student')->add($data);
-//                        }else{
-//                            if($classStu['status']==2){
-//                                D('class_student')->where($data)->save(array("status"=>1));
-//                            }
-//                        }
-//
-//                        if($info['class']>0 && $student['class'] !=$info['class']){
-//                            $where['stu_id']=$student['id'];
-//                            $where['class_id']=$info['class'];
-//                            D('class_student')->where($where)->save(array("status"=>2));
-//                        }
-//
-//                    }
+                    if($student['school'] !=$info['school']){
+                        $cWhere['stu_id']=$student['id'];
+                        $contracts['school']=$student['school'];
+                        $this->studentContract_model ->where($cWhere)->save($contracts);
 
-//                    if($student['class']==0){
-//                        $where['stu_id']=$student['id'];
-//                        $where['class_id']=$info['class'];
-//                        D('class_student')->where($where)->save(array("status"=>2));
-//                    }
-
+                        $scList=$this->studentContract_model ->where(array("stu_id"=>$student['id']))->field('id')->select();
+                        $conId=[];
+                        if(!empty($scList)){
+                            foreach ($scList as $v){
+                                $conId[]=$v['id'];
+                            }
+                        }
+                        if(!empty($conId)){
+                            //原有分班数据软删除
+                            $classStudent=M('ClassStudent');
+                            $csWhere['contract_id']=array('in',implode(',',$conId));
+                            $csWhere['is_del']=0;
+                            $csArr['is_del']=1;
+                            $classStudent->where($csWhere)->save($csArr);
+                        }
+                        $this->success("转校成功！");
+                    }
                     $this->success("保存成功！");
                 } else {
                     $this->error("保存失败！");
@@ -375,12 +362,14 @@ class StudentController extends AdminbaseController{
                 ->limit($page->firstRow . ',' . $page->listRows)
                 ->select();
             foreach ($list as $k=>$v){
-                $class=$this->class_model->where(array("id"=>$v['class_id']))->field('name,course')->find();
+                $class=$this->class_model->where(array("id"=>$v['class_id']))->field('name,course,teacher')->find();
                 $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
                 $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
                 $list[$k]['student_name']=$student['name'];
                 $list[$k]['class_name']=$class['name'];
                 $list[$k]['course']=$class['course'];
+                $teacher= $this->staff_model->where(array('position'=>1,'status'=>0,'id'=>$class['teacher']))->find();
+                $list[$k]['teacher_name']=$teacher['name'];
             }
             $this->assign('list', $list);
             $this->assign('stuId', $studentId);
@@ -468,7 +457,7 @@ class StudentController extends AdminbaseController{
                 $list[$k]['relationship']=$parentInfo['relationship'];
             }
         }
-        StudentModel::exportOrderList($list);
+        StudentModel::exportList($list);
         exit;
     }
 
@@ -685,74 +674,62 @@ class StudentController extends AdminbaseController{
 
     //导出学员课时记录
     public function exportConsume(){
-        $where=array();
+        $stuId=  I("get.stuId",0,'intval');
         $request=I('request.');
-
-        if(!empty($request['surplus_hour'])){
-            $where['surplus_hour']=$request['surplus_hour'];
+        $studentId=0;
+        if($stuId>0){
+            $studentId=$stuId;
+        }elseif($request['stuId']>0){
+            $studentId=$request['stuId'];
         }
-        if(!empty($request['divide_class'])){
-            $where['divide_class']=intval($request['divide_class']);
-        }
-        if(!empty($request['keyword'])){
-            $keyword=$request['keyword'];
-            $keyword_complex=array();
-            $keyword_complex['name']  = array('like', "%$keyword%");
-            $keyword_complex['class_name']  = array('like',"%$keyword%");
-            $keyword_complex['mobile']  = array('like',"%$keyword%");
-            $keyword_complex['_logic'] = 'or';
-            $where['_complex'] = $keyword_complex;
-        }
-        $start_time=strtotime(I('request.start_time'));
-        if(!empty($start_time)){
-            $where['apply_date']=array(
-                array('EGT',$start_time)
-            );
-        }
-
-        $end_time=strtotime(I('request.end_time'));
-        if(!empty($end_time)){
-            if(empty($where['apply_date'])){
-                $where['apply_date']=array();
-            }
-            array_push($where['apply_date'], array('ELT',$end_time));
-        }
-
-        $student_model=M("Students");
-
-        $count=$student_model->where($where)->count();
-        $page = $this->page($count, 20);
-
-        $list = $student_model
-            ->where($where)
-            ->order("add_time DESC")
-            ->limit($page->firstRow . ',' . $page->listRows)
-            ->select();
-        foreach ($list as $k=>$v){
-            $list[$k]['apply_date']=date("Y-m-d",$v['apply_date']);
-            if($v['sex']==0){
-                $list[$k]['sex']="保密";
-            }elseif($v['sex']==1){
-                $list[$k]['sex']="男";
-            }elseif($v['sex']==2){
-                $list[$k]['sex']="女";
+        if($studentId>0){
+            $where['stu_id']=$studentId;
+            $start_time=strtotime($request['start_time']);
+            if(!empty($start_time)){
+                $where['add_time']=array(
+                    array('EGT',$start_time)
+                );
             }
 
-            $parentInfo=D('app_user')
-                ->where(array(
-                    "stu_id"=>$v['id'],
-                    "guardian"=>1
-                ))
-                ->order("id DESC")
-                ->limit(1)
-                ->find();
-            if(!empty($parentInfo)){
-                $list[$k]['parent_name']=$parentInfo['name'];
-                $list[$k]['parent_phone']=$parentInfo['phone'];
-                $list[$k]['relationship']=$parentInfo['relationship'];
+            $end_time=strtotime($request['end_time']);
+            if(!empty($end_time)){
+                if(empty($where['add_time'])){
+                    $where['add_time']=array();
+                }
+                array_push($where['add_time'], array('ELT',$end_time));
+            }
+
+            $class_consum=M("class_consum");
+
+            $count=$class_consum->where($where)->count();
+            $page = $this->page($count, 20);
+
+            $list = $class_consum
+                ->where($where)
+                ->order("add_time DESC")
+                ->limit($page->firstRow . ',' . $page->listRows)
+                ->select();
+            foreach ($list as $k=>$v){
+                $class=$this->class_model->where(array("id"=>$v['class_id']))->field('name,course,teacher')->find();
+                $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
+                $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
+                $list[$k]['student_name']=$student['name'];
+                $list[$k]['class_name']=$class['name'];
+                $list[$k]['course']=$class['course'];
+                $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+                $list[$k]['price']=$contract['price'];
+                $course_consultant = $this->staff_model->where(array('id'=>$class['teacher'],'status'=>1,'position'=>1))->find();
+                $list[$k]['teacher']=$course_consultant['name'];
+                if($v['type']==0){
+                    $list[$k]['type']="正常上课";
+                }elseif($v['type']==1){
+                    $list[$k]['type']="补课";
+                }elseif($v['type']==2){
+                    $list[$k]['type']="缺课";
+                }
             }
         }
-        StudentModel::exportOrderList($list);
+        StudentModel::exportConsum($list,$count);
         exit;
     }
 }

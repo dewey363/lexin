@@ -73,13 +73,21 @@
 					<div class="control-group">
 						<label class="control-label">上课时间</label>
 						<div class="controls">
-							<input class="js-date" type="text" value="{$info.class_time}" id="input-class-time" placeholder="请选择上课时间" name="class_time">
+							<input class="type" type="text" placeholder="如09:00" value="{$info.class_time}" name="class_time">
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label">周几</label>
 						<div class="controls">
-							<input type="text" name="week_day" value="{$info.week_day}" placeholder="请输入周几">
+							<select name="week_day">
+								<option value="Monday" <if condition="$info.week_day eq 'Monday'">selected</if>>周一</option>
+								<option value="Tuesday" <if condition="$info.week_day eq 'Tuesday'">selected</if>>周二</option>
+								<option value="Wednesday" <if condition="$info.week_day eq 'Wednesday'">selected</if>>周三</option>
+								<option value="Thursday" <if condition="$info.week_day eq 'Thursday'">selected</if>>周四</option>
+								<option value="Friday" <if condition="$info.week_day eq 'Friday'">selected</if>>周五</option>
+								<option value="Saturday" <if condition="$info.week_day eq 'Saturday'">selected</if>>周六</option>
+								<option value="Sunday" <if condition="$info.week_day eq 'Sunday'">selected</if>>周日</option>
+							</select>
 						</div>
 					</div>
 
@@ -96,6 +104,12 @@
 							</select>
 						</div>
 					</div>
+					<div class="control-group">
+						<label class="control-label">单课时时长(分钟)</label>
+						<div class="controls">
+							<input type="text" name="hour" value="{$info.hour}" placeholder="请输入单课时时长">
+					</div>
+				</div>
 				</div>
 			</div>
 			<div class="hr hr-18 hr-double dotted"></div>
@@ -110,8 +124,8 @@
 						<div class="list-body">
 							<div class="item-box left-box">
 								<!-- 左边框初始化待选项 -->
-								<foreach name="studentList" item="vo">
-									<span class="item" data-id="{$vo.id}">{$vo.name}</span>
+								<foreach name="contractList" item="vo">
+									<span class="item" data-id="{$vo.id}">{$vo.stu_name}</span>
 								</foreach>
 							</div>
 							<div class="center-box">
@@ -122,12 +136,12 @@
 							</div>
 							<div class="item-box right-box">
 								<!-- 右边框存放已选项 -->
-								<foreach name="stuIds" item="v">
-									<span class="item" data-id="{$v.id}">{$v.name}</span>
+								<foreach name="contractIds" item="v">
+									<span class="item" data-id="{$v.id}">{$v.stu_name}</span>
 								</foreach>
 							</div>
 						</div>
-						<input type="hidden" name="studentIds" id="studentIds">
+						<input type="hidden" name="contractIds" id="contractIds">
 						<!--<div class="list-footer">-->
 						<!--<button type="button" class="selected-val" title="获取选择值，输出到控制台">GET</button>-->
 						<!--</div>-->

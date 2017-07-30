@@ -74,13 +74,21 @@
 				<div class="control-group">
 					<label class="control-label">上课时间</label>
 					<div class="controls">
-						<input class="js-date" type="text" id="input-class-time" placeholder="请选择上课时间" name="class_time">
+						<input class="type" type="text" placeholder="如09:00" name="class_time">
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label">周几</label>
 					<div class="controls">
-						<input type="text" name="week_day" placeholder="请输入周几">
+						<select name="week_day">
+							<option value="Monday">周一</option>
+							<option value="Tuesday">周二</option>
+							<option value="Wednesday">周三</option>
+							<option value="Thursday">周四</option>
+							<option value="Friday">周五</option>
+							<option value="Saturday">周六</option>
+							<option value="Sunday">周日</option>
+						</select>
 					</div>
 				</div>
 				<div class="control-group">
@@ -94,6 +102,12 @@
 								<option value="5">2.5课时</option>
 								<option value="6">3课时</option>
 						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">单课时时长(分钟)</label>
+					<div class="controls">
+						<input type="text" name="hour" placeholder="请输入单课时时长">
 					</div>
 				</div>
 			</div>
@@ -110,8 +124,8 @@
 					<div class="list-body">
 						<div class="item-box left-box">
 							<!-- 左边框初始化待选项 -->
-							<foreach name="studentList" item="vo">
-							<span class="item" data-id="{$vo.id}">{$vo.name}</span>
+							<foreach name="contractList" item="vo">
+							<span class="item" data-id="{$vo.id}">{$vo.stu_name}</span>
 							</foreach>
 						</div>
 						<div class="center-box">
@@ -124,7 +138,7 @@
 							<!-- 右边框存放已选项 -->
 						</div>
 					</div>
-					<input type="hidden" name="studentIds" id="studentIds">
+					<input type="hidden" name="contractIds" id="contractIds">
 					<!--<div class="list-footer">-->
 						<!--<button type="button" class="selected-val" title="获取选择值，输出到控制台">GET</button>-->
 					<!--</div>-->

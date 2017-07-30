@@ -65,13 +65,7 @@
 						<tr>
 							<th width="80">班级</th>
 							<td>
-								<select name="class">
-									<option value="0">请选择</option>
-									<foreach name="classList" item="vo">
-										<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
-									</foreach>
-								</select>
-								<i class="fa fa-asterisk"></i>
+								{$info.class_name}
 							</td>
 						</tr>
 						<tr>
@@ -132,7 +126,7 @@
 					<div class="hr hr-18 hr-double dotted"></div>
 					<div class="form-actions">
 						<input type="hidden" name="id" value="{$id}" />
-						<if condition="$info.status eq 0">
+						<if condition="$info.status neq 1">
 						<button type="submit" class="btn btn-primary js-ajax-submit">{:L('SAVE')}</button>
 						</if>
 						<a class="btn" href="javascript:history.back(-1);">{:L('BACK')}</a>
@@ -140,7 +134,7 @@
 				</div>
 			</form>
 				<div class="span6">
-					<if condition="$info.status eq 0">
+					<if condition="$info.status neq 1">
 					<form method="post" class="form-horizontal js-ajax-form" action="{:U('Admin/Contract/refund')}">
 						<fieldset>
 							<div class="row-fluid">

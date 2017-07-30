@@ -59,5 +59,46 @@ class ClassModel extends CommonModel {
         }
         echo $output;
     }
-
+    public function exportConsum($list,$count) {
+        $file_name = '课时消耗列表' . date("Y-m-d")."共".$count."条";
+        header('Content-Encoding: UTF-8');
+        header("Content-type:application/vnd.ms-excel;charset=UTF-8");
+        header("Content-Disposition:filename=".$file_name.".xls");
+        echo "\xEF\xBB\xBF";
+        $excel_head = array(
+            '姓名',
+            '班级名',
+            '课程名称',
+            '老师',
+            '消耗课时',
+            '单价',
+            '卡号',
+            '消耗时间',
+            '消耗类型'
+        );
+        $output = '<table border="1">';
+        //标题头
+        $output .= '<tr>';
+        foreach ($excel_head as $v) {
+            $output .= "<th>" . $v . "</th>";
+        }
+        $output .= '</tr>';
+        if (!empty($list)) {
+            foreach ($list as $k => $v) {
+                $output .= '<tr>';
+                $output .= "<td>" . $v['student_name'] . "</td>";
+                $output .= "<td>" . $v['class_name'] . "</td>";
+                $output .= "<td>" . $v['course'] . "</td>";
+                $output .= "<td>" . $v['teacher'] . "</td>";
+                $output .= "<td>" . $v['class_hour'] . "</td>";
+                $output .= "<td>" . $v['price'] . "</td>";
+                $output .= "<td>" . $v['card_info'] . "</td>";
+                $output .= "<td>" . $v['add_time'] . "</td>";
+                $output .= "<td>" . $v['type'] . "</td>";
+                $output .= '</tr>';
+            }
+            $output .= '</table>';
+        }
+        echo $output;
+    }
 }
