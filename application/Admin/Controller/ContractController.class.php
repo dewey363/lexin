@@ -33,6 +33,7 @@ class ContractController extends AdminbaseController{
         if(!empty($request['surplus_hour'])){
             $where['surplus_hour']=array('ELT',$request['surplus_hour']);
         }
+
         if(!empty($request['divide_class'])){
             $sql['is_del']=0;
             $contractList=D('ClassStudent')->where($sql)->field('contract_id')->select();
@@ -73,7 +74,27 @@ class ContractController extends AdminbaseController{
             }
             array_push($where['create_time'], array('ELT',$end_time));
         }
-        
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        $classSql1=[];
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $classSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $classSql1['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
     	$where['is_del']=0;
     	$count=$this->studentContract_model ->where($where)->count();
     	$page = $this->page($count, 20);
@@ -85,9 +106,14 @@ class ContractController extends AdminbaseController{
     	foreach ($list as $k=>$v){
     	    $list[$k]['start_time']=date("Y-m-d",$v['start_time']);
     	    $list[$k]['end_time']=date("Y-m-d",$v['end_time']);
-            $studentInfo=D('Students')->where(array("status"=>0,'id'=>$v['stu_id']))->find();
+            $stuSql['status']=0;
+            $stuSql['id']=$v['stu_id'];
+            $studentInfo=D('Students')->where($stuSql)->find();
             $list[$k]['stu_name']=$studentInfo['name'];
-            $adminInfo=D('Users')->where(array("user_status"=>1,"user_type"=>1,"id"=>$v['admin_id']))->find();
+            $userSql['user_status']=1;
+            $userSql['user_type']=1;
+            $userSql['id']=$v['admin_id'];
+            $adminInfo=D('Users')->where($userSql)->find();
             $list[$k]['admin_name']=$adminInfo['user_login'];
             $list[$k]['price']=round($v['price'],2);
             $list[$k]['total_price']=round($v['total_price'],2);
@@ -109,26 +135,40 @@ class ContractController extends AdminbaseController{
             $arr['contract_id']=$v['id'];
             $classId=D('ClassStudent')->where($arr)->field('class_id')->find();
             if(!empty($classId)){
-                $classInfo=$this->class_model->where(array('is_del'=>0,'id'=>$classId['class_id']))->field('name')->find();
+                $classSql['is_del']=0;
+                $classSql['id']=$classId['class_id'];
+                $classInfo=$this->class_model->where($classSql)->field('name')->find();
                 $list[$k]['class_name']=$classInfo['name'];
             }else{
                 $list[$k]['class_name']='暂无班级';
             }
 
         }
-        $classList=$this->class_model->select();
+
+        $classList=$this->class_model->where($classSql1)->select();
         $this->assign("classList",$classList);
     	$this->assign('list', $list);
     	$this->assign('stuId', $stuId);
     	$this->assign("page", $page->show('Admin'));
-    	
     	$this->display();
     }
 
     //新增学员合同
     public function add(){
         $stuId=  I("get.stuId",0,'intval');
-        $studentList=D('Students')->where(array("status"=>0))->select();
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $stuSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $stuSql['status']=0;
+        $studentList=D('Students')->where($stuSql)->select();
         foreach ($studentList as $k=>$v){
             if($v['id']==$stuId){
                 $studentList[$k]['selected']="selected";
@@ -150,13 +190,30 @@ class ContractController extends AdminbaseController{
             if(!empty($validate)){
                 $this->error($validate);
             }
+            /***获取管理员id,判断对应所属学校start***/
+            $adminId=sp_get_current_admin_id();
+            if($adminId !=1){
+                $schoolId=get_current_school();
+                if(!empty($schoolId)){
+                    $stuSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $contractSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                }
+            }
+            /***获取管理员id,判断对应所属学校end***/
             $contracts['card_info']=trim(I('card_info'));
-            $conInfo=D('student_contract')->where(array('status'=>0,'card_info'=>$contracts['card_info']))->find();
+            $contractSql['status']=0;
+            $contractSql['card_info']=$contracts['card_info'];
+            $conInfo=D('student_contract')->where($contractSql)->find();
             if(!empty($conInfo)){
                 $this->error("该卡号已绑定有效合同！");
             }
             $contracts['stu_id']=I('stu_id',0);
-            $stuInfo=D('Students')->where(array('id'=>$contracts['stu_id']))->field('school')->find();
+            $stuSql['id']=$contracts['stu_id'];
+            $stuInfo=D('Students')->where($stuSql)->field('school')->find();
             $contracts['school']=$stuInfo['school'];
             $contracts['name']=I('name',"");
             $contracts['total_price']=I('total_price',"0");
@@ -187,6 +244,7 @@ class ContractController extends AdminbaseController{
                 $finance['add_time']=time();
                 $finance['create_time']=time();
                 $finance['update_time']=time();
+                $finance['school']=$contracts['school'];
                 $this->finance_model->add($finance);
                 $this->success("添加成功！",U("contract/index"));
             } else {
@@ -199,12 +257,30 @@ class ContractController extends AdminbaseController{
     //学员合同编辑
     public function edit(){
         $id=  I("get.id",0,'intval');
-        $info=$this->studentContract_model->where("id=$id")->find();
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $classSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $contractSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $contractSql['id']=$id;
+        $info=$this->studentContract_model->where($contractSql)->find();
         $info['start_time']=date("Y-m-d",$info['start_time']);
         $info['end_time']=date("Y-m-d",$info['end_time']);
         $info['total_price']=round($info['total_price'],2);
-
-        $studentList=D('Students')->where(array("status"=>0))->select();
+        $stuSql['status']=0;
+        $studentList=D('Students')->where($stuSql)->select();
         foreach ($studentList as $k=>$v){
             if($v['id']==$info['stu_id']){
                 $studentList[$k]['selected']="selected";
@@ -220,7 +296,9 @@ class ContractController extends AdminbaseController{
         $where['contract_id']=$id;
         $classId=D('ClassStudent')->where($where)->field('class_id')->find();
         if(!empty($classId)){
-            $classInfo=$this->class_model->where(array('is_del'=>0,'id'=>$classId['class_id']))->field('name')->find();
+            $classSql['is_del']=0;
+            $classSql['id']=$classId['class_id'];
+            $classInfo=$this->class_model->where($classSql)->field('name')->find();
             $info['class_name']=$classInfo['name'];
         }else{
             $info['class_name']='暂无班级';
@@ -234,18 +312,44 @@ class ContractController extends AdminbaseController{
 //学员合同查看
     public function view(){
         $id=  I("get.id",0,'intval');
-        $info=$this->studentContract_model->where("id=$id")->find();
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $classSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql1['school']=array(
+                    array('in',$schoolId)
+                );
+                $contractSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $contractSql['id']=$id;
+        $info=$this->studentContract_model->where($contractSql)->find();
         $info['start_time']=date("Y-m-d",$info['start_time']);
         $info['end_time']=date("Y-m-d",$info['end_time']);
         $info['total_price']=round($info['total_price'],2);
-
-        $studentInfo=D('Students')->where(array("status"=>0,'id'=>$info['stu_id']))->find();
+        $stuSql['status']=0;
+        $stuSql['id']=$info['stu_id'];
+        $studentInfo=D('Students')->where($stuSql)->find();
         $info['stu_name']=$studentInfo['name'];
         $info['consume_hour']=empty($info['consume_hour']) ? 0:$info['consume_hour'];
         $info['surplus_hour']=$info['class_number']-$info['consume_hour'];
         $info['refundPrice']=($info['total_price']/$info['class_number'])*$info['surplus_hour'];
         $info['unit_price']=$info['total_price']/$info['class_number'];
-        $classInfo=$this->class_model->where(array('id'=>$info['class']))->find();
+        $classSql['id']=$info['class'];
+        $classInfo=$this->class_model->where($classSql)->find();
         $info['class_name']=$classInfo['name'];
         $info['hire_purchase']=isset($info['hire_purchase']) && $info['hire_purchase']==1 ? "是":"否";
         $info['class_end']=isset($info['class_end']) && $info['class_end']==1 ? "是":"否";
@@ -288,7 +392,9 @@ class ContractController extends AdminbaseController{
         foreach ($list as $k=>$v){
             $list[$k]['update_time']=date("Y-m-d H:i:s",$v['update_time']);
             if($v['user_id']>0){
-                $studentInfo=D('Students')->where(array("status"=>0))->find();
+                $stuSql1['status']=0;
+                $stuSql1['id']=$v['user_id'];
+                $studentInfo=D('Students')->where($stuSql1)->find();
                 $list[$k]['stu_name']=$studentInfo['name'];
             }
             //创建者
@@ -395,6 +501,7 @@ class ContractController extends AdminbaseController{
                         $finance['add_time']=time();
                         $finance['create_time']=time();
                         $finance['update_time']=time();
+                        $finance['school']=$contracts['school'];
                         $this->finance_model->add($finance);
                     }
                     $this->success("保存成功！");
@@ -447,7 +554,27 @@ class ContractController extends AdminbaseController{
             }
             array_push($where['create_time'], array('ELT',$end_time));
         }
-
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        $classSql1=[];
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $classSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $classSql1['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
         $where['is_del']=0;
         $count=$this->studentContract_model ->where($where)->count();
         $page = $this->page($count, 20);
@@ -459,7 +586,9 @@ class ContractController extends AdminbaseController{
         foreach ($list as $k=>$v){
             $list[$k]['start_time']=date("Y-m-d",$v['start_time']);
             $list[$k]['end_time']=date("Y-m-d",$v['end_time']);
-            $studentInfo=D('Students')->where(array("status"=>0,'id'=>$v['stu_id']))->find();
+            $userSql['status']=0;
+            $userSql['id']=$v['stu_id'];
+            $studentInfo=D('Students')->where($userSql)->find();
             $list[$k]['stu_name']=$studentInfo['name'];
             $adminInfo=D('Users')->where(array("user_status"=>1,"user_type"=>1,"id"=>$v['admin_id']))->find();
             $list[$k]['admin_name']=$adminInfo['user_login'];
@@ -548,10 +677,22 @@ class ContractController extends AdminbaseController{
     // 停课／开课
     public function suspend(){
         $student_model=M("student_contract");
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school_id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+
+        /***获取管理员id,判断对应所属学校end***/
         if(isset($_POST['ids']) && $_GET["suspend"]){
             $ids = I('post.ids/a');
-
-            if ( $student_model->where(array('id'=>array('in',$ids)))->save(array('class_end'=>1)) !== false ) {
+            $where['id']=array('in',$ids);
+            if ( $student_model->where($where)->save(array('class_end'=>1)) !== false ) {
                 $this->success("停课成功！");
             } else {
                 $this->error("停课失败！");
@@ -559,8 +700,8 @@ class ContractController extends AdminbaseController{
         }
         if(isset($_POST['ids']) && $_GET["unsuspend"]){
             $ids = I('post.ids/a');
-
-            if ( $student_model->where(array('id'=>array('in',$ids)))->save(array('class_end'=>0)) !== false) {
+            $where['id']=array('in',$ids);
+            if ( $student_model->where($where)->save(array('class_end'=>0)) !== false) {
                 $this->success("取消停课成功！");
             } else {
                 $this->error("取消停课失败！");

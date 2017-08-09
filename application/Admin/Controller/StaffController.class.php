@@ -21,12 +21,25 @@ class StaffController extends AdminbaseController {
         $this->school_model = D("Admin/School");
     }
 
-    //学校列表
+    //人事列表
     public function index(){
-        $count=$this->staff_model->count();
+        $where=[];
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school_id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $count=$this->staff_model->where($where)->count();
         $page = $this->page($count, 20);
 
         $list = $this->staff_model
+            ->where($where)
             ->order("id DESC")
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
@@ -36,16 +49,28 @@ class StaffController extends AdminbaseController {
         $this->display();
     }
 
-    // 学校添加
+    // 人事添加
     public function add(){
-        $schoolList=$this->school_model->select();
+        $where=[];
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $schoolList=$this->school_model->where($where)->select();
         $position=D('staff_position')->select();
         $this->assign("schoolList",$schoolList);
         $this->assign("position",$position);
         $this->display();
     }
 
-    // 学校添加提交
+    // 人事添加提交
     public function add_post(){
         if (IS_POST) {
             $_POST['created_at']=time();
@@ -62,11 +87,27 @@ class StaffController extends AdminbaseController {
         }
     }
 
-    // 学校编辑
+    // 人事编辑
     public function edit(){
         $id = I("get.id",0,'intval');
-        $info=$this->staff_model->where(array("id" => $id))->find();
-        $schoolList=$this->school_model->select();
+        $schoolSql=[];
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school_id']=array(
+                    array('in',$schoolId)
+                );
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $where['id']=$id;
+        $info=$this->staff_model->where($where)->find();
+        $schoolList=$this->school_model->where($schoolSql)->select();
         foreach ($schoolList as $k=>$v){
                 if($v['id']==$info['school_id']){
                     $schoolList[$k]['selected']="selected";
@@ -89,11 +130,23 @@ class StaffController extends AdminbaseController {
         $this->display();
     }
 
-    // 学校编辑提交
+    // 人事编辑提交
     public function edit_post(){
         if (IS_POST) {
             $staff['id']=intval($_POST['id']);
-            $info=$this->staff_model->where(array("id"=>$staff['id']))->find();
+            /***获取管理员id,判断对应所属学校start***/
+            $adminId=sp_get_current_admin_id();
+            if($adminId !=1){
+                $schoolId=get_current_school();
+                if(!empty($schoolId)){
+                    $staffSql['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                }
+            }
+            /***获取管理员id,判断对应所属学校end***/
+            $staffSql['id']=$staff['id'];
+            $info=$this->staff_model->where($staffSql)->find();
             if(!empty($info)){
                 $staff['name']=I('name',$info['name']);
                 $staff['sex']=I('sex',$info['sex']);
@@ -120,7 +173,7 @@ class StaffController extends AdminbaseController {
         }
     }
 
-    // 删除学校
+    // 删除人事
     public function delete(){
         $id = I("get.id",0,"intval");
         if ($this->staff_model->delete($id)!==false) {

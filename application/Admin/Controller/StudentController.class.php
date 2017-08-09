@@ -46,7 +46,23 @@ class StudentController extends AdminbaseController{
             }
             array_push($where['apply_date'], array('ELT',$end_time));
         }
-        
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $staffSql['school_id']=array(
+                    array('in',$schoolId)
+                );
+                $classSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
     	$student_model=M("Students");
     	
     	$count=$student_model->where($where)->count();
@@ -58,13 +74,17 @@ class StudentController extends AdminbaseController{
     	->limit($page->firstRow . ',' . $page->listRows)
     	->select();
     	foreach ($list as $k=>$v){
-            $course_consultant = D('staff')->where(array('id'=>$v['course_consultant'],'position'=>3))->find();
+            $staffSql['status']=0;
+            $staffSql['position']=3;
+            $staffSql['id']=$v['course_consultant'];
+            $course_consultant = D('staff')->where($staffSql)->find();
             $list[$k]['course_consultant']=$course_consultant['name'];
     	    $list[$k]['apply_date']=date("Y-m-d",$v['apply_date']);
             $list[$k]['class_name']="";
     	    if(!empty($v['class'])){
+                $classSql['id']=$v['class'];
                 $classInfo=$this->class_model
-                    ->where(array("id"=>$v['class']))
+                    ->where($classSql)
                     ->field("name")
                     ->find();
                 $list[$k]['class_name']=$classInfo['name'] ;
@@ -78,8 +98,23 @@ class StudentController extends AdminbaseController{
 
     //新增学员
     public function add(){
-        $schoolList=$this->school_model->select();
-        $staffList=$this->staff_model->where(array("position"=>3))->select();
+        $adminId=sp_get_current_admin_id();
+        $schoolSql=[];
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school_id']=array(
+                    array('in',$schoolId)
+                );
+
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        $where['position']=3;
+        $schoolList=$this->school_model->where($schoolSql)->select();
+        $staffList=$this->staff_model->where($where)->select();
         $this->assign("schoolList",$schoolList);
         $this->assign("staffList",$staffList);
         $this->display();
@@ -175,7 +210,24 @@ class StudentController extends AdminbaseController{
 
         $info['apply_date']=date("Y-m-d",$info['apply_date']);
         $info['birthday']=date("Y-m-d",$info['birthday']);
-        $schoolList=$this->school_model->select();
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        $schoolSql=[];
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school_id']=array(
+                    array('in',$schoolId)
+                );
+
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        $where['position']=3;
+        /***获取管理员id,判断对应所属学校end***/
+        $schoolList=$this->school_model->where($schoolSql)->select();
         foreach ($schoolList as $k=>$v){
             if($v['id']==$info['school']){
                 $schoolList[$k]['selected']="selected";
@@ -183,7 +235,7 @@ class StudentController extends AdminbaseController{
                 $schoolList[$k]['selected']="";
             }
         }
-        $staffList=$this->staff_model->where(array("position"=>3))->select();
+        $staffList=$this->staff_model->where($where)->select();
         foreach ($staffList as $k=>$v){
             if($v['id']==$info['course_consultant']){
                 $staffList[$k]['selected']="selected";
@@ -351,6 +403,27 @@ class StudentController extends AdminbaseController{
                 array_push($where['add_time'], array('ELT',$end_time));
             }
 
+            /***获取管理员id,判断对应所属学校start***/
+            $adminId=sp_get_current_admin_id();
+            if($adminId !=1){
+                $schoolId=get_current_school();
+                if(!empty($schoolId)){
+                    $where['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                    $staffSql['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                    $classSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $stuSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                }
+            }
+            /***获取管理员id,判断对应所属学校end***/
+
             $class_consum=M("class_consum");
 
             $count=$class_consum->where($where)->count();
@@ -362,13 +435,18 @@ class StudentController extends AdminbaseController{
                 ->limit($page->firstRow . ',' . $page->listRows)
                 ->select();
             foreach ($list as $k=>$v){
-                $class=$this->class_model->where(array("id"=>$v['class_id']))->field('name,course,teacher')->find();
-                $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
+                $classSql['id']=$v['class_id'];
+                $class=$this->class_model->where($classSql)->field('name,course,teacher')->find();
+                $stuSql['id']=$v['stu_id'];
+                $student=D('Students')->where($stuSql)->field('name')->find();
                 $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
                 $list[$k]['student_name']=$student['name'];
                 $list[$k]['class_name']=$class['name'];
                 $list[$k]['course']=$class['course'];
-                $teacher= $this->staff_model->where(array('position'=>1,'status'=>0,'id'=>$class['teacher']))->find();
+                $staffSql['status']=0;
+                $staffSql['position']=1;
+                $staffSql['id']=$class['teacher'];
+                $teacher= $this->staff_model->where($staffSql)->find();
                 $list[$k]['teacher_name']=$teacher['name'];
             }
             $this->assign('list', $list);
@@ -388,11 +466,118 @@ class StudentController extends AdminbaseController{
             $this->error("删除失败！");
         }
     }
+
+    //导出学员课时记录
+    public function exportConsume(){
+        $stuId=  I("get.stuId",0,'intval');
+        $request=I('request.');
+        $studentId=0;
+        if($stuId>0){
+            $studentId=$stuId;
+        }elseif($request['stuId']>0){
+            $studentId=$request['stuId'];
+        }
+        if($studentId>0){
+            $where['stu_id']=$studentId;
+            $start_time=strtotime($request['start_time']);
+            if(!empty($start_time)){
+                $where['add_time']=array(
+                    array('EGT',$start_time)
+                );
+            }
+
+            $end_time=strtotime($request['end_time']);
+            if(!empty($end_time)){
+                if(empty($where['add_time'])){
+                    $where['add_time']=array();
+                }
+                array_push($where['add_time'], array('ELT',$end_time));
+            }
+
+            /***获取管理员id,判断对应所属学校start***/
+            $adminId=sp_get_current_admin_id();
+            if($adminId !=1){
+                $schoolId=get_current_school();
+                if(!empty($schoolId)){
+                    $where['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                    $staffSql['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                    $classSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $contractSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                }
+            }
+            /***获取管理员id,判断对应所属学校end***/
+
+            $class_consum=M("class_consum");
+
+            $count=$class_consum->where($where)->count();
+            $page = $this->page($count, 20);
+
+            $list = $class_consum
+                ->where($where)
+                ->order("add_time DESC")
+                ->limit($page->firstRow . ',' . $page->listRows)
+                ->select();
+            foreach ($list as $k=>$v){
+                $classSql['id']=$v['class_id'];
+                $class=$this->class_model->where($classSql)->field('name,course,teacher')->find();
+                $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
+                $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
+                $list[$k]['student_name']=$student['name'];
+                $list[$k]['class_name']=$class['name'];
+                $list[$k]['course']=$class['course'];
+                $contractSql['card_info']=$v['card_info'];
+                $contract=$this->studentContract_model->where($contractSql)->find();
+                $list[$k]['price']=$contract['price'];
+                $staffSql['status']=0;
+                $staffSql['position']=1;
+                $staffSql['id']=$class['teacher'];
+                $course_consultant = $this->staff_model->where($staffSql)->find();
+                $list[$k]['teacher']=$course_consultant['name'];
+                if($v['type']==0){
+                    $list[$k]['type']="正常上课";
+                }elseif($v['type']==1){
+                    $list[$k]['type']="补课";
+                }elseif($v['type']==2){
+                    $list[$k]['type']="缺课";
+                }
+            }
+        }
+        StudentModel::exportConsum($list,$count);
+        exit;
+    }
+
+    public function regEasemob($phone, $password)
+    {
+        //定义一个要发送的目标URL；
+        $url = "http://111.231.63.219:6017/api/v1/user/easemobReg";
+        //定义传递的参数数组；
+        $data['phone']=$phone;
+        $data['pwd']=$password;
+        //定义返回值接收变量；
+        StudentModel::http($url, $data);
+
+    }
     //批量导出学员信息
     public function export(){
         $where=array();
         $request=I('request.');
-
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
         if(!empty($request['surplus_hour'])){
             $where['surplus_hour']=$request['surplus_hour'];
         }
@@ -460,26 +645,6 @@ class StudentController extends AdminbaseController{
         StudentModel::exportList($list);
         exit;
     }
-
-    //导入数据页面
-//    public function import()
-//    {
-//        header("Content-Type:text/html;charset=utf-8");
-//        $upload = new \Think\Upload();// 实例化上传类
-//        $upload->maxSize   =     3145728 ;// 设置附件上传大小
-//        $upload->exts      =     array('xls', 'xlsx');// 设置附件上传类
-//        $upload->savePath  =      '/'; // 设置附件上传目录
-//        // 上传文件
-//        $info   =   $upload->uploadOne($_FILES['excelData']);
-//        $filename = './Uploads'.$info['savepath'].$info['savename'];
-//        $exts = $info['ext'];
-//        if(!$info) {// 上传错误提示错误信息
-//            $this->error($upload->getError());
-//        }else{// 上传成功
-//            $import=StudentModel::import($filename, $exts);
-//            $this->save_import($import);
-//        }
-//    }
     //导入数据页面
     public function import()
     {
@@ -575,82 +740,6 @@ class StudentController extends AdminbaseController{
 
     }
 
-    public function regEasemob($phone, $password)
-    {
-        //定义一个要发送的目标URL；
-        $url = "http://192.168.1.188:6017/api/v1/user/easemobReg";
-        //定义传递的参数数组；
-        $data['phone']=$phone;
-        $data['pwd']=$password;
-        //定义返回值接收变量；
-        $this->http($url, $data);
-
-    }
-
-    /**
-     * Created by PhpStorm.
-     * User: dewey
-     * Date: 2017/6/12
-     * Time: 下午10:31
-     * 发送HTTP请求方法
-     * @param  string $url    请求URL
-     * @param  array  $params 请求参数
-     * @param  string $method 请求方法GET/POST
-     * @return array  $data   响应数据
-     */
-    protected function http($url, $params, $method = 'GET', $header = array(), $multi = false){
-        $opts = array(
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_HTTPHEADER     => $header
-        );
-
-        /* 根据请求类型设置特定参数 */
-        switch(strtoupper($method)){
-            case 'GET':
-                $opts[CURLOPT_URL] = $url . '?' . http_build_query($params);
-                break;
-            case 'POST':
-                //判断是否传输文件
-                $params = $multi ? $params : http_build_query($params);
-                $opts[CURLOPT_URL] = $url;
-                $opts[CURLOPT_POST] = 1;
-                $opts[CURLOPT_POSTFIELDS] = $params;
-                break;
-            default:
-                throw new Exception('不支持的请求方式！');
-        }
-        /* 初始化并执行curl请求 */
-        $ch = curl_init();
-        curl_setopt_array($ch, $opts);
-        $data  = curl_exec($ch);
-        $error = curl_error($ch);
-        curl_close($ch);
-        if($error) throw new Exception('请求发生错误：' . $error);
-        return  $data;
-    }
-
-
-    private function uploadOne($fileType) {
-        $upload = new \Think\Upload(); // 实例化上传类
-        $upload->maxSize = 1024 * 1024 * 20; // 设置附件上传大小 <= 20MB
-        $upload->rootPath = './Upload/'; // 设置附件上传根目录
-        $upload->autoSub = false;
-        $upload->replace = true;
-        $upload->savePath = './' . $fileType . '/' . date('Ymd', time()) . '/';
-        $upload->saveRule = time();
-        //上传单个文件
-        $info = $upload->uploadOne($_FILES[$fileType]);
-        if (!$info) {// 上传错误提示错误信息
-            $hasError['status'] = "0";
-        } else {// 上传成功 获取上传文件信息
-            $hasError['status'] = "1";
-            $hasError['data'] = 'Upload' . substr($upload->savePath, 1) . $info['savename'];
-        }
-        return $hasError;
-    }
 
     private function upload()
     {
@@ -672,64 +761,5 @@ class StudentController extends AdminbaseController{
 
 
 
-    //导出学员课时记录
-    public function exportConsume(){
-        $stuId=  I("get.stuId",0,'intval');
-        $request=I('request.');
-        $studentId=0;
-        if($stuId>0){
-            $studentId=$stuId;
-        }elseif($request['stuId']>0){
-            $studentId=$request['stuId'];
-        }
-        if($studentId>0){
-            $where['stu_id']=$studentId;
-            $start_time=strtotime($request['start_time']);
-            if(!empty($start_time)){
-                $where['add_time']=array(
-                    array('EGT',$start_time)
-                );
-            }
 
-            $end_time=strtotime($request['end_time']);
-            if(!empty($end_time)){
-                if(empty($where['add_time'])){
-                    $where['add_time']=array();
-                }
-                array_push($where['add_time'], array('ELT',$end_time));
-            }
-
-            $class_consum=M("class_consum");
-
-            $count=$class_consum->where($where)->count();
-            $page = $this->page($count, 20);
-
-            $list = $class_consum
-                ->where($where)
-                ->order("add_time DESC")
-                ->limit($page->firstRow . ',' . $page->listRows)
-                ->select();
-            foreach ($list as $k=>$v){
-                $class=$this->class_model->where(array("id"=>$v['class_id']))->field('name,course,teacher')->find();
-                $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
-                $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
-                $list[$k]['student_name']=$student['name'];
-                $list[$k]['class_name']=$class['name'];
-                $list[$k]['course']=$class['course'];
-                $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
-                $list[$k]['price']=$contract['price'];
-                $course_consultant = $this->staff_model->where(array('id'=>$class['teacher'],'status'=>1,'position'=>1))->find();
-                $list[$k]['teacher']=$course_consultant['name'];
-                if($v['type']==0){
-                    $list[$k]['type']="正常上课";
-                }elseif($v['type']==1){
-                    $list[$k]['type']="补课";
-                }elseif($v['type']==2){
-                    $list[$k]['type']="缺课";
-                }
-            }
-        }
-        StudentModel::exportConsum($list,$count);
-        exit;
-    }
 }

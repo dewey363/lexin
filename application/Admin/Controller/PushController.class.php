@@ -9,125 +9,127 @@
 namespace Admin\Controller;
 
 use Common\Controller\AdminbaseController;
+use Admin\Model\StudentModel;
 
-class StaffController extends AdminbaseController {
+class PushController extends AdminbaseController {
 
-    protected $staff_model;
+    protected $push_model;
     protected $school_model;
 
     function _initialize() {
         parent::_initialize();
-        $this->staff_model = D("Admin/Staff");
+        $this->push_model = D("Admin/PushMessage");
         $this->school_model = D("Admin/School");
     }
 
-    //学校列表
+    //消息推送列表
     public function index(){
-        $count=$this->staff_model->count();
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        $schoolSql=[];
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $where['type']=3;
+        $count=$this->push_model->where($where)->count();
         $page = $this->page($count, 20);
-
-        $list = $this->staff_model
+        $list = $this->push_model
+            ->where($where)
             ->order("id DESC")
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
+        foreach ($list as $k=>$vo){
+            $list[$k]['created_time']=date('Y-m-d H:i:s',$vo['created_time']);
+            $schoolSql['id']=$vo['school'];
+            $school=$this->school_model->where($schoolSql)->find();
+            $list[$k]['school']=$school['name'];
+        }
         $this->assign('list', $list);
         $this->assign("page", $page->show('Admin'));
-
         $this->display();
     }
 
-    // 学校添加
+    // 消息推送添加
     public function add(){
-        $schoolList=$this->school_model->select();
-        $position=D('staff_position')->select();
-        $this->assign("schoolList",$schoolList);
-        $this->assign("position",$position);
+        $schoolSql=[];
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        $schoolSql=[];
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $schoolList=$this->school_model->where($schoolSql)->select();
+        $this->assign('schoolList', $schoolList);
         $this->display();
     }
 
-    // 学校添加提交
+    // 消息推送添加提交
     public function add_post(){
         if (IS_POST) {
-            $_POST['created_at']=time();
-            $_POST['updated_at']=time();
-            if ($this->staff_model->create()!==false) {
-                if ($this->staff_model->add()!==false) {
-                    $this->success("添加成功！",U("Staff/index"));
+            $school=$_POST['school'];
+            $title=$_POST['title'];
+            $content=$_POST['content'];
+            $scope=$_POST['scope'];
+            $type=3;
+            $adminId=sp_get_current_admin_id();
+            self::pushEasemob($title,$school,$content,$type,$adminId,$scope);
+
+            $_POST['created_time']=time();
+            $_POST['user_id']=sp_get_current_admin_id();
+            $_POST['status']=1;
+
+            if ($this->push_model->create()!==false) {
+                if ($this->push_model->add()!==false) {
+                    $this->success("添加成功！",U("Push/index"));
                 } else {
                     $this->error("添加失败！");
                 }
             } else {
-                $this->error($this->staff_model->getError());
+                $this->error($this->push_model->getError());
             }
         }
     }
 
-    // 学校编辑
-    public function edit(){
-        $id = I("get.id",0,'intval');
-        $info=$this->staff_model->where(array("id" => $id))->find();
-        $schoolList=$this->school_model->select();
-        foreach ($schoolList as $k=>$v){
-                if($v['id']==$info['school_id']){
-                    $schoolList[$k]['selected']="selected";
-                }else{
-                    $schoolList[$k]['selected']="";
-                }
-        }
-        $position=D('staff_position')->select();
-        foreach ($position as $k=>$v){
-            if($v['id']==$info['position']){
-                $position[$k]['selected']="selected";
-            }else{
-                $position[$k]['selected']="";
-            }
-        }
-        $this->assign("schoolList",$schoolList);
-        $this->assign("position",$position);
-        $this->assign("info",$info);
-        $this->assign("id",$id);
-        $this->display();
-    }
-
-    // 学校编辑提交
-    public function edit_post(){
-        if (IS_POST) {
-            $staff['id']=intval($_POST['id']);
-            $info=$this->staff_model->where(array("id"=>$staff['id']))->find();
-            if(!empty($info)){
-                $staff['name']=I('name',$info['name']);
-                $staff['sex']=I('sex',$info['sex']);
-                $staff['position']=I('position',$info['position']);
-                $staff['phone']=I('phone',$info['phone']);
-                $staff['identity_cards']=I('identity_cards',$info['identity_cards']);
-                $staff['address']=I('address',$info['address']);
-                $staff['emergency_contact']=I('emergency_contact',$info['emergency_contact']);
-                $staff['emergency_call']=I('emergency_call',$info['emergency_call']);
-                $staff['school_id']=I('school_id',$info['school_id']);
-                $staff['number']=I('number',$info['number']);
-                $staff['updated_at']=time();
-
-                $result=$this->staff_model->save($staff);
-                if ($result!==false) {
-                    $this->success("保存成功！",U("Staff/index"));
-                } else {
-                    $this->error("保存失败！");
-                }
-            }else{
-                $this->error("记录不存在！");
-            }
-
-        }
-    }
-
-    // 删除学校
+    // 删除消息推送
     public function delete(){
         $id = I("get.id",0,"intval");
-        if ($this->staff_model->delete($id)!==false) {
-            $this->success("删除成功！",U("Staff/index"));
+        if ($this->push_model->delete($id)!==false) {
+            $this->success("删除成功！",U("Push/index"));
         } else {
             $this->error("删除失败！");
         }
+    }
+
+    public function pushEasemob($title,$school,$content,$type,$adminId,$scope)
+    {
+        //定义一个要发送的目标URL；
+        $url = "http://111.231.63.219:6017/api/v1/class/addPush";
+        //定义传递的参数数组；
+//        content,pushType,userId,school,scope
+        $data['title']=$title;
+        $data['content']=$content;
+        $data['pushType']=$type;
+        $data['userId']=$adminId;
+        $data['school']=$school;
+        $data['scope']=$scope;
+        //定义返回值接收变量；
+        StudentModel::http($url, $data,"POST");
+
     }
 
 }

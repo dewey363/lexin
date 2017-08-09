@@ -24,7 +24,15 @@ class ClassController extends AdminbaseController{
     public function index(){
         $where=array();
         $request=I('request.');
-
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
         if(!empty($request['keyword'])){
             $keyword=$request['keyword'];
             $keyword_complex=array();
@@ -37,6 +45,25 @@ class ClassController extends AdminbaseController{
         if($request['teacher'] >0){
             $where['teacher']=$request['teacher'];
         }
+
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $staffSql['school_id']=array(
+                    array('in',$schoolId)
+                );
+                $classSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+
     	$count=$this->class_model->where($where)->count();
     	$page = $this->page($count, 20);
     	
@@ -48,10 +75,16 @@ class ClassController extends AdminbaseController{
     	foreach ($list as $k=>$v){
     	    $list[$k]['open_date']=date("Y-m-d",$v['open_date']);
     	    $list[$k]['class_time']=date("Y-m-d",$v['class_time']);
-            $course_consultant = $this->staff_model->where(array('id'=>$v['teacher'],'position'=>1))->find();
+            $staffSql['position']=1;
+            $staffSql['status']=0;
+            $staffSql['id']=$v['teacher'];
+            $course_consultant = $this->staff_model->where($staffSql)->find();
             $list[$k]['teacher']=$course_consultant['name'];
+            $list[$k]['holiday']=$v['holiday']==1? '是':'否';
         }
-        $teacher= $this->staff_model->where(array('position'=>1,'status'=>0))->select();
+        $staffSql['position']=1;
+        $staffSql['status']=0;
+        $teacher= $this->staff_model->where($staffSql)->select();
     	$this->assign('list', $list);
     	$this->assign('teacher', $teacher);
     	$this->assign("page", $page->show('Admin'));
@@ -60,8 +93,24 @@ class ClassController extends AdminbaseController{
 
     //新增班级
     public function add(){
-        $schoolList=$this->school_model->select();
-        $teacherList=$this->staff_model->where(array("position"=>1))->select();
+        $adminId=sp_get_current_admin_id();
+        $schoolSql=[];
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $staffSql['school_id']=array(
+                    array('in',$schoolId)
+                );
+
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        $staffSql['position']=1;
+        $staffSql['status']=0;
+        $schoolList=$this->school_model->where($schoolSql)->select();
+        $teacherList=$this->staff_model->where($staffSql)->select();
 
         $where['is_del']=0;
         $contractIds=D('ClassStudent')->where($where)->field('contract_id')->select();
@@ -100,8 +149,16 @@ class ClassController extends AdminbaseController{
             $class['class_time']=I('class_time');
             $class['week_day']=I('week_day',"");
             $class['student_population']=I('student_population',0);
-            $class['status']=I('status',0);
-            $class['holiday']=I('holiday',0);
+//            $class['status']=I('status',0);
+//            if($class['status']==1){
+//                $class['closed_time']=time();
+//            }
+//
+//            $class['holiday']=I('holiday',0);
+//
+//            if($class['holiday']==1){
+//                $class['vacation_time']=time();
+//            }
             $class['times']=I('times',0);
             $class['number']=I('number',0);
             $class['school']=I('school',0);
@@ -133,8 +190,26 @@ class ClassController extends AdminbaseController{
     public function edit(){
         $id=  I("get.id",0,'intval');
         $info=$this->class_model->where("id=$id")->find();
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        $schoolSql=[];
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $staffSql['school_id']=array(
+                    array('in',$schoolId)
+                );
+
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        $staffSql['position']=1;
+        $staffSql['status']=0;
+        /***获取管理员id,判断对应所属学校end***/
         $info['open_date']=date("Y-m-d",$info['open_date']);
-        $schoolList=$this->school_model->select();
+        $schoolList=$this->school_model->where($schoolSql)->select();
         foreach ($schoolList as $k=>$v){
             if($v['id']==$info['school']){
                 $schoolList[$k]['selected']="selected";
@@ -142,7 +217,7 @@ class ClassController extends AdminbaseController{
                 $schoolList[$k]['selected']="";
             }
         }
-        $teacherList=$this->staff_model->where(array("position"=>1))->select();
+        $teacherList=$this->staff_model->where($staffSql)->select();
         foreach ($teacherList as $k=>$v){
             if($v['id']==$info['teacher']){
                 $teacherList[$k]['selected']="selected";
@@ -213,8 +288,22 @@ class ClassController extends AdminbaseController{
                 $class['class_time']=I('class_time',$info['class_time']);
                 $class['week_day']=I('week_day',$info['week_day']);
                 $class['student_population']=I('student_population',$info['student_population']);
-                $class['status']=I('status',$info['status']);
-                $class['holiday']=I('holiday',$info['holiday']);
+
+//                $class['status']=I('status',$info['status']);
+//                if($class['status']==1){
+//                    $class['closed_time']=time();
+//                }else{
+//                    $class['closed_time']=0;
+//                }
+//
+//                $class['holiday']=I('holiday',$info['holiday']);
+//
+//                if($class['holiday']==1){
+//                    $class['vacation_time']=time();
+//                }else{
+//                    $class['vacation_time']=0;
+//                }
+
                 $class['times']=I('times',$info['times']);
                 $class['number']=I('number',$info['number']);
                 $class['school']=I('school',$info['school']);
@@ -263,12 +352,30 @@ class ClassController extends AdminbaseController{
                 $ids = I('post.ids/a');
                 $where['id']=array('in',$ids);
             }
+            /***获取管理员id,判断对应所属学校start***/
+            $adminId=sp_get_current_admin_id();
+            if($adminId !=1){
+                $schoolId=get_current_school();
+                if(!empty($schoolId)){
+                    $where['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $stuSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $staffSql['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                }
+            }
+            /***获取管理员id,判断对应所属学校end***/
                 $list = $this->class_model->where($where)->order("id DESC")->select();
                 if(!empty($list)){
                     $stuList=[];
                     foreach ($list as $k => $v) {
                         $list[$k]['open_date'] = date("Y-m-d", $v['apply_date']);
-                        $stuList[]= D("Students")->where(array('id'=>array('in',$v['stu_id'])))->order("id DESC")->select();
+                        $stuSql['id']=array('in',$v['stu_id']);
+                        $stuList[]= D("Students")->where($stuSql)->order("id DESC")->select();
                     }
                     $stuLists=[];
                     foreach ($stuList as $vo){
@@ -277,7 +384,9 @@ class ClassController extends AdminbaseController{
                         }
                     }
                     foreach ($stuLists as $k=>$v){
-                        $course_consultant = D('staff')->where(array('id'=>$v['course_consultant'],'position'=>3))->find();
+                        $staffSql['id']=$v['course_consultant'];
+                        $staffSql['position']=3;
+                        $course_consultant = D('staff')->where($staffSql)->find();
                         $stuLists[$k]['course_consultant']=$course_consultant['name'];
                         $list[$k]['parent_name']="";
                         $list[$k]['parent_phone']="";
@@ -304,9 +413,21 @@ class ClassController extends AdminbaseController{
 
     //放假／取消放假
     public function holiday(){
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
         if(isset($_POST['ids']) && $_GET["holiday"]){
             $ids = I('post.ids/a');
-            if ( $this->class_model->where(array('id'=>array('in',$ids)))->save(array('holiday'=>1)) !== false ) {
+            $where['id']=array('in',$ids);
+            if ( $this->class_model->where($where)->save(array('holiday'=>1,'vacation_time'=>time())) !== false ) {
                 $this->success("放假成功！");
             } else {
                 $this->error("放假失败！");
@@ -314,13 +435,34 @@ class ClassController extends AdminbaseController{
         }
         if(isset($_POST['ids']) && $_GET["unholiday"]){
             $ids = I('post.ids/a');
-            if ( $this->class_model->where(array('id'=>array('in',$ids)))->save(array('holiday'=>0)) !== false) {
+            $where['id']=array('in',$ids);
+            if ( $this->class_model->where($where)->save(array('holiday'=>0,'vacation_time'=>0)) !== false) {
                 $this->success("取消放假成功！");
             } else {
                 $this->error("取消放假失败！");
             }
         }
     }
+
+//    //停课／取消停课
+//    public function closed(){
+//        if(isset($_POST['ids']) && $_GET["closed"]){
+//            $ids = I('post.ids/a');
+//            if ( $this->class_model->where(array('id'=>array('in',$ids)))->save(array('status'=>1,'closed_time'=>time())) !== false ) {
+//                $this->success("停课成功！");
+//            } else {
+//                $this->error("停课失败！");
+//            }
+//        }
+//        if(isset($_POST['ids']) && $_GET["unclosed"]){
+//            $ids = I('post.ids/a');
+//            if ( $this->class_model->where(array('id'=>array('in',$ids)))->save(array('status'=>0,'closed_time'=>0)) !== false) {
+//                $this->success("取消停课成功！");
+//            } else {
+//                $this->error("取消停课失败！");
+//            }
+//        }
+//    }
 
     // 学生管理列表
     public function student(){
@@ -370,6 +512,23 @@ class ClassController extends AdminbaseController{
             array_push($where['apply_date'], array('ELT',$end_time));
         }
 
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $staffSql['school_id']=array(
+                    array('in',$schoolId)
+                );
+                $classSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
         $student_model=M("Students");
 
         $count=$student_model->where($where)->count();
@@ -381,13 +540,16 @@ class ClassController extends AdminbaseController{
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
         foreach ($list as $k=>$v){
-            $course_consultant = D('staff')->where(array('id'=>$v['course_consultant'],'position'=>3))->find();
+            $staffSql['id']=$v['course_consultant'];
+            $staffSql['position']=3;
+            $course_consultant = D('staff')->where($staffSql)->find();
             $list[$k]['course_consultant']=$course_consultant['name'];
             $list[$k]['apply_date']=date("Y-m-d",$v['apply_date']);
             $list[$k]['class_name']="";
             if(!empty($v['class'])){
+                $classSql['id']=array("in",$v['class']);
                 $classList=$this->class_model
-                    ->where(array("id"=>array("in",$v['class'])))
+                    ->where($classSql)
                     ->field("name")
                     ->select();
                 $className=[];
@@ -430,7 +592,29 @@ class ClassController extends AdminbaseController{
                 }
                 array_push($where['add_time'], array('ELT',$end_time));
             }
-
+            /***获取管理员id,判断对应所属学校start***/
+            $adminId=sp_get_current_admin_id();
+            if($adminId !=1){
+                $schoolId=get_current_school();
+                if(!empty($schoolId)){
+                    $where['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                    $staffSql['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                    $classSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $stuSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $contractSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                }
+            }
+            /***获取管理员id,判断对应所属学校end***/
             $class_consum=M("class_consum");
 
             $count=$class_consum->where($where)->count();
@@ -441,16 +625,22 @@ class ClassController extends AdminbaseController{
                 ->order("add_time DESC")
                 ->limit($page->firstRow . ',' . $page->listRows)
                 ->select();
-            $class=$this->class_model->where(array("id"=>$classIds))->field('name,course,teacher')->find();
+            $classSql['id']=$classIds;
+            $class=$this->class_model->where($classSql)->field('name,course,teacher')->find();
             foreach ($list as $k=>$v){
-                $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
+                $stuSql['id']=$v['stu_id'];
+                $student=D('Students')->where($stuSql)->field('name')->find();
                 $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
                 $list[$k]['student_name']=$student['name'];
                 $list[$k]['class_name']=$class['name'];
                 $list[$k]['course']=$class['course'];
-                $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+                $contractSql['card_info']=$v['card_info'];
+                $contract=$this->studentContract_model->where($contractSql)->find();
                 $list[$k]['price']=$contract['price'];
-                $teacher= $this->staff_model->where(array('position'=>1,'status'=>0,'id'=>$class['teacher']))->find();
+                $staffSql['position']=1;
+                $staffSql['status']=0;
+                $staffSql['id']=$class['teacher'];
+                $teacher= $this->staff_model->where($staffSql)->find();
                 $list[$k]['teacher_name']=$teacher['name'];
             }
             $listInfo = $class_consum
@@ -460,7 +650,8 @@ class ClassController extends AdminbaseController{
             $allHour=0;
             $totalPrice=0;
             foreach ($listInfo as $k=>$v){
-                $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+                $contractSql['card_info']=$v['card_info'];
+                $contract=$this->studentContract_model->where($contractSql)->find();
                 $totalPrice=$totalPrice+$v['class_hour']*$contract['price'];
                 $allHour=$allHour+$v['class_hour'];
             }
@@ -511,6 +702,29 @@ class ClassController extends AdminbaseController{
                     }
                     array_push($where['add_time'], array('ELT',$end_time));
                 }
+                /***获取管理员id,判断对应所属学校start***/
+                $adminId=sp_get_current_admin_id();
+                if($adminId !=1){
+                    $schoolId=get_current_school();
+                    if(!empty($schoolId)){
+                        $where['school_id']=array(
+                            array('in',$schoolId)
+                        );
+                        $staffSql['school_id']=array(
+                            array('in',$schoolId)
+                        );
+                        $classSql['school']=array(
+                            array('in',$schoolId)
+                        );
+                        $stuSql['school']=array(
+                            array('in',$schoolId)
+                        );
+                        $contractSql['school']=array(
+                            array('in',$schoolId)
+                        );
+                    }
+                }
+                /***获取管理员id,判断对应所属学校end***/
 
                 $class_consum=M("class_consum");
 
@@ -520,16 +734,22 @@ class ClassController extends AdminbaseController{
                     ->where($where)
                     ->order("add_time DESC")
                     ->select();
-                $class=$this->class_model->where(array("id"=>$classIds))->field('name,course,teacher')->find();
+                $classSql['id']=$classIds;
+                $class=$this->class_model->where($classSql)->field('name,course,teacher')->find();
                 foreach ($list as $k=>$v){
-                    $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
+                    $stuSql['id']=$v['stu_id'];
+                    $student=D('Students')->where($stuSql)->field('name')->find();
                     $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
                     $list[$k]['student_name']=$student['name'];
                     $list[$k]['class_name']=$class['name'];
                     $list[$k]['course']=$class['course'];
-                    $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+                    $contractSql['card_info']=$v['card_info'];
+                    $contract=$this->studentContract_model->where($contractSql)->find();
                     $list[$k]['price']=$contract['price'];
-                    $teacher = $this->staff_model->where(array('id'=>$class['teacher'],'status'=>1,'position'=>1))->find();
+                    $staffSql['status']=0;
+                    $staffSql['position']=1;
+                    $staffSql['id']=$class['teacher'];
+                    $teacher = $this->staff_model->where($staffSql)->find();
                     $list[$k]['teacher']=$teacher['name'];
                     if($v['type']==0){
                         $list[$k]['type']="正常上课";

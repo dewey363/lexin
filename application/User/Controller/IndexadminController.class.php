@@ -24,7 +24,7 @@ class IndexadminController extends AdminbaseController {
             $where['_complex'] = $keyword_complex;
         }
         
-    	$users_model=M("Users");
+    	$users_model=M("AppUser");
     	
     	$count=$users_model->where($where)->count();
     	$page = $this->page($count, 20);
@@ -45,7 +45,7 @@ class IndexadminController extends AdminbaseController {
     public function ban(){
     	$id= I('get.id',0,'intval');
     	if ($id) {
-    		$result = M("Users")->where(array("id"=>$id,"user_type"=>2))->setField('user_status',0);
+    		$result = M('AppUser')->where(array("id"=>$id))->setField('user_status',0);
     		if ($result) {
     			$this->success("会员拉黑成功！", U("indexadmin/index"));
     		} else {
@@ -60,7 +60,7 @@ class IndexadminController extends AdminbaseController {
     public function cancelban(){
     	$id= I('get.id',0,'intval');
     	if ($id) {
-    		$result = M("Users")->where(array("id"=>$id,"user_type"=>2))->setField('user_status',1);
+    		$result = M('AppUser')->where(array("id"=>$id))->setField('user_status',1);
     		if ($result) {
     			$this->success("会员启用成功！", U("indexadmin/index"));
     		} else {

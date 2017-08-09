@@ -19,16 +19,51 @@ class ConsumController extends AdminbaseController{
         $this->studentContract_model = D("Admin/StudentContract");
     }
     
-    //班级管理列表
+    //课时消耗列表
     public function index(){
         $where=array();
         $request=I('request.');
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school_id']=array(
+                    array('in',$schoolId)
+                );
+                $staffSql['school_id']=array(
+                    array('in',$schoolId)
+                );
+                $classSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $classSql1['school']=array(
+                    array('in',$schoolId)
+                );
+                $classSql2['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql1['school']=array(
+                    array('in',$schoolId)
+                );
+                $contractSql['school']=array(
+                    array('in',$schoolId)
+                );
+                $contractSql1['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
         if(!empty($request['keyword'])){
             $keyword=$request['keyword'];
-            $stu_where['name']  = array('like', "%$keyword%");
-            $stu_where['status']  = 0;
-            $stu_where['is_del']  = 0;
-            $stuId=D('Students')->where($stu_where)->field('id')->select();
+            $stuSql['name']  = array('like', "%$keyword%");
+            $stuSql['status']  = 0;
+            $stuSql['is_del']  = 0;
+            $stuId=D('Students')->where($stuSql)->field('id')->select();
 
             $stuIdArr=[];
             if(!empty($stuId)){
@@ -46,8 +81,11 @@ class ConsumController extends AdminbaseController{
         if($request['class_id']>0){
             $where['class_id']=$request['class_id'];
         }
+
         if($request['teacher']>0){
-            $classId= $this->class_model->where(array('is_del'=>0,'teacher'=>$request['teacher']))->field('id')->select();
+            $classSql['is_del']=0;
+            $classSql['teacher']=$request['teacher'];
+            $classId= $this->class_model->where($classSql)->field('id')->select();
             $classIdArr=[];
             if(!empty($classId)){
                 foreach ($classId as $v){
@@ -88,15 +126,21 @@ class ConsumController extends AdminbaseController{
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
         foreach ($list as $k=>$v){
-            $class=$this->class_model->where(array("id"=>$v['class_id']))->field('name,course,teacher')->find();
-            $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
+            $classSql1['id']=$v['class_id'];
+            $class=$this->class_model->where($classSql1)->field('name,course,teacher')->find();
+            $stuSql1['id']=$v['stu_id'];
+            $student=D('Students')->where($stuSql1)->field('name')->find();
             $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
             $list[$k]['student_name']=$student['name'];
             $list[$k]['class_name']=$class['name'];
             $list[$k]['course']=$class['course'];
-            $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+            $contractSql['card_info']=$v['card_info'];
+            $contract=$this->studentContract_model->where($contractSql)->find();
             $list[$k]['price']=$contract['price'];
-            $teacher= $this->staff_model->where(array('position'=>1,'status'=>0,'id'=>$class['teacher']))->find();
+            $staffSql['position']=1;
+            $staffSql['status']=0;
+            $staffSql['id']=$class['teacher'];
+            $teacher= $this->staff_model->where($staffSql)->find();
             $list[$k]['teacher_name']=$teacher['name'];
         }
         $listInfo = $class_consum
@@ -106,12 +150,16 @@ class ConsumController extends AdminbaseController{
         $allHour=0;
         $totalPrice=0;
         foreach ($listInfo as $k=>$v){
-            $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+            $contractSql1['card_info']=$v['card_info'];
+            $contract=$this->studentContract_model->where($contractSql1)->find();
             $totalPrice=$totalPrice+$v['class_hour']*$contract['price'];
             $allHour=$allHour+$v['class_hour'];
         }
-        $teacher= $this->staff_model->where(array('position'=>1,'status'=>0))->select();
-        $class= $this->class_model->where(array('is_del'=>0))->select();
+        $staffSql['position']=1;
+        $staffSql['status']=0;
+        $teacher= $this->staff_model->where($staffSql)->select();
+        $classSql2['is_del']=0;
+        $class= $this->class_model->where($classSql2)->select();
         $this->assign('list', $list);
         $this->assign('teacher', $teacher);
         $this->assign('class', $class);
@@ -138,12 +186,47 @@ class ConsumController extends AdminbaseController{
         if (IS_POST) {
             $where=array();
             $request=I('request.');
+            /***获取管理员id,判断对应所属学校start***/
+            $adminId=sp_get_current_admin_id();
+            if($adminId !=1){
+                $schoolId=get_current_school();
+                if(!empty($schoolId)){
+                    $where['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                    $staffSql['school_id']=array(
+                        array('in',$schoolId)
+                    );
+                    $classSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $classSql1['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $classSql2['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $stuSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $stuSql1['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $contractSql['school']=array(
+                        array('in',$schoolId)
+                    );
+                    $contractSql1['school']=array(
+                        array('in',$schoolId)
+                    );
+                }
+            }
+            /***获取管理员id,判断对应所属学校end***/
             if(!empty($request['keyword'])){
                 $keyword=$request['keyword'];
-                $stu_where['name']  = array('like', "%$keyword%");
-                $stu_where['status']  = 0;
-                $stu_where['is_del']  = 0;
-                $stuId=D('Students')->where($stu_where)->field('id')->select();
+                $stuSql['name']  = array('like', "%$keyword%");
+                $stuSql['status']  = 0;
+                $stuSql['is_del']  = 0;
+                $stuId=D('Students')->where($stuSql)->field('id')->select();
 
                 $stuIdArr=[];
                 if(!empty($stuId)){
@@ -162,7 +245,9 @@ class ConsumController extends AdminbaseController{
                 $where['class_id']=$request['class_id'];
             }
             if($request['teacher']>0){
-                $classId= $this->class_model->where(array('is_del'=>0,'teacher'=>$request['teacher']))->field('id')->select();
+                $classSql['is_del']=0;
+                $classSql['teacher']=$request['teacher'];
+                $classId= $this->class_model->where($classSql)->field('id')->select();
                 $classIdArr=[];
                 if(!empty($classId)){
                     foreach ($classId as $v){
@@ -203,15 +288,21 @@ class ConsumController extends AdminbaseController{
                 ->limit($page->firstRow . ',' . $page->listRows)
                 ->select();
             foreach ($list as $k=>$v){
-                $class=$this->class_model->where(array("id"=>$v['class_id']))->field('name,course,teacher')->find();
-                $student=D('Students')->where(array("id"=>$v['stu_id']))->field('name')->find();
+                $classSql1['id']=$v['class_id'];
+                $class=$this->class_model->where($classSql1)->field('name,course,teacher')->find();
+                $stuSql1['id']=$v['stu_id'];
+                $student=D('Students')->where($stuSql1)->field('name')->find();
                 $list[$k]['add_time']=date("Y-m-d H:i:s",$v['add_time']);
                 $list[$k]['student_name']=$student['name'];
                 $list[$k]['class_name']=$class['name'];
                 $list[$k]['course']=$class['course'];
-                $contract=$this->studentContract_model->where(array("card_info"=>$v['card_info']))->find();
+                $contractSql['card_info']=$v['card_info'];
+                $contract=$this->studentContract_model->where($contractSql)->find();
                 $list[$k]['price']=$contract['price'];
-                $teacher= $this->staff_model->where(array('position'=>1,'status'=>0,'id'=>$class['teacher']))->find();
+                $staffSql['position']=1;
+                $staffSql['status']=0;
+                $staffSql['id']=$class['teacher'];
+                $teacher= $this->staff_model->where($staffSql)->find();
                 $list[$k]['teacher']=$teacher['name'];
                 if($v['type']==0){
                     $list[$k]['type']="正常上课";

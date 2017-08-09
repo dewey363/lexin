@@ -3,11 +3,11 @@
 <body>
 	<div class="wrap js-check-wrap">
 		<ul class="nav nav-tabs">
-			<li><a href="{:U('Staff/index')}">{:L('STAFF_INDEX')}</a></li>
-			<li><a href="{:U('Staff/add')}">{:L('ADD_STAFF')}</a></li>
-			<li class="active"><a href="{:U('Admin/Staff/edit',array('id'=>$id))}">{:L('EDIT_STAFF')}</a></li>
+			<li><a href="{:U('Push/index')}">{:L('STAFF_INDEX')}</a></li>
+			<li><a href="{:U('Push/add')}">{:L('ADD_STAFF')}</a></li>
+			<li class="active"><a href="{:U('Admin/Push/edit',array('id'=>$id))}">{:L('EDIT_STAFF')}</a></li>
 		</ul>
-		<form class="form-horizontal js-ajax-form" action="{:U('Staff/edit_post')}" method="post">
+		<form class="form-horizontal js-ajax-form" action="{:U('Push/edit_post')}" method="post">
 			<input type="hidden" name="id" value="{$info.id}" />
 			<div class="tabbable">
 				<div class="tab-content">

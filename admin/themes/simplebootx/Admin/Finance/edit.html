@@ -17,6 +17,17 @@
 					</h4>
 					<table class="table table-bordered">
 						<tr>
+							<th width="80">所属学校</th>
+							<td>
+								<select name="school">
+									<option value="0">请选择</option>
+									<foreach name="schoolList" item="vo">
+										<option value="{$vo.id}" {$vo.selected}>{$vo.name}</option>
+									</foreach>
+								</select>
+							</td>
+						</tr>
+						<tr>
 							<th width="80">业务类型</th>
 							<td>
 								<select name="type">

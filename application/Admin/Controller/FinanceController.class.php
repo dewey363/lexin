@@ -5,11 +5,11 @@ use Common\Controller\AdminbaseController;
 use Admin\Model\FinanceModel;
 
 class FinanceController extends AdminbaseController{
-    protected $finance_model;
-    protected $studentContract_model;
+    protected $finance_model,$studentContract_model,$school_model;
     public function _initialize() {
         parent::_initialize();
         $this->finance_model = D("Admin/Finance");
+        $this->school_model = D("Admin/School");
         $this->studentContract_model = D("Admin/StudentContract");
     }
     
@@ -43,6 +43,20 @@ class FinanceController extends AdminbaseController{
         }
         
     	$where['is_del']=0;
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
     	$count=$this->finance_model ->where($where)->count();
     	$page = $this->page($count, 20);
     	
@@ -53,7 +67,8 @@ class FinanceController extends AdminbaseController{
     	foreach ($list as $k=>$v){
     	    $list[$k]['update_time']=date("Y-m-d H:i:s",$v['update_time']);
     	    if($v['user_id']>0){
-                $studentInfo=D('Students')->where(array("status"=>0))->find();
+                $stuSql['status']=0;
+                $studentInfo=D('Students')->where($stuSql)->find();
                 $list[$k]['stu_name']=$studentInfo['name'];
             }
             //创建者
@@ -108,7 +123,20 @@ class FinanceController extends AdminbaseController{
             $where['create_time']=array();
         }
         array_push($where['create_time'], array('ELT',$end_time));
-
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school_id']=array(
+                    array('in',$schoolId)
+                );
+                $contractSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
         //课时消耗查询
         $class_consum=M("class_consum");
         $consum = $class_consum
@@ -116,7 +144,8 @@ class FinanceController extends AdminbaseController{
             ->select();
         $consum_sum=0;
         foreach ($consum as $v){
-            $contract = $this->studentContract_model->where(array("id"=>$v['contract']))->find();
+            $contractSql['id']=$v['contract'];
+            $contract = $this->studentContract_model->where($contractSql)->find();
             $price=$v['class_hour']*$contract['price'];
             $consum_sum=$consum_sum+$price;
         }
@@ -184,16 +213,30 @@ class FinanceController extends AdminbaseController{
         $this->assign('end_time', $end);
         $this->display();
     }
-    //新增学员合同
+    //新增财务
     public function add(){
+        $schoolSql=[];
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
         $type=FinanceModel::getType();
         $payType=FinanceModel::getPayType();
+        $schoolList=$this->school_model->where($schoolSql)->select();
         $this->assign('type', $type);
         $this->assign('payType', $payType);
+        $this->assign('schoolList', $schoolList);
         $this->display();
     }
 
-    //新增学员合同提交
+    //新增财务提交
     public function add_post(){
         if (IS_POST) {
             $finance['type']=I('type',0);
@@ -206,7 +249,7 @@ class FinanceController extends AdminbaseController{
 //          $finance['user_id']=I('user_id',0);
 //          $finance['contract_id']=I('contract_id',0);
             //学校id
-//          $finance['school']=I('school',0);
+            $finance['school']=I('school',0);
             $finance['add_time']=strtotime(I('add_time'));
             $finance['create_time']=time();
             $finance['update_time']=time();
@@ -222,10 +265,26 @@ class FinanceController extends AdminbaseController{
         }
     }
 
-    //学员合同编辑
+    //财务编辑
     public function financeEdit(){
         $id=  I("get.id",0,'intval');
-        $info=$this->finance_model->where("id=$id")->find();
+        $schoolSql=[];
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+                $financeSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $financeSql['id']=$id;
+        $info=$this->finance_model->where($financeSql)->find();
         $info['add_time']=date("Y-m-d",$info['add_time']);
         $info['price']=round($info['price'],2);
         $type=FinanceModel::getType();
@@ -244,16 +303,41 @@ class FinanceController extends AdminbaseController{
                 $payType[$k]['selected']="";
             }
         }
+        $schoolList=$this->school_model->where($schoolSql)->select();
+        foreach ($schoolList as $k=>$v){
+            if($v['id']==$info['school']){
+                $schoolList[$k]['selected']="selected";
+            }else{
+                $schoolList[$k]['selected']="";
+            }
+        }
         $this->assign('type', $type);
         $this->assign('payType', $payType);
+        $this->assign('schoolList', $schoolList);
         $this->assign("info",$info);
         $this->assign("id",$id);
         $this->display();
     }
-    //学员合同编辑
+    //财务编辑
     public function edit(){
         $id=  I("get.id",0,'intval');
-        $info=$this->finance_model->where("id=$id")->find();
+        $schoolSql=[];
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $schoolSql['id']=array(
+                    array('in',$schoolId)
+                );
+                $financeSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
+        $financeSql['id']=$id;
+        $info=$this->finance_model->where($financeSql)->find();
         $info['add_time']=date("Y-m-d",$info['add_time']);
         $info['price']=round($info['price'],2);
         $type=FinanceModel::getType();
@@ -272,14 +356,23 @@ class FinanceController extends AdminbaseController{
                 $payType[$k]['selected']="";
             }
         }
+        $schoolList=$this->school_model->where($schoolSql)->select();
+        foreach ($schoolList as $k=>$v){
+            if($v['id']==$info['school']){
+                $schoolList[$k]['selected']="selected";
+            }else{
+                $schoolList[$k]['selected']="";
+            }
+        }
         $this->assign('type', $type);
         $this->assign('payType', $payType);
+        $this->assign('schoolList', $schoolList);
         $this->assign("info",$info);
         $this->assign("id",$id);
         $this->display();
     }
 
-    //学员合同编辑提交
+    //财务编辑提交
     public function edit_post(){
         if (IS_POST) {
             $finance['id']=intval($_POST['id']);
@@ -296,7 +389,7 @@ class FinanceController extends AdminbaseController{
                 //            $finance['user_id']=I('user_id',0);
                 //            $finance['contract_id']=I('contract_id',0);
                 //学校id
-//          $finance['school']=I('school',0);
+                $finance['school']=I('school',$info['school']);
                 $finance['add_time']=strtotime(I('add_time'));
                 $finance['update_time']=time();
                 $uid=sp_get_current_admin_id();
@@ -332,7 +425,7 @@ class FinanceController extends AdminbaseController{
         }
     }
 
-    //批量导出学员合同信息
+    //批量导出财务信息
     public function export(){
         $where=array();
         $request=I('request.');
@@ -359,13 +452,28 @@ class FinanceController extends AdminbaseController{
         }
 
         $where['is_del']=0;
+        /***获取管理员id,判断对应所属学校start***/
+        $adminId=sp_get_current_admin_id();
+        if($adminId !=1){
+            $schoolId=get_current_school();
+            if(!empty($schoolId)){
+                $where['school']=array(
+                    array('in',$schoolId)
+                );
+                $stuSql['school']=array(
+                    array('in',$schoolId)
+                );
+            }
+        }
+        /***获取管理员id,判断对应所属学校end***/
         $list = $this->finance_model->where($where)
             ->order("create_time DESC")
             ->select();
         foreach ($list as $k=>$v){
             $list[$k]['update_time']=date("Y-m-d H:i:s",$v['update_time']);
             if($v['user_id']>0){
-                $studentInfo=D('Students')->where(array("status"=>0))->find();
+                $stuSql['status']=0;
+                $studentInfo=D('Students')->where($stuSql)->find();
                 $list[$k]['stu_name']=$studentInfo['name'];
             }
             //创建者

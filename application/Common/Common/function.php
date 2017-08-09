@@ -1,4 +1,10 @@
 <?php
+/**当前登录管理员所属学校
+ * @return int
+ */
+function get_current_school(){
+    return session('school');
+}
 /**
  * 获取当前登录的管事员id
  * @return int

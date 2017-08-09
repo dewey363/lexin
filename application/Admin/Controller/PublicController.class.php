@@ -79,6 +79,14 @@ class PublicController extends AdminbaseController {
     				if( $result["id"]!=1 && ( empty($groups) || empty($result['user_status']) ) ){
     					$this->error(L('USE_DISABLED'));
     				}
+    				//获取所属学校id
+                    if($result["id"] !=1){
+                        $role_user_school_model=M("RoleUserSchool");
+                        $schoolIdArr=$role_user_school_model->where(array("user_id"=>$result["id"]))->getField("school_id",true);
+                        $schoolIds=implode(',',$schoolIdArr);
+                        session('school',$schoolIds);
+                    }
+
     				//登入成功页面跳转
     				session('ADMIN_ID',$result["id"]);
     				session('name',$result["user_login"]);
