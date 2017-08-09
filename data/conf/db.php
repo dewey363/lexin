@@ -4,7 +4,7 @@
  */
 return array(
     'DB_TYPE' => 'mysql',
-    'DB_HOST' => 'localhost',
+    'DB_HOST' => '111.231.63.219',
     'DB_NAME' => 'crms',
     'DB_USER' => 'root',
     'DB_PWD' => 'XsKKiMUQ',

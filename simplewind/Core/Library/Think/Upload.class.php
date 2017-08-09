@@ -195,7 +195,7 @@ class Upload {
 
             /* 对图像文件进行严格检测 */
             $ext = strtolower($file['ext']);
-            if(in_array($ext, array('gif','jpg','jpeg','bmp','png','swf','xls', 'xlsx'))) {
+            if(in_array($ext, array('gif','jpg','jpeg','bmp','png','swf'))) {
                 $imginfo = getimagesize($file['tmp_name']);
                 if(empty($imginfo) /* || ($ext == 'gif' && empty($imginfo['bits'])) */){//WinLangCMS NOTE 限制太严格，以防单页gif文件无法上传
                     $this->error = '非法图像文件！';

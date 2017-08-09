@@ -139,6 +139,7 @@ class AdminPageController extends AdminbaseController {
             $post['schoolName']="无";
         }
         $this->assign("post",$post);
+        $this->assign("id",$id);
         $this->assign("smeta",json_decode($post['smeta'],true));
         $this->display();
     }

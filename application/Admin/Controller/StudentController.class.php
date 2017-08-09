@@ -7,10 +7,7 @@ use Admin\Model\StudentModel;
 class StudentController extends AdminbaseController{
 
 
-    protected $school_model;
-    protected $staff_model;
-    protected $class_model;
-    protected $studentContract_model;
+    protected $school_model,$staff_model,$class_model,$studentContract_model;
     public function _initialize() {
         parent::_initialize();
         $this->school_model = D("Admin/School");
@@ -64,7 +61,7 @@ class StudentController extends AdminbaseController{
         }
         /***获取管理员id,判断对应所属学校end***/
     	$student_model=M("Students");
-    	
+        $where['is_del']=0;
     	$count=$student_model->where($where)->count();
     	$page = $this->page($count, 20);
     	
@@ -645,121 +642,130 @@ class StudentController extends AdminbaseController{
         StudentModel::exportList($list);
         exit;
     }
+
     //导入数据页面
-    public function import()
+    public function upload()
     {
-        $file_info = $this->upload("excelData");
-                print_r($file_info);die;
-
-        if ($file_info["status"] == "1") {
-            $updata["excelData"] = $file_info["data"];
+        header("Content-Type:text/html;charset=utf-8");
+        $upload = new \Think\Upload(); // 实例化上传类
+        $upload->maxSize = 3145728; // 设置附件上传大小
+        $upload->exts = array(
+            'xls',
+            'xlsx'
+        ); // 设置附件上传类
+        $upload->savePath = '/'; // 设置附件上传目录
+        // 上传文件
+        $info = $upload->uploadOne($_FILES['excelData']);
+        $filename = './Uploads' . $info['savepath'] . $info['savename'];
+        $exts = $info['ext'];
+        // print_r($info);exit;
+        if (! $info) { // 上传错误提示错误信息
+            $this->error($upload->getError());
+        } else { // 上传成功
+            $this->import($filename, $exts);
+            $this->success('导入成功');
         }
-
     }
 
-    //保存导入数据
+    protected function import($filename, $exts = 'xls')
+    {
+        // 导入PHPExcel类库，因为PHPExcel没有用命名空间，只能inport导入
+        vendor('PHPExcel.PHPExcel');
+        // 创建PHPExcel对象，注意，不能少了\
+        $PHPExcel = new \PHPExcel();
+        // 如果excel文件后缀名为.xls，导入这个类
+        if ($exts == 'xls') {
+            $PHPReader = new \PHPExcel_Reader_Excel5();
+        } else
+            if ($exts == 'xlsx') {
+                $PHPReader = new \PHPExcel_Reader_Excel2007();
+            }
+        // 载入文件
+        $PHPExcel = $PHPReader->load($filename);
+        // 获取表中的第一个工作表，如果要获取第二个，把0改为1，依次类推
+        $currentSheet = $PHPExcel->getSheet(0);
+        // 获取总列数
+        $allColumn = $currentSheet->getHighestColumn();
+        // 获取总行数
+        $allRow = $currentSheet->getHighestRow();
+        // 循环获取表中的数据，$currentRow表示当前行，从哪行开始读取数据，索引值从0开始
+        for ($currentRow = 1; $currentRow <= $allRow; $currentRow ++) {
+            // 从哪列开始，A表示第一列
+            for ($currentColumn = 'A'; $currentColumn <= $allColumn; $currentColumn ++) {
+                // 数据坐标
+                $address = $currentColumn . $currentRow;
+                // 读取到的数据，保存到数组$arr中
+                $data[$currentRow][$currentColumn] = $currentSheet->getCell($address)->getValue();
+            }
+        }
+        $this->save_import($data);
+    }
+
     public function save_import($data)
     {
-        print_r($data);exit;
-
-        $Students = M('Students');
-        foreach ($data as $k=>$v){
-            if($k >= 2){
-                $title=$v['A'];
-                $info[$k-2]['title'] = $title;
-
-                $old_pno=$v['E'];
-                $info[$k-2]['old_PNO'] = $old_pno;
-
-                $brand_title=$v['C'];
-                $brand_id = M('Brand')->where(array('title' => $brand_title))->getField('id');
-                if($brand_id){
-                    $info[$k-2]['brand_id'] = $brand_id;
-                }else{
-                    $new_brand_id = M('Brand')->add(array('title' => $brand_title, 'sort' => $k, 'add_time' => $add_time));
-                    $info[$k-2]['brand_id'] = $new_brand_id;
-                }
-
-                $price=$v['D'];
-                $info[$k-2]['price'] = $price;
-
-                $type_titles=$v['F'];
-                $type_array = explode(',', $type_titles);
-
-                foreach ($type_array as $type_info){
-                    $type_title = $type_info;
-                    $type_id = M('Type')->where(array('title' => $type_title))->getField('id');
-                    if($type_id){
-                        $info[$k-2]['type_ids'] .= $type_id.',';
-                    }else{
-                        $new_type_id = M('Type')->add(array('title' => $type_title, 'sort' => $k, 'add_time' => $add_time));
-                        $info[$k-2]['type_ids'] .= ','.$new_type_id.',';
+        foreach ($data as $key => $val) {
+            if ($key > 1) {
+                $school = $val['F'];
+                $schoolInfo = $this->school_model->where(array("name" => $school))->find();
+                if (!empty($schoolInfo)) {
+                    $data[$key]['F'] = $schoolInfo['id'];
+                    $stuInfo=D('Students')->where(array("number" => $val['D'],'school'=>$schoolInfo['id']))->find();
+                    if(!empty($stuInfo)){
+                        unset($data[$key]);
                     }
-
+                } else {
+                    unset($data[$key]);
                 }
-
-                $category_title=$v['G'];
-                $category_id = M('Category')->where(array('title' => $category_title))->getField('id');
-                if($category_id){
-                    $info[$k-2]['category_id'] = $category_id;
-                }else{
-                    $new_category_id = M('Category')->add(array('title' => $category_title, 'sort' => $k, 'add_time' => $add_time));
-                    $info[$k-2]['category_id'] = $new_category_id;
-                }
-
-                $pno=$v['B'];
-                $result = $Goods->where(array('PNO' => $pno))->find();
-
-                //print_r($info[$k-2]);exit;
-                if($result){
-                    //更新操作
-                    $result = $Goods->where(array('PNO' => $pno))->save($info[$k-2]);
-                }else{
-                    //入库操作
-                    $info[$k-2]['PNO'] = $pno;
-                    $info[$k-2]['add_time'] = $add_time;
-
-                    $result = $Goods->add($info[$k-2]);
-                }
-
-
-                //print_r($info);exit;
-
-
-
             }
-
         }
+        foreach ($data as $key => $val) {
+            if ($key > 1) {
+                $student['name'] = $val['A'];
+                $student['sex'] = $val['B'];
+                $student['age'] = $val['C'];
+                $student['number'] = $val['D'];
+                $student['mobile'] = $val['E'];
+                $student['school'] =$val['F'];
+                $student['apply_date'] = $val['G'];
+                $student['course_consultant'] = $val['H'];
 
-        if(false !== $result || 0 !== $result){
-            $this->success('产品导入成功', 'Admin/Goods/index');
-        }else{
-            $this->error('产品导入失败');
+                $parentName = $val['I'];
+                $parentPhone = $val['J'];
+                $relationship = $val['K'];
+                $student_model=M("Students");
+                $result=$student_model->add($student);
+                if($result){
+                    $appUser_model=M("app_user");
+                    $appUserInfo=$appUser_model->where(array("phone"=>$parentPhone))->find();
+                    if(empty($appUserInfo)){
+                        $user = array(
+                            'name'=>$parentName,
+                            'phone'=>$parentPhone,
+                            'relationship'=>$relationship,
+                            'guardian'=>1,
+                            'stu_id'=>$result,
+                            'user_status'=>1,
+                            'password'=>sha1("111111"),
+                            'create_time'=>time()
+                        );
+                        $appUser_model->add($user);
+
+                        $user['phone']=$parentPhone;
+                        $user['password']=sha1("111111");
+                        $this->regEasemob($user['phone'],$user['password']);
+                    }else{
+                        $saveData= array(
+                            'name'=>$parentName,
+                            'relationship'=>$relationship,
+                            'guardian'=>1,
+                            'stu_id'=>$result,
+                        );
+                        $appUser_model->where(array('phone'=>$parentPhone))->save($saveData);
+                    }
+                }
+            }
         }
-        //print_r($info);
-
     }
-
-
-    private function upload()
-    {
-        $upload = new \Think\Upload();// 实例化上传类
-        $upload->maxSize = 3145728;// 设置附件上传大小
-        $upload->exts = array('jpg', 'gif', 'png', 'jpeg', 'xls', 'xlsx');// 设置附件上传类型
-        $upload->rootPath = './Uploads/'; // 设置附件上传根目录
-        $upload->savePath = ''; // 设置附件上传（子）目录
-        // 上传文件
-        $info = $upload->upload();
-        if (!$info) {
-            // 上传错误提示错误信息
-            $this->error($upload->getError());
-        } else {
-            // 上传成功
-            $this->success('上传成功!');
-        }
-    }
-
-
 
 
 }

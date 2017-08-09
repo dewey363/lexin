@@ -2,7 +2,7 @@
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2014 PHPExcel
+ * Copyright (c) 2006 - 2010 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,9 +20,9 @@
  *
  * @category   PHPExcel
  * @package    PHPExcel_Worksheet
- * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.8.0, 2014-03-02
+ * @version    1.7.4, 2010-08-26
  */
 
 
@@ -31,54 +31,36 @@
  *
  * @category   PHPExcel
  * @package    PHPExcel_Worksheet
- * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Worksheet_SheetView
 {
-
-	/* Sheet View types */
-	const SHEETVIEW_NORMAL				= 'normal';
-	const SHEETVIEW_PAGE_LAYOUT			= 'pageLayout';
-	const SHEETVIEW_PAGE_BREAK_PREVIEW	= 'pageBreakPreview';
-
-	private static $_sheetViewTypes = array(
-		self::SHEETVIEW_NORMAL,
-		self::SHEETVIEW_PAGE_LAYOUT,
-		self::SHEETVIEW_PAGE_BREAK_PREVIEW,
-	);
-
 	/**
 	 * ZoomScale
-	 *
+	 * 
 	 * Valid values range from 10 to 400.
 	 *
 	 * @var int
 	 */
-	private $_zoomScale			= 100;
+	private $_zoomScale;
 
 	/**
 	 * ZoomScaleNormal
-	 *
+	 * 
 	 * Valid values range from 10 to 400.
 	 *
 	 * @var int
 	 */
-	private $_zoomScaleNormal	= 100;
-
-	/**
-	 * View
-	 *
-	 * Valid values range from 10 to 400.
-	 *
-	 * @var string
-	 */
-	private $_sheetviewType		= self::SHEETVIEW_NORMAL;
+	private $_zoomScaleNormal;
 
     /**
      * Create a new PHPExcel_Worksheet_SheetView
      */
     public function __construct()
     {
+    	// Initialise values
+    	$this->_zoomScale 				= 100;
+    	$this->_zoomScaleNormal 		= 100;
     }
 
 	/**
@@ -96,7 +78,7 @@ class PHPExcel_Worksheet_SheetView
 	 * Valid values range from 10 to 400.
 	 *
 	 * @param 	int 	$pValue
-	 * @throws 	PHPExcel_Exception
+	 * @throws 	Exception
 	 * @return PHPExcel_Worksheet_SheetView
 	 */
 	public function setZoomScale($pValue = 100) {
@@ -105,11 +87,11 @@ class PHPExcel_Worksheet_SheetView
 		if (($pValue >= 1) || is_null($pValue)) {
 			$this->_zoomScale = $pValue;
 		} else {
-			throw new PHPExcel_Exception("Scale must be greater than or equal to 1.");
+			throw new Exception("Scale must be greater than or equal to 1.");
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Get ZoomScaleNormal
 	 *
@@ -125,50 +107,15 @@ class PHPExcel_Worksheet_SheetView
 	 * Valid values range from 10 to 400.
 	 *
 	 * @param 	int 	$pValue
-	 * @throws 	PHPExcel_Exception
+	 * @throws 	Exception
 	 * @return PHPExcel_Worksheet_SheetView
 	 */
 	public function setZoomScaleNormal($pValue = 100) {
 		if (($pValue >= 1) || is_null($pValue)) {
 			$this->_zoomScaleNormal = $pValue;
 		} else {
-			throw new PHPExcel_Exception("Scale must be greater than or equal to 1.");
+			throw new Exception("Scale must be greater than or equal to 1.");
 		}
-		return $this;
-	}
-
-	/**
-	 * Get View
-	 *
-	 * @return string
-	 */
-	public function getView() {
-		return $this->_sheetviewType;
-	}
-
-	/**
-	 * Set View
-	 *
-	 * Valid values are
-	 *		'normal'			self::SHEETVIEW_NORMAL
-	 *		'pageLayout'		self::SHEETVIEW_PAGE_LAYOUT
-	 *		'pageBreakPreview'	self::SHEETVIEW_PAGE_BREAK_PREVIEW
-	 *
-	 * @param 	string 	$pValue
-	 * @throws 	PHPExcel_Exception
-	 * @return PHPExcel_Worksheet_SheetView
-	 */
-	public function setView($pValue = NULL) {
-		//	MS Excel 2007 allows setting the view to 'normal', 'pageLayout' or 'pageBreakPreview'
-		//		via the user interface
-		if ($pValue === NULL)
-			$pValue = self::SHEETVIEW_NORMAL;
-		if (in_array($pValue, self::$_sheetViewTypes)) {
-			$this->_sheetviewType = $pValue;
-		} else {
-			throw new PHPExcel_Exception("Invalid sheetview layout type.");
-		}
-
 		return $this;
 	}
 
