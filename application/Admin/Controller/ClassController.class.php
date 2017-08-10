@@ -176,6 +176,10 @@ class ClassController extends AdminbaseController{
                         $data['class_id']=$class['id'];
                         $data['status']=1;
                         $classStudent->add($data);
+
+                        $conWhere['id']=$v;
+                        $contract['class']=$class['id'];
+                        $this->studentContract_model->where($conWhere)->save($contract);
                     }
                 }
                 $this->success("添加成功！",U("class/index"));
@@ -322,6 +326,10 @@ class ClassController extends AdminbaseController{
                             $data['contract_id']=$v;
                             $data['class_id']=$class['id'];
                             $classStudent->add($data);
+
+                            $conWhere['id']=$v;
+                            $contract['class']=$class['id'];
+                            $this->studentContract_model->where($conWhere)->save($contract);
                         }
                     }
                     $this->success("保存成功！");

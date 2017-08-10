@@ -748,6 +748,9 @@ class ContractController extends AdminbaseController{
                     $data['class_id']=$classId;
                     $classStudent->add($data);
                 }
+                $conWhere['id']=$v;
+                $contract['class']=$classId;
+                $this->studentContract_model->where($conWhere)->save($contract);
             }
             $return = ['code' => 1, 'msg' => '转班成功'];
             $this->ajaxReturn($return);
