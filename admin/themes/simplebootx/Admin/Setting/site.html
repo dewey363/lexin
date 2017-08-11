@@ -4,13 +4,12 @@
 	<div class="wrap js-check-wrap">
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#A" data-toggle="tab">{:L('WEB_SITE_INFOS')}</a></li>
-			<li><a href="#B" data-toggle="tab">{:L('SEO_SETTING')}</a></li>
+			<!--<li><a href="#B" data-toggle="tab">{:L('SEO_SETTING')}</a></li>-->
 			<li><a href="#C" data-toggle="tab">{:L('URL_SETTING')}</a></li>
-			<li><a href="{:U('route/index')}">{:L('URL_OPTIMIZATION')}</a></li>
-			<!-- <li><a href="#D" data-toggle="tab">{:L('UCENTER_SETTING')}</a></li> -->
-			<li><a href="#E" data-toggle="tab">{:L('COMMENT_SETTING')}</a></li>
-			<li><a href="#F" data-toggle="tab">{:L("USERNAME_FILTER")}</a></li>
-			<li><a href="#G" data-toggle="tab">CDN设置</a></li>
+			<!--<li><a href="{:U('route/index')}">{:L('URL_OPTIMIZATION')}</a></li>-->
+			<!--<li><a href="#E" data-toggle="tab">{:L('COMMENT_SETTING')}</a></li>-->
+			<!--<li><a href="#F" data-toggle="tab">{:L("USERNAME_FILTER")}</a></li>-->
+			<!--<li><a href="#G" data-toggle="tab">CDN设置</a></li>-->
 		</ul>
 		<form class="form-horizontal js-ajax-forms" action="{:U('setting/site_post')}" method="post">
 			<fieldset>
@@ -38,7 +37,7 @@
 										</if>
 									</div>
 								</div>
-								<div class="control-group">
+								<div class="control-group" style="display: none;">
 									<label class="control-label">{:L('WEBSITE_THEME')}</label>
 									<div class="controls">
 										<select name="options[site_tpl]">
@@ -181,8 +180,8 @@
 									<div class="controls">
 										<input type="text" name="cdn_settings[cdn_static_root]" value="{$cdn_settings.cdn_static_root}">
 										<span class="help-block">
-											不能以/结尾；设置这个地址后，请将LeXinCrm下的静态资源文件放在其下面；<br>
-											LeXinCrm下的静态资源文件大致包含以下(如果你自定义后，请自行增加)：<br>
+											不能以/结尾；设置这个地址后，请将YinHang下的静态资源文件放在其下面；<br>
+											YinHang下的静态资源文件大致包含以下(如果你自定义后，请自行增加)：<br>
 											admin/themes/simplebootx/Public/assets<br>
 											public<br>
 											themes/simplebootx/Public/assets<br>
