@@ -23,7 +23,7 @@ class StaffController extends AdminbaseController {
 
     //人事列表
     public function index(){
-        $where=[];
+        $where=array();
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
         if($adminId !=1){
@@ -51,7 +51,7 @@ class StaffController extends AdminbaseController {
 
     // 人事添加
     public function add(){
-        $where=[];
+        $where=array();
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
         if($adminId !=1){
@@ -90,7 +90,7 @@ class StaffController extends AdminbaseController {
     // 人事编辑
     public function edit(){
         $id = I("get.id",0,'intval');
-        $schoolSql=[];
+        $schoolSql=array();
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
         if($adminId !=1){

@@ -26,7 +26,7 @@ class PushController extends AdminbaseController {
     public function index(){
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
-        $schoolSql=[];
+        $schoolSql=array();
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){
@@ -60,10 +60,10 @@ class PushController extends AdminbaseController {
 
     // 消息推送添加
     public function add(){
-        $schoolSql=[];
+        $schoolSql=array();
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
-        $schoolSql=[];
+        $schoolSql=array();
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){

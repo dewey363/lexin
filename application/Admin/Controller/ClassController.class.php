@@ -94,7 +94,7 @@ class ClassController extends AdminbaseController{
     //新增班级
     public function add(){
         $adminId=sp_get_current_admin_id();
-        $schoolSql=[];
+        $schoolSql=array();
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){
@@ -114,7 +114,7 @@ class ClassController extends AdminbaseController{
 
         $where['is_del']=0;
         $contractIds=D('ClassStudent')->where($where)->field('contract_id')->select();
-        $contractId=[];
+        $contractId=array();
         if(!empty($contractIds)){
             foreach ($contractIds as $v){
                 $contractId[]=$v['contract_id'];
@@ -196,7 +196,7 @@ class ClassController extends AdminbaseController{
         $info=$this->class_model->where("id=$id")->find();
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
-        $schoolSql=[];
+        $schoolSql=array();
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){
@@ -232,7 +232,7 @@ class ClassController extends AdminbaseController{
 
         $where['is_del']=0;
         $contractIds=D('ClassStudent')->where($where)->field('contract_id')->select();
-        $contractId=[];
+        $contractId=array();
         if(!empty($contractIds)){
             foreach ($contractIds as $v){
                 $contractId[]=$v['contract_id'];
@@ -251,11 +251,11 @@ class ClassController extends AdminbaseController{
             $contractList[$k]['stu_name']=$v['name']."_".$studentInfo['name'];
         }
 
-        $contractSaveIds=[];
+        $contractSaveIds=array();
         $sql['is_del']=0;
         $sql['class_id']=$id;
         $csList=D('ClassStudent')->where($sql)->field('contract_id')->select();
-        $contractSaveId=[];
+        $contractSaveId=array();
         if(!empty($csList)){
             foreach ($csList as $v){
                 $contractSaveId[]=$v['contract_id'];
@@ -355,7 +355,7 @@ class ClassController extends AdminbaseController{
     //批量导出
     public function export(){
         if (IS_POST) {
-            $where=[];
+            $where=array();
             if(isset($_POST['ids'])) {
                 $ids = I('post.ids/a');
                 $where['id']=array('in',$ids);
@@ -379,13 +379,13 @@ class ClassController extends AdminbaseController{
             /***获取管理员id,判断对应所属学校end***/
                 $list = $this->class_model->where($where)->order("id DESC")->select();
                 if(!empty($list)){
-                    $stuList=[];
+                    $stuList=array();
                     foreach ($list as $k => $v) {
                         $list[$k]['open_date'] = date("Y-m-d", $v['apply_date']);
                         $stuSql['id']=array('in',$v['stu_id']);
                         $stuList[]= D("Students")->where($stuSql)->order("id DESC")->select();
                     }
-                    $stuLists=[];
+                    $stuLists=array();
                     foreach ($stuList as $vo){
                         foreach ($vo as $v){
                             $stuLists[]=$v;
@@ -560,7 +560,7 @@ class ClassController extends AdminbaseController{
                     ->where($classSql)
                     ->field("name")
                     ->select();
-                $className=[];
+                $className=array();
                 foreach ($classList as $vo){
                     $className[]=$vo['name'];
                 }

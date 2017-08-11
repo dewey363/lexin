@@ -11,7 +11,7 @@ class StudentModel extends CommonModel {
 
     public function getStuInfo($id)
     {
-        $info=[];
+        $info=array();
         if($id>0){
             $student_model=M("Students");
             $info=$student_model->where("id=$id")->find();

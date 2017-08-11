@@ -215,7 +215,7 @@ class FinanceController extends AdminbaseController{
     }
     //新增财务
     public function add(){
-        $schoolSql=[];
+        $schoolSql=array();
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
         if($adminId !=1){
@@ -268,7 +268,7 @@ class FinanceController extends AdminbaseController{
     //财务编辑
     public function financeEdit(){
         $id=  I("get.id",0,'intval');
-        $schoolSql=[];
+        $schoolSql=array();
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
         if($adminId !=1){
@@ -321,7 +321,7 @@ class FinanceController extends AdminbaseController{
     //财务编辑
     public function edit(){
         $id=  I("get.id",0,'intval');
-        $schoolSql=[];
+        $schoolSql=array();
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
         if($adminId !=1){

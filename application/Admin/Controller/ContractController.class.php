@@ -39,7 +39,7 @@ class ContractController extends AdminbaseController{
             $contractList=D('ClassStudent')->where($sql)->field('contract_id')->select();
             $contractIds='';
             if(!empty($contractList)){
-                $contractId=[];
+                $contractId=array();
                 foreach ($contractList as $v){
                     $contractId[]=$v['contract_id'];
                 }
@@ -76,7 +76,7 @@ class ContractController extends AdminbaseController{
         }
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
-        $classSql1=[];
+        $classSql1=array();
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){
@@ -556,7 +556,7 @@ class ContractController extends AdminbaseController{
         }
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
-        $classSql1=[];
+        $classSql1=array();
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){
@@ -622,7 +622,7 @@ class ContractController extends AdminbaseController{
             $uid=sp_get_current_admin_id();
             $price=0;
             if(!empty($refundTitle)){
-                $dataList=[];
+                $dataList=array();
                 foreach ($refundTitle as $k=>$v){
                     $dataList[] = array(
                         'type'=>2,
@@ -717,7 +717,7 @@ class ContractController extends AdminbaseController{
             $classStudent=M('ClassStudent');
             //提交的合同id转数组
             $idArr=explode(',',$ids);
-            $oldConId=[];
+            $oldConId=array();
             foreach ($idArr as $k=>$v){
                 $csInfo=$classStudent->where(array("contract_id"=>$v,"is_del"=>0))->select();
                 foreach ($csInfo as $vo){

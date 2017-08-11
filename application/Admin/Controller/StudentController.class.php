@@ -96,7 +96,7 @@ class StudentController extends AdminbaseController{
     //新增学员
     public function add(){
         $adminId=sp_get_current_admin_id();
-        $schoolSql=[];
+        $schoolSql=array();
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){
@@ -156,7 +156,7 @@ class StudentController extends AdminbaseController{
             $result=$student_model->add($student);
             if ($result) {
                 if(!empty($parentName)){
-                    $dataList=[];
+                    $dataList=array();
                     $appUser_model=M("app_user");
                     foreach ($parentName as $k=>$v){
                         $appUserInfo=$appUser_model->where(array("phone"=>$phone[$k]))->find();
@@ -209,7 +209,7 @@ class StudentController extends AdminbaseController{
         $info['birthday']=date("Y-m-d",$info['birthday']);
         /***获取管理员id,判断对应所属学校start***/
         $adminId=sp_get_current_admin_id();
-        $schoolSql=[];
+        $schoolSql=array();
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){
@@ -291,7 +291,7 @@ class StudentController extends AdminbaseController{
                 if ($result!==false) {
                     //添加／编辑家长信息
                     if(!empty($parentName)){
-                        $dataList=[];
+                        $dataList=array();
                         $appUser_model=M("app_user");
                         foreach ($parentName as $k=>$v){
                             $appUserInfo=$appUser_model->where(array("phone"=>$phone[$k]))->find();
@@ -332,7 +332,7 @@ class StudentController extends AdminbaseController{
                         $this->studentContract_model ->where($cWhere)->save($contracts);
 
                         $scList=$this->studentContract_model ->where(array("stu_id"=>$student['id']))->field('id')->select();
-                        $conId=[];
+                        $conId=array();
                         if(!empty($scList)){
                             foreach ($scList as $v){
                                 $conId[]=$v['id'];

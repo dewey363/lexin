@@ -65,7 +65,7 @@ class ConsumController extends AdminbaseController{
             $stuSql['is_del']  = 0;
             $stuId=D('Students')->where($stuSql)->field('id')->select();
 
-            $stuIdArr=[];
+            $stuIdArr=array();
             if(!empty($stuId)){
                 foreach ($stuId as $v){
                     $stuIdArr[]=$v['id'];
@@ -86,7 +86,7 @@ class ConsumController extends AdminbaseController{
             $classSql['is_del']=0;
             $classSql['teacher']=$request['teacher'];
             $classId= $this->class_model->where($classSql)->field('id')->select();
-            $classIdArr=[];
+            $classIdArr=array();
             if(!empty($classId)){
                 foreach ($classId as $v){
                     $classIdArr[]=$v['id'];
@@ -228,7 +228,7 @@ class ConsumController extends AdminbaseController{
                 $stuSql['is_del']  = 0;
                 $stuId=D('Students')->where($stuSql)->field('id')->select();
 
-                $stuIdArr=[];
+                $stuIdArr=array();
                 if(!empty($stuId)){
                     foreach ($stuId as $v){
                         $stuIdArr[]=$v['id'];
@@ -248,7 +248,7 @@ class ConsumController extends AdminbaseController{
                 $classSql['is_del']=0;
                 $classSql['teacher']=$request['teacher'];
                 $classId= $this->class_model->where($classSql)->field('id')->select();
-                $classIdArr=[];
+                $classIdArr=array();
                 if(!empty($classId)){
                     foreach ($classId as $v){
                         $classIdArr[]=$v['id'];
