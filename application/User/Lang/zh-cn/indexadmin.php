@@ -16,7 +16,7 @@ return array(
 		"BLOCK_USER_CONFIRM_MESSAGE" =>'您确定要拉黑此用户吗？',
 		"ACTIVATE_USER" =>'启用',
 		"ACTIVATE_USER_CONFIRM_MESSAGE" =>'您确定要启用此用户吗？',
-		"THIRD_PARTY_USER" => "第三方用户",
+		"THIRD_PARTY_USER" => "暂无昵称",
 		"NOT_FILLED" => "未填写"
 		
 );

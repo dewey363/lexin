@@ -23,8 +23,6 @@
 						<th>{:L('AVATAR')}</th>
 						<th>{:L('EMAIL')}</th>
 						<th>{:L('REGISTRATION_TIME')}</th>
-						<th>{:L('LAST_LOGIN_TIME')}</th>
-						<th>{:L('LAST_LOGIN_IP')}</th>
 						<th>{:L('STATUS')}</th>
 						<th align="center">{:L('ACTIONS')}</th>
 					</tr>
@@ -34,13 +32,11 @@
 					<foreach name="list" item="vo">
 					<tr>
 						<td align="center">{$vo.id}</td>
-						<td>{$vo['user_login']?$vo['user_login']:($vo['mobile']?$vo['mobile']:L('THIRD_PARTY_USER'))}</td>
+						<td>{$vo['user_login']?$vo['user_login']:$vo['phone']}</td>
 						<td>{$vo['user_nicename']?$vo['user_nicename']:L('NOT_FILLED')}</td>
 						<td><img width="25" height="25" src="{:U('user/public/avatar',array('id'=>$vo['id']))}" /></td>
 						<td>{$vo.user_email}</td>
 						<td>{$vo.create_time}</td>
-						<td>{$vo.last_login_time}</td>
-						<td>{$vo.last_login_ip}</td>
 						<td>{$user_statuses[$vo['user_status']]}</td>
 						<td align="center">
 							<neq name="vo.id" value="1">

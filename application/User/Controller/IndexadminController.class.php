@@ -34,7 +34,9 @@ class IndexadminController extends AdminbaseController {
     	->order("create_time DESC")
     	->limit($page->firstRow . ',' . $page->listRows)
     	->select();
-    	
+    	foreach ($list as $k=>$v){
+    	    $list[$k]['create_time']=date('Y-m-d H:i:s',$v['create_time']);
+        }
     	$this->assign('list', $list);
     	$this->assign("page", $page->show('Admin'));
     	
