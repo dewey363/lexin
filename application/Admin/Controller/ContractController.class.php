@@ -20,7 +20,6 @@ class ContractController extends AdminbaseController{
     //合同管理列表
     public function index(){
         $stuId=  I("get.stuId",0,'intval');
-
         $where=array();
         if($stuId>0){
             $where['stu_id']=$stuId;
