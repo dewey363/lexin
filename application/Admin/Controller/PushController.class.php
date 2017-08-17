@@ -88,20 +88,7 @@ class PushController extends AdminbaseController {
             $type=3;
             $adminId=sp_get_current_admin_id();
             self::pushEasemob($title,$school,$content,$type,$adminId,$scope);
-
-            $_POST['created_time']=time();
-            $_POST['user_id']=sp_get_current_admin_id();
-            $_POST['status']=1;
-
-            if ($this->push_model->create()!==false) {
-                if ($this->push_model->add()!==false) {
-                    $this->success("添加成功！",U("Push/index"));
-                } else {
-                    $this->error("添加失败！");
-                }
-            } else {
-                $this->error($this->push_model->getError());
-            }
+            $this->success("添加成功！",U("Push/index"));
         }
     }
 
