@@ -19,7 +19,7 @@ return array (
       'data' => '',
       'type' => '1',
       'status' => '1',
-      'name' => '用户组',
+      'name' => '会员管理',
       'icon' => '',
       'remark' => '',
       'listorder' => '0',
