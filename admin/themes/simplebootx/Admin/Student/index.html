@@ -11,8 +11,8 @@
 			<input type="text" name="keyword" style="width: 120px;" value="{:I('request.keyword')}"  placeholder="{:L('STUDENT_NAME')}/{:L('STUDENT_MOBILE')}">
           &nbsp;&nbsp;
 			入学日期：
-			<input type="text" name="start_time" class="js-datetime" value="{:I('request.start_time','')}" style="width: 120px;" autocomplete="off">-
-			<input type="text" class="js-datetime" name="end_time" value="{:I('request.end_time','')}" style="width: 120px;" autocomplete="off"> &nbsp; &nbsp;
+			<input type="text" name="start_time" class="js-date" value="{:I('request.start_time','')}" style="width: 120px;" autocomplete="off">-
+			<input type="text" class="js-date" name="end_time" value="{:I('request.end_time','')}" style="width: 120px;" autocomplete="off"> &nbsp; &nbsp;
 			<input type="submit" class="btn btn-primary" value="搜索" />
             <a class="btn btn-danger" href="{:U('Admin/Student/index')}">清空</a>
 			<a id="modal-studentExport" href="#studentExport" role="button" class="btn" data-toggle="modal">批量导出</a>
