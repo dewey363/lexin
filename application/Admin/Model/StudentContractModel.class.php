@@ -85,4 +85,62 @@ class StudentContractModel extends CommonModel {
 	protected function _before_write(&$data) {
 		parent::_before_write($data);
 	}
+
+    public function getType()
+    {
+        $array=array(
+            array(
+                "id"=>0,
+                "name"=>'其他'
+            ),
+            array(
+                "id"=>1,
+                "name"=>'学员收费'
+            ),
+            array(
+                "id"=>2,
+                "name"=>'学员退费'
+            ),
+            array(
+                "id"=>3,
+                "name"=>'市场'
+            ),
+            array(
+                "id"=>4,
+                "name"=>'人力'
+            )
+        );
+        return $array;
+    }
+
+    public function getPayType()
+    {
+        $array=array(
+            array(
+                "id"=>0,
+                "name"=>'请选择'
+            ),
+            array(
+                "id"=>1,
+                "name"=>'支付宝'
+            ),
+            array(
+                "id"=>2,
+                "name"=>'微信'
+            ),
+            array(
+                "id"=>3,
+                "name"=>'刷卡'
+            ),
+            array(
+                "id"=>4,
+                "name"=>'银行转帐'
+            ),
+            array(
+                "id"=>5,
+                "name"=>'现金'
+            )
+        );
+        return $array;
+    }
 }

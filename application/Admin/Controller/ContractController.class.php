@@ -3,7 +3,6 @@ namespace Admin\Controller;
 
 use Common\Controller\AdminbaseController;
 use Admin\Model\StudentContractModel;
-use Admin\Model\FinanceModel;
 
 class ContractController extends AdminbaseController{
     protected $studentContract_model;
@@ -409,8 +408,8 @@ class ContractController extends AdminbaseController{
             }elseif($v['source']==2){
                 $list[$k]['source']='支出';
             }
-            $type=FinanceModel::getType();
-            $payType=FinanceModel::getPayType();
+            $type=StudentContractModel::getType();
+            $payType=StudentContractModel::getPayType();
             foreach ($type as $key=>$value){
                 $list[$k]['type']=$type[$v['type']]['name'];
             }

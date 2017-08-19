@@ -3,7 +3,6 @@ namespace Admin\Controller;
 
 use Common\Controller\AdminbaseController;
 use Admin\Model\ClassModel;
-use Admin\Model\StudentModel;
 
 class ClassController extends AdminbaseController{
 
