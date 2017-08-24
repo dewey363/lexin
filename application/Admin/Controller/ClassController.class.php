@@ -73,7 +73,6 @@ class ClassController extends AdminbaseController{
     	->select();
     	foreach ($list as $k=>$v){
     	    $list[$k]['open_date']=date("Y-m-d",$v['open_date']);
-    	    $list[$k]['class_time']=date("Y-m-d",$v['class_time']);
             $staffSql['position']=1;
             $staffSql['status']=0;
             $staffSql['id']=$v['teacher'];
