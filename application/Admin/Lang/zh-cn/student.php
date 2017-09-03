@@ -24,11 +24,11 @@ return array(
     "LECTURE_SETTING" => '消耗多少课时停课',
     "BIRTHDAY" => '出生日期',
     "ADDRESS" => '地址',
-    "KINDERGARTEN" => '所在幼儿园',
+    "KINDERGARTEN" => '就读学校',
     "HIRE_PURCHASE" => '是否分期',
     "TIME_CONSUMING_REMINDER" => '自定义消耗课时提醒',
     "CARD_INFO" => '卡片信息',
-    "IN_SCHOOL" => '所属学校',
+    "IN_SCHOOL" => '所属校区',
     "COURSE" => '课程名称',
     "ACTIONS" => "操作"
 );

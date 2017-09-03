@@ -57,7 +57,24 @@
 					<td>{$vo.teacher}</td>
 					<td>{$vo.number}</td>
 					<td>{$vo.open_date}</td>
-					<td>{$vo.class_time}</td>
+					<td>
+						<if condition="$vo.week_day eq 'Monday'">
+							周一
+							<elseif condition="$vo.week_day eq 'Tuesday'"/>
+							周二
+							<elseif condition="$vo.week_day eq 'Wednesday'"/>
+							周三
+							<elseif condition="$vo.week_day eq 'Thursday'"/>
+							周四
+							<elseif condition="$vo.week_day eq 'Friday'"/>
+							周五
+							<elseif condition="$vo.week_day eq 'Saturday'"/>
+							周六
+							<elseif condition="$vo.week_day eq 'Sunday'"/>
+							周日
+						</if>
+						{$vo.class_time}
+					</td>
 					<td>{$vo.student_population}</td>
 					<!--<td>{$vo.status}</td>-->
 					<td>{$vo.holiday}</td>
