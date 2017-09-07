@@ -477,45 +477,45 @@ class ClassController extends AdminbaseController{
         $request=I('request.');
         $cid=0;
         if($classId>0){
-            $where['_string']='FIND_IN_SET('.$classId.', class)';
+            $where['ycs.class_id']=$classId;
             $cid=$classId;
         }elseif($request['classId']>0){
-            $where['_string']='FIND_IN_SET('.$request['classId'].', class)';
+            $where['ycs.class_id']=$classId;
             $cid=$request['classId'];
         }
         if(!empty($request['surplus_hour'])){
-            $where['surplus_hour']=array('ELT',$request['surplus_hour']);
+            $where['ys.surplus_hour']=array('ELT',$request['ys.surplus_hour']);
         }
-        if(!empty($request['divide_class'])){
-            if($request['divide_class']==1){
-                $where['class']=array('exp','is not null');
-            }elseif($request['divide_class']==2){
-                $where['class']=array('exp','is null');
-            }
-
-        }
+//        if(!empty($request['divide_class'])){
+//            if($request['divide_class']==1){
+//                $where['ys.class']=array('exp','is not null');
+//            }elseif($request['divide_class']==2){
+//                $where['class']=array('exp','is null');
+//            }
+//
+//        }
         if(!empty($request['keyword'])){
             $keyword=$request['keyword'];
             $keyword_complex=array();
-            $keyword_complex['name']  = array('like', "%$keyword%");
-            $keyword_complex['class_name']  = array('like',"%$keyword%");
-            $keyword_complex['mobile']  = array('like',"%$keyword%");
+            $keyword_complex['ys.name']  = array('like', "%$keyword%");
+//            $keyword_complex['class_name']  = array('like',"%$keyword%");
+            $keyword_complex['ys.mobile']  = array('like',"%$keyword%");
             $keyword_complex['_logic'] = 'or';
             $where['_complex'] = $keyword_complex;
         }
         $start_time=strtotime(I('request.start_time'));
         if(!empty($start_time)){
-            $where['apply_date']=array(
+            $where['ys.apply_date']=array(
                 array('EGT',$start_time)
             );
         }
 
         $end_time=strtotime(I('request.end_time'));
         if(!empty($end_time)){
-            if(empty($where['apply_date'])){
-                $where['apply_date']=array();
+            if(empty($where['ys.apply_date'])){
+                $where['ys.apply_date']=array();
             }
-            array_push($where['apply_date'], array('ELT',$end_time));
+            array_push($where['ys.apply_date'], array('ELT',$end_time));
         }
 
         /***获取管理员id,判断对应所属学校start***/
@@ -523,7 +523,7 @@ class ClassController extends AdminbaseController{
         if($adminId !=1){
             $schoolId=get_current_school();
             if(!empty($schoolId)){
-                $where['school']=array(
+                $where['ys.school']=array(
                     array('in',$schoolId)
                 );
                 $staffSql['school_id']=array(
@@ -535,14 +535,17 @@ class ClassController extends AdminbaseController{
             }
         }
         /***获取管理员id,判断对应所属学校end***/
-        $student_model=M("Students");
-
-        $count=$student_model->where($where)->count();
+        $student_model=M("ClassStudent ycs");
+        $count=$student_model
+            ->join('left join yl_student_contract ysc on ysc.class=ycs.class_id')
+            ->join('left join yl_students ys on ys.id=ysc.stu_id')
+            ->where($where)->count();
         $page = $this->page($count, 20);
-
         $list = $student_model
+            ->join('left join yl_student_contract ysc on ysc.class=ycs.class_id')
+            ->join('left join yl_students ys on ys.id=ysc.stu_id')
             ->where($where)
-            ->order("add_time DESC")
+            ->order("ys.add_time DESC")
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
         foreach ($list as $k=>$v){
