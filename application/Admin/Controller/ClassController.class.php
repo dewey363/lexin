@@ -79,6 +79,10 @@ class ClassController extends AdminbaseController{
             $course_consultant = $this->staff_model->where($staffSql)->find();
             $list[$k]['teacher']=$course_consultant['name'];
             $list[$k]['holiday']=$v['holiday']==1? '是':'否';
+            $sql['is_del']=0;
+            $sql['class_id']=$v['id'];
+            $stuCount=D('ClassStudent')->where($sql)->count();
+            $list[$k]['stuCount']=$stuCount;
         }
         $staffSql['position']=1;
         $staffSql['status']=0;
