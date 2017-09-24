@@ -48,16 +48,6 @@
 							</td>
 						</tr>
 						<tr>
-							<th width="80">{:L('APPLY_DATE')}</th>
-							<td>
-								<input class="js-date" type="text" id="input-apply-date" placeholder="请输入{:L('BIRTHDAY')}" name="apply_date">
-							</td>
-							<th width="80">{:L('STUDENT_NUMBER')}</th>
-							<td>
-								<input type="text" name="number" placeholder="请输入{:L('STUDENT_NUMBER')}">
-							</td>
-						</tr>
-						<tr>
 							<th width="80">{:L('COURSE_CONSULTANT')}</th>
 							<td>
 								<select name="course_consultant">
@@ -82,8 +72,9 @@
 									</foreach>
 								</select>
 							</td>
-							<th width="80"></th>
+							<th width="80">{:L('APPLY_DATE')}</th>
 							<td>
+								<input class="js-date" type="text" id="input-apply-date" placeholder="请输入{:L('BIRTHDAY')}" name="apply_date">
 							</td>
 						</tr>
 					</table>

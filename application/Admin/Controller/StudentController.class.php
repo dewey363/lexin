@@ -129,7 +129,7 @@ class StudentController extends AdminbaseController{
             $student['sex']=I('sex',1);
             $student['age']=I('age',0);
 //            $student['class']=I('class',0);
-            $student['number']=I('number',"");
+
             $student['mobile']=I('mobile',"");
 //            $student['tuition']=I('tuition',"0.00");
 //            $student['class_hour']=I('class_hour');
@@ -153,6 +153,12 @@ class StudentController extends AdminbaseController{
             $guardian=I('guardian');
 
             $student_model=M("Students");
+            $student['number']=date('Ymd').rand(00000,99999);
+            $stuInfos=$student_model->where(array("number" => $student['number'],'is_del'=>0))->find();
+            if(!empty($stuInfos)){
+                $randNumber=$this->get_rand_num($stuInfos['number']);
+                $student['number'] = date('Ymd').$randNumber;
+            }
             $result=$student_model->add($student);
             if ($result) {
                 if(!empty($parentName)){
@@ -258,13 +264,12 @@ class StudentController extends AdminbaseController{
             }
             $student_model=M("Students");
             $student['id']=intval($_POST['id']);
-            $info=$student_model->where(array("id"=>$student['id']))->find();
+            $info=$student_model->where(array("id"=>$student['id'],'is_del'=>0))->find();
             if(!empty($info)){
                 $student['name']=I('name',$info['name']);
                 $student['sex']=I('sex',$info['sex']);
                 $student['age']=I('age',$info['age']);
 //                $student['class']=I('class');
-                $student['number']=I('number',$info['number']);
                 $student['mobile']=I('mobile',$info['mobile']);
 //                $student['tuition']=I('tuition',$info['tuition']);
 //                $student['class_hour']=I('class_hour',$info['class_hour']);
@@ -287,6 +292,15 @@ class StudentController extends AdminbaseController{
                 $phone=I('phone');
                 $relationship=I('relationship');
                 $guardian=I('guardian');
+                if(empty($info['number'])){
+                    $student['number']=date('Ymd').rand(00000,99999);
+                    $stuInfos=$student_model->where(array("number" => $student['number'],'is_del'=>0))->find();
+                    if(!empty($stuInfos)){
+                        $randNumber=$this->get_rand_num($stuInfos['number']);
+                        $student['number'] = date('Ymd').$randNumber;
+                    }
+                }
+
                 $result=$student_model->save($student);
                 if ($result!==false) {
                     //添加／编辑家长信息
@@ -705,11 +719,11 @@ class StudentController extends AdminbaseController{
     {
         foreach ($data as $key => $val) {
             if ($key > 1) {
-                $school = $val['F'];
+                $school = $val['E'];
                 $schoolInfo = $this->school_model->where(array("name" => $school))->find();
                 if (!empty($schoolInfo)) {
-                    $data[$key]['F'] = $schoolInfo['id'];
-                    $stuInfo=D('Students')->where(array("number" => $val['D'],'school'=>$schoolInfo['id']))->find();
+                    $data[$key]['E'] = $schoolInfo['id'];
+                    $stuInfo=D('Students')->where(array("mobile" => $val['D'],'school'=>$schoolInfo['id'],'is_del'=>0))->find();
                     if(!empty($stuInfo)){
                         unset($data[$key]);
                     }
@@ -723,16 +737,22 @@ class StudentController extends AdminbaseController{
                 $student['name'] = $val['A'];
                 $student['sex'] = $val['B'];
                 $student['age'] = $val['C'];
-                $student['number'] = $val['D'];
-                $student['mobile'] = $val['E'];
-                $student['school'] =$val['F'];
-                $student['apply_date'] = $val['G'];
-                $student['course_consultant'] = $val['H'];
+                $randNumber=$this->get_rand_num();
+                $student['number'] = date('Ymd').$randNumber;
+                $student['mobile'] = $val['D'];
+                $student['school'] =$val['E'];
+                $student['apply_date'] =strtotime($val['F']);
+//                $student['course_consultant'] = $val['G'];
 
-                $parentName = $val['I'];
-                $parentPhone = $val['J'];
-                $relationship = $val['K'];
+                $parentName = $val['G'];
+                $parentPhone = $val['H'];
+                $relationship = $val['I'];
                 $student_model=M("Students");
+                $stuInfos=$student_model->where(array("number" => $student['number']))->find();
+                if(!empty($stuInfos)){
+                    $randNumber=$this->get_rand_num($stuInfos['number']);
+                    $student['number'] = date('Ymd').$randNumber;
+                }
                 $result=$student_model->add($student);
                 if($result){
                     $appUser_model=M("app_user");
@@ -767,5 +787,16 @@ class StudentController extends AdminbaseController{
         }
     }
 
-
+    /**
+     * 生成一个00000-99999随机数。
+     */
+    private function get_rand_num($number=0)
+    {
+        $num = rand(00000,99999);
+        if($num == $number)
+        {
+            $num = $this->get_rand_num();
+        }
+        return $num;
+    }
 }

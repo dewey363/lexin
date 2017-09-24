@@ -131,9 +131,6 @@ class StudentModel extends CommonModel {
             return "请选择所属学校！";
         }
 
-        if(empty($array['number'])){
-            return "学员编号不能为空！";
-        }
     }
 
     /**
