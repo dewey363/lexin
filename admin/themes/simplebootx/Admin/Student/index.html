@@ -28,9 +28,11 @@
 					<th>{:L('STUDENT_NAME')}</th>
 					<th>{:L('STUDENT_SEX')}</th>
 					<th>{:L('STUDENT_AGE')}</th>
-					<th>{:L('STUDENT_NUMBER')}</th>
 					<th>{:L('STUDENT_MOBILE')}</th>
+					<th>{:L('STUDENT_NUMBER')}</th>
+					<th>课程</th>
 					<th>{:L('APPLY_DATE')}</th>
+					<th>开班状态</th>
 					<th>{:L('COURSE_CONSULTANT')}</th>
 					<th>{:L('ACTIONS')}</th>
 				</tr>
@@ -47,9 +49,11 @@
 						</if>
 					</td>
 					<td>{$vo.age}</td>
-					<td>{$vo.number}</td>
 					<td>{$vo.mobile}</td>
+					<td>{$vo.number}</td>
+					<td>{$vo.course}</td>
 					<td>{$vo.apply_date}</td>
+					<td>{$vo.class}</td>
 					<td>{$vo.course_consultant}</td>
 					<td>
 						<a href='{:U("Admin/Contract/add",array("stuId"=>$vo["id"]))}' class="btn btn-mini btn-primary">创建合同</a> |

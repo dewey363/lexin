@@ -77,15 +77,17 @@ class StudentController extends AdminbaseController{
             $course_consultant = D('staff')->where($staffSql)->find();
             $list[$k]['course_consultant']=$course_consultant['name'];
     	    $list[$k]['apply_date']=date("Y-m-d",$v['apply_date']);
-            $list[$k]['class_name']="";
-    	    if(!empty($v['class'])){
-                $classSql['id']=$v['class'];
-                $classInfo=$this->class_model
-                    ->where($classSql)
-                    ->field("name")
-                    ->find();
-                $list[$k]['class_name']=$classInfo['name'] ;
+            $conSql['is_del']=0;
+            $conSql['stu_id']=$v['id'];
+            $contract= $this->studentContract_model->where($conSql)->field('course,class')->select();
+            $course=array();
+            $classId=array();
+            foreach ($contract as $vo){
+                $course[]=$vo['course'];
+                $classId[]=$vo['class'];
             }
+            $list[$k]['course']=empty($course) ? '':implode(',',$course);
+            $list[$k]['class']=empty($classId) ? '未分班':'已分班';
         }
     	$this->assign('list', $list);
     	$this->assign("page", $page->show('Admin'));
