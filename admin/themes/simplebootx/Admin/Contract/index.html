@@ -50,7 +50,7 @@
 					<th>结束时间</th>
 					<th>合同状态</th>
 					<th>操作者</th>
-					<th width="200">{:L('ACTIONS')}</th>
+					<th width="250">{:L('ACTIONS')}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -69,6 +69,7 @@
 					<td>{$vo.status}</td>
 					<td>{$vo.admin_name}</td>
 					<td>
+						<a class="btn btn-mini btn-primary" onclick="return consumAdd()" href='{:U("Admin/Contract/consumAdd",array("cardNum"=>$vo["card_info"]))}'>手动刷卡</a> |
 						<a class="btn btn-mini btn-primary" href='{:U("Admin/Contract/view",array("id"=>$vo["id"]))}'>{:L('VIEW')}</a> |
 						<a class="btn btn-mini btn-primary" href='{:U("Admin/Contract/edit",array("id"=>$vo["id"]))}'>{:L('EDIT')}</a> |
 						<a class="js-ajax-delete btn btn-mini btn-danger" href="{:U('Admin/Contract/delete',array('id'=>$vo['id']))}">{:L('DELETE')}</a>
@@ -141,5 +142,12 @@
 	<!-- 学员转班结束-->
 	<script src="__PUBLIC__/js/common.js"></script>
 	<script src="__PUBLIC__/js/contract/contract.js"></script>
+	<script type="text/javascript">
+        function consumAdd(){
+            if(!confirm("确定要刷卡吗？")){
+                window.event.returnValue = false;
+            }
+        }
+	</script>
 </body>
 </html>

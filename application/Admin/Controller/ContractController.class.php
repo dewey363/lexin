@@ -3,6 +3,7 @@ namespace Admin\Controller;
 
 use Common\Controller\AdminbaseController;
 use Admin\Model\StudentContractModel;
+use Admin\Model\StudentModel;
 
 class ContractController extends AdminbaseController{
     protected $studentContract_model;
@@ -754,5 +755,26 @@ class ContractController extends AdminbaseController{
             $return = ['code' => 1, 'msg' => '转班成功'];
             $this->ajaxReturn($return);
         }
+    }
+
+    public function consumAdd()
+    {
+        $cardNum=  I("get.cardNum");
+        if(!$cardNum){
+            $this->error("请填写卡号！");
+        }
+        //定义一个要发送的目标URL；
+        $url = "http://111.231.63.219:6017/api/v1/class/consum/add";
+        //定义传递的参数数组；
+        $data['cardNum']=$cardNum;
+        //定义返回值接收变量；
+        $result=StudentModel::http($url, $data);
+        $msg=json_decode($result,true);
+        if($msg['code'] !=1001){
+            $this->error($msg['message']);
+        }else{
+            $this->success($msg['message']);
+        }
+
     }
 }
