@@ -771,9 +771,9 @@ class ContractController extends AdminbaseController{
         $result=StudentModel::http($url, $data);
         $msg=json_decode($result,true);
         if($msg['code'] !=1001){
-            $this->error($msg['message']);
+            $this->error($msg['message'],U("contract/index"));
         }else{
-            $this->success($msg['message']);
+            $this->success($msg['message'],U("contract/index"));
         }
 
     }
