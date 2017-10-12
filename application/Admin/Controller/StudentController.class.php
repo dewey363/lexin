@@ -714,7 +714,6 @@ class StudentController extends AdminbaseController{
                 $data[$currentRow][$currentColumn] = $currentSheet->getCell($address)->getValue();
             }
         }
-        print_r($data);die;
         $this->save_import($data);
     }
 
